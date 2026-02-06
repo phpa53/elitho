@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="jakarta.tags.core"
+	xmlns:cc="jakarta.faces.composite"
+	xmlns:f="jakarta.faces.core"
+	xmlns:faces="jakarta.faces"
+	xmlns:fn="jakarta.tags.functions"
+	xmlns:h="jakarta.faces.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pass="jakarta.faces.passthrough"
+	xmlns:ui="jakarta.faces.facelets">
+	
+	<h:form id="lotForm" prependId="false">
+		
+		<p:growl id="lotGrowl" showDetail="true" life="3000"/>
+		
+		<p:dataTable id="lotDT"
+        	widgetVar="lotDTW"
+        	var="lot"
+        	value="#{lotBean.lot}"
+        	reflow="true"
+        	rowKey="#{lot.lotId}"
+			scrollable="true"
+			scrollHeight="1800"
+			lazy="false"
+			sortMode="multiple"
+			virtualScroll="false"
+			tableStyle="width:overflow"
+			styleClass="custom-footer-paginator"
+			resizableColumns="true"
+			resizeMode="expand"
+			size="small"
+			rows="100"
+			paginator="true"
+			paginatorAlwaysVisible="true"
+			paginatorPosition="bottom"
+               paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink}
+               	{PageLinks} {NextPageLink} {LastPageLink}"
+               rowsPerPageTemplate="100,500,1000,2000,3000,4000,5000,10000,{ShowAll|'All'}"
+			currentPageReportTemplate="Found {totalRecords} lots"
+            editable="false"
+			editInitEvent="click"
+			editMode="cell"
+            selectionMode="single"
+            selection="#{lotBean.selectedLot}"
+            selectionPageOnly="false"
+            disabledSelection="false"
+			draggableColumns="true"
+			stripedRows="true"
+			disabledTextSelection="false"
+			cache="true"
+        	showGridlines="true">
+        	
+        	<f:facet name="header">
+	        	<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+	                	margin-top:5px;">
+                    <span style="margin-top:-5px;">
+                    	<p:commandButton icon="pi pi-file-excel" styleClass="mb-2 ml-2">
+		                    <p:dataExporter type="xlsx"
+			                    target="lotDT"
+			                    fileName="elitho-lot-#{lotBean.getExcelExtension()}"
+			                    postProcessor="#{lotBean.postProcessXLS}"
+			                    exportFooter="false"/>
+		                </p:commandButton>
+		            </span>
+		    	</div>
+		    	<p:outputLabel for="@next" value="From:" styleClass="mb-2 ml-2"/>
+                <p:datePicker id="lotFromDP" value="#{lotBean.fromDate}" styleClass="mb-2 ml-1"/>
+		    	<p:outputLabel for="@next" value="To:" styleClass="mb-2 ml-2"/>
+                <p:datePicker id="lotFromDP" value="#{lotBean.toDate}" styleClass="mb-2 ml-1"/>
+                <p:selectCheckboxMenu id="lotToolSCM"
+                	label="Tool"
+	             	styleClass="mb-2 ml-2"
+	             	scrollHeight="500"
+	             	value="#{lotBean.selectedTools}"
+	             	style="margin-right:10px;">
+	                <f:selectItems value="#{lotBean.tools}"/>
+	                <p:ajax listener="#{lotBean.initTechnos}"
+	                	process="@this"
+	                	update="lotToolSCM"/>
+	                <p:ajax event="toggleSelect"
+	                 	listener="#{lotBean.initTechnos}"
+	                 	process="@this"
+	                 	update="lotToolSCM"/>
+	            </p:selectCheckboxMenu>
+                <p:selectCheckboxMenu id="lotTechnoSCM"
+                	label="Techno"
+	             	styleClass="mb-2 ml-2"
+	             	scrollHeight="500"
+	             	value="#{lotBean.selectedTechnos}"
+	             	style="margin-right:10px;">
+	                <f:selectItems value="#{lotBean.technos}"/>
+	                <p:ajax listener="#{lotBean.initMasksets}"
+	                	process="@this"
+	                	update="lotMasksetSCM"/>
+	                <p:ajax event="toggleSelect"
+	                 	listener="#{lotBean.initMasksets}"
+	                 	process="@this"
+	                 	update="lotMasksetSCM"/>
+	            </p:selectCheckboxMenu>
+                <p:selectCheckboxMenu id="lotMasksetSCM"
+                	label="Maskset"
+	             	styleClass="mb-2 ml-2"
+	             	scrollHeight="500"
+	             	value="#{lotBean.selectedMasksets}"
+	             	style="margin-right:10px;">
+	                <f:selectItems value="#{lotBean.masksets}"/>
+	                <p:ajax listener="#{lotBean.initLayers}"
+	                	process="@this"
+	                	update="lotLayerSCM"/>
+	                <p:ajax event="toggleSelect"
+	                 	listener="#{lotBean.initLayers}"
+	                 	process="@this"
+	                 	update="lotLayerSCM"/>
+	            </p:selectCheckboxMenu>
+                <p:selectCheckboxMenu id="lotLayerSCM"
+                	label="Layer"
+	             	styleClass="mb-2 ml-2"
+	             	scrollHeight="500"
+	             	value="#{lotBean.selectedLayers}"
+	             	style="margin-right:10px;">
+	                <f:selectItems value="#{lotBean.layers}"/>
+	                <p:ajax listener="#{lotBean.initLotIds}"
+	                	process="@this"
+	                	update="lotLotIdSCM"/>
+	                <p:ajax event="toggleSelect"
+	                 	listener="#{lotBean.initLotIds}"
+	                 	process="@this"
+	                 	update="lotLotIdSCM"/>
+	            </p:selectCheckboxMenu>
+                <p:selectCheckboxMenu id="lotLotIdSCM"
+                	label="Lot ID"
+	             	styleClass="mb-2 ml-2"
+	             	scrollHeight="500"
+	             	value="#{lotBean.selectedLotIds}"
+	             	style="margin-right:10px;">
+	                <f:selectItems value="#{lotBean.lotIds}"/>
+	                <p:ajax listener="#{lotBean.initLotStarts}"
+	                	process="@this"
+	                	update="lotStartSCM"/>
+	                <p:ajax event="toggleSelect"
+	                 	listener="#{lotBean.initLotStarts}"
+	                 	process="@this"
+	                 	update="lotStartSCM"/>
+	            </p:selectCheckboxMenu>
+                <p:selectCheckboxMenu id="lotStartSCM"
+                	label="Lot ID"
+	             	styleClass="mb-2 ml-2"
+	             	scrollHeight="500"
+	             	value="#{lotBean.selectedStarts}"
+	             	style="margin-right:10px;">
+	                <f:selectItems value="#{lotBean.lotStarts}"/>
+	            </p:selectCheckboxMenu>
+				<p:commandButton id="lotApplyCB"
+	               	value="Apply"
+	                styleClass="mb-2 ml-2"
+	               	actionListener="#{lotBean.apply}"
+	                update="lotDT elithoTabView:lotGrow"
+					oncomplete="resizeLotTable();eturn false;"/>
+			</f:facet>
+        	
+        </p:dataTable>
+		
+		
+    </h:form>
+	
+</ui:component>

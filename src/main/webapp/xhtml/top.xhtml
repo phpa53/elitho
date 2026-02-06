@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="jakarta.tags.core"
+	xmlns:cc="jakarta.faces.composite"
+	xmlns:f="jakarta.faces.core"
+	xmlns:faces="jakarta.faces"
+	xmlns:fn="jakarta.tags.functions"
+	xmlns:h="jakarta.faces.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pass="jakarta.faces.passthrough"
+	xmlns:ui="jakarta.faces.facelets">
+	
+	<h:outputLink value="#{topBean.getHomeUrl()}" rendered="false">
+        <h:graphicImage name="wafer.png" library="images" alt="Home"/>
+    </h:outputLink>
+	<p:tabView id="elithoTabView" widgetVar="elithoTabViewWV" activeIndex="#{topBean.activeTab}">
+		<p:tab title="Lots" >
+			<ui:include src="lot.xhtml"/>
+		</p:tab>
+		<ui:remove>
+		<p:tab title="Wafers" >
+			<ui:include src="wafer.xhtml"/>
+		</p:tab>
+		<p:tab title="Details">
+			<ui:include src="detailedwafer.xhtml"/>
+		</p:tab>
+		</ui:remove>
+	</p:tabView>
+	
+</ui:component>

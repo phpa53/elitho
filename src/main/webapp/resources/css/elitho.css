@@ -1,0 +1,84 @@
+html, body {
+	max-width: 100%;
+	overflow-x: hidden;
+}
+body .ui-menu.ui-menubar {
+	padding:0 !important;
+}
+.hidden-grid td {
+    border-style: hidden !important;
+}
+.no-underline {
+    text-decoration: none;
+}
+.ui-datatable.borderless thead th,
+.ui-datatable.borderless tbody,
+.ui-datatable.borderless tbody tr,
+.ui-datatable.borderless tbody td {
+    border-style: none;
+}
+.ui-datatable.borderless table thead tr {
+    display: none;
+}
+.ui-datatable.borderless table {
+    table-layout: auto;
+}
+
+
+
+
+
+
+
+
+w.image-grid {
+    display: flex;
+    flex-wrap: wrap;        /* wrap on resize */
+    gap: 0.5rem;            /* spacing between images */
+    justify-content: flex-start;
+}
+
+.image-item {
+    /*width: 120px;*/
+    /*height: 120px;*/
+    object-fit: cover;      /* crop nicely inside the box */
+    border-radius: 4px;
+}
+
+.zoom-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;          /* important for panning & box */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    margin: 0;
+    padding: 0;
+}
+
+#waferZoomImage {
+    cursor: grab;
+    transform-origin: 0 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.05s linear;
+    max-width: none;           /* allow full zoom */
+}
+
+.zoom-rectangle {
+    position: absolute;
+    border: 1px dashed #00ff00;
+    background-color: rgba(0, 255, 0, 0.1);
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.waferzoom-dialog-buttons {
+    float: right;
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}

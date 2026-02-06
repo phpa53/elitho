@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="jakarta.tags.core"
+	xmlns:cc="jakarta.faces.composite"
+	xmlns:f="jakarta.faces.core"
+	xmlns:faces="jakarta.faces"
+	xmlns:fn="jakarta.tags.functions"
+	xmlns:h="jakarta.faces.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pass="jakarta.faces.passthrough"
+	xmlns:ui="jakarta.faces.facelets">
+	
+	<h:form id="waferForm" prependId="false">
+		
+		<p:growl id="waferGrowl" showDetail="true" life="3000"/>
+		
+		<div class="image-grid">
+			<p:commandLink rendered="true"
+				process="@this"
+	            actionListener="#{waferBean.buildDetailedWafer('rect', 0)}"
+	            update=":elithoTabView:detailedWaferRectForm :elithoTabView:detailedWaferPlotForm"
+	            oncomplete="PF('elithoTabViewWV').select(1);buildWafer();">
+				<p:graphicImage value="#{waferBean.waferImages.get(0)}" styleClass="image-item"/>
+			</p:commandLink>
+			<p:commandLink rendered="false"
+				process="@this"
+	            update=":waferZoomForm:waferZoomDialog"
+	            actionListener="#{waferBean.zoom(0)}"
+	            oncomplete="PF('waferZoomDialog').show();">
+				<p:graphicImage value="#{waferBean.waferImages.get(0)}" styleClass="image-item"/>
+			</p:commandLink>
+			<ui:remove>
+			<p:graphicImage value="#{waferBean.waferImages.get(1)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(2)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(3)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(4)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(5)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(6)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(7)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(8)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(9)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(10)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(11)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(12)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(13)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(14)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(15)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(16)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(17)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(18)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(19)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(20)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(21)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(22)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(23)}" styleClass="image-item"/>
+			<p:graphicImage value="#{waferBean.waferImages.get(24)}" styleClass="image-item"/>
+			</ui:remove>
+	    </div>
+	</h:form>
+	
+	<h:form id="waferZoomForm" prependId="false">
+		<p:dialog id="waferZoomDialog"
+			widgetVar="waferZoomDialog"
+			header="#{waferBean.getSelectedWaferName()}"
+            modal="true"
+            resizable="true"
+            responsive="true"
+            width="600"
+            height="500"
+            onShow="initwaferZoom();">
+            <f:facet name="header">
+	            <h:panelGroup style="display:flex;justify-content:flex-end;gap:0.25rem;margin-bottom:0.5rem;">
+			        <p:commandButton icon="pi pi-search-minus"
+		                onclick="zoomOutClick();return false;"
+		                title="Zoom out"
+		                styleClass="ui-button-flat ui-button-sm" />
+			        <p:commandButton icon="pi pi-search-plus"
+		                onclick="zoomInClick();return false;"
+		                title="Zoom in"
+		                styleClass="ui-button-flat ui-button-sm" />
+			        <p:commandButton value="Reset"
+		                onclick="resetZoomClick();return false;"
+		                title="Reset zoom"
+		                styleClass="ui-button-flat ui-button-sm" />
+			    </h:panelGroup>
+		    </f:facet>
+		    <ui:remove>
+            <div class="zoom-container">
+                <p:graphicImage id="waferZoomImage" value="#{waferBean.selectedImage}"/>
+            </div>
+            </ui:remove>
+    	</p:dialog>
+    </h:form>
+	
+</ui:component>
