@@ -3,6 +3,8 @@ package com.st.elitho.jpa;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.st.elitho.dto.LotDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -37,6 +39,8 @@ public final class ExposureTwinscanLot implements Serializable {
 	@Column
 	private String twinscanlayerid;
 	@Column
+	private String lithoclusterid;
+	@Column
 	private Float principalgridsizex;
 	@Column
 	private Float principalgridsizey;
@@ -44,5 +48,16 @@ public final class ExposureTwinscanLot implements Serializable {
 	@OneToMany(mappedBy = "tsLot")
 	private List<ExposureTwinscanWafer> tsWafers;
 	*/
+
+	public LotDTO toDTO() {
+		return LotDTO.builder()
+			.lotId(this.lotid)
+			.techno(this.twinscantechnology)
+			.maskset(this.twinscanmaskset)
+			.layer(this.twinscanlayerid)
+			.cluster(this.lithoclusterid)
+			.start(this.twinscanlotstart)
+			.build();
+	}
 
 }

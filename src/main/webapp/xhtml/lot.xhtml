@@ -18,7 +18,7 @@
 		<p:dataTable id="lotDT"
         	widgetVar="lotDTW"
         	var="lot"
-        	value="#{lotBean.lot}"
+        	value="#{lotBean.getLots()}"
         	reflow="true"
         	rowKey="#{lot.lotId}"
 			scrollable="true"
@@ -63,101 +63,125 @@
 			                    postProcessor="#{lotBean.postProcessXLS}"
 			                    exportFooter="false"/>
 		                </p:commandButton>
-		            </span>
-		    	</div>
-		    	<p:outputLabel for="@next" value="From:" styleClass="mb-2 ml-2"/>
-                <p:datePicker id="lotFromDP" value="#{lotBean.fromDate}" styleClass="mb-2 ml-1"/>
-		    	<p:outputLabel for="@next" value="To:" styleClass="mb-2 ml-2"/>
-                <p:datePicker id="lotFromDP" value="#{lotBean.toDate}" styleClass="mb-2 ml-1"/>
-                <p:selectCheckboxMenu id="lotToolSCM"
-                	label="Tool"
-	             	styleClass="mb-2 ml-2"
-	             	scrollHeight="500"
-	             	value="#{lotBean.selectedTools}"
-	             	style="margin-right:10px;">
-	                <f:selectItems value="#{lotBean.tools}"/>
-	                <p:ajax listener="#{lotBean.initTechnos}"
-	                	process="@this"
-	                	update="lotToolSCM"/>
-	                <p:ajax event="toggleSelect"
-	                 	listener="#{lotBean.initTechnos}"
-	                 	process="@this"
-	                 	update="lotToolSCM"/>
-	            </p:selectCheckboxMenu>
-                <p:selectCheckboxMenu id="lotTechnoSCM"
-                	label="Techno"
-	             	styleClass="mb-2 ml-2"
-	             	scrollHeight="500"
-	             	value="#{lotBean.selectedTechnos}"
-	             	style="margin-right:10px;">
-	                <f:selectItems value="#{lotBean.technos}"/>
-	                <p:ajax listener="#{lotBean.initMasksets}"
-	                	process="@this"
-	                	update="lotMasksetSCM"/>
-	                <p:ajax event="toggleSelect"
-	                 	listener="#{lotBean.initMasksets}"
-	                 	process="@this"
-	                 	update="lotMasksetSCM"/>
-	            </p:selectCheckboxMenu>
-                <p:selectCheckboxMenu id="lotMasksetSCM"
-                	label="Maskset"
-	             	styleClass="mb-2 ml-2"
-	             	scrollHeight="500"
-	             	value="#{lotBean.selectedMasksets}"
-	             	style="margin-right:10px;">
-	                <f:selectItems value="#{lotBean.masksets}"/>
-	                <p:ajax listener="#{lotBean.initLayers}"
-	                	process="@this"
-	                	update="lotLayerSCM"/>
-	                <p:ajax event="toggleSelect"
-	                 	listener="#{lotBean.initLayers}"
-	                 	process="@this"
-	                 	update="lotLayerSCM"/>
-	            </p:selectCheckboxMenu>
-                <p:selectCheckboxMenu id="lotLayerSCM"
-                	label="Layer"
-	             	styleClass="mb-2 ml-2"
-	             	scrollHeight="500"
-	             	value="#{lotBean.selectedLayers}"
-	             	style="margin-right:10px;">
-	                <f:selectItems value="#{lotBean.layers}"/>
-	                <p:ajax listener="#{lotBean.initLotIds}"
-	                	process="@this"
-	                	update="lotLotIdSCM"/>
-	                <p:ajax event="toggleSelect"
-	                 	listener="#{lotBean.initLotIds}"
-	                 	process="@this"
-	                 	update="lotLotIdSCM"/>
-	            </p:selectCheckboxMenu>
-                <p:selectCheckboxMenu id="lotLotIdSCM"
-                	label="Lot ID"
-	             	styleClass="mb-2 ml-2"
-	             	scrollHeight="500"
-	             	value="#{lotBean.selectedLotIds}"
-	             	style="margin-right:10px;">
-	                <f:selectItems value="#{lotBean.lotIds}"/>
-	                <p:ajax listener="#{lotBean.initLotStarts}"
-	                	process="@this"
-	                	update="lotStartSCM"/>
-	                <p:ajax event="toggleSelect"
-	                 	listener="#{lotBean.initLotStarts}"
-	                 	process="@this"
-	                 	update="lotStartSCM"/>
-	            </p:selectCheckboxMenu>
-                <p:selectCheckboxMenu id="lotStartSCM"
-                	label="Lot ID"
-	             	styleClass="mb-2 ml-2"
-	             	scrollHeight="500"
-	             	value="#{lotBean.selectedStarts}"
-	             	style="margin-right:10px;">
-	                <f:selectItems value="#{lotBean.lotStarts}"/>
-	            </p:selectCheckboxMenu>
-				<p:commandButton id="lotApplyCB"
-	               	value="Apply"
-	                styleClass="mb-2 ml-2"
-	               	actionListener="#{lotBean.apply}"
-	                update="lotDT elithoTabView:lotGrow"
-					oncomplete="resizeLotTable();eturn false;"/>
+				    	<p:outputLabel for="@next" value="From:" styleClass="mb-2 ml-2"/>
+		                <p:datePicker id="lotFromDateDP"
+		                	widgetVar="lotFromDateDP"
+		                	styleClass="mb-2 ml-1"
+		                	value="#{lotBean.lotDates.fromDate}"
+		                	mindate="#{lotBean.lotDates.fromDateMin}"
+		                	maxdate="#{lotBean.lotDates.fromDateMax}"
+		                	pattern="dd MMM yy"
+		                	showWeek="true">
+		                	<p:ajax listener="#{lotBean.lotDates.updateToDate()}"
+		                		process="@this"
+		                		update="lotToDateDP"
+		                		oncomplete="PF('lotFromDateDP').hide();"/>
+		                </p:datePicker>
+				    	<p:outputLabel for="@next" value="To:" styleClass="mb-2 ml-2"/>
+		                <p:datePicker id="lotToDateDP"
+		                	widgetVar="lotToDateDP"
+		                	styleClass="mb-2 ml-1"
+		                	value="#{lotBean.lotDates.toDate}"
+		                	mindate="#{lotBean.lotDates.toDateMin}"
+		                	maxdate="#{lotBean.lotDates.toDateMax}"
+		                	pattern="dd MMM yy"
+		                	showWeek="true">
+		                	<p:ajax listener="#{lotBean.lotDates.updateFromDate()}"
+		                		process="@this"
+		                		update="lotFromDateDP"
+		                		oncomplete="PF('lotToDateDP').hide();"/>
+		                </p:datePicker>
+		                <p:selectCheckboxMenu id="lotToolSCM"
+		                	label="Tool"
+			             	styleClass="mb-2 ml-2"
+			             	scrollHeight="500"
+			             	value="#{lotBean.filter.tools}"
+			             	style="margin-right:10px;">
+			                <f:selectItems value="#{lotBean.tools}"/>
+			                <p:ajax listener="#{lotBean.initTechnos}"
+			                	process="@this"
+			                	update="lotToolSCM"/>
+			                <p:ajax event="toggleSelect"
+			                 	listener="#{lotBean.initTechnos}"
+			                 	process="@this"
+			                 	update="lotTechnoSCM"/>
+			            </p:selectCheckboxMenu>
+		                <p:selectCheckboxMenu id="lotTechnoSCM"
+		                	label="Techno"
+			             	styleClass="mb-2 ml-2"
+			             	scrollHeight="500"
+			             	value="#{lotBean.filter.technos}"
+			             	style="margin-right:10px;">
+			                <f:selectItems value="#{lotBean.technos}"/>
+			                <p:ajax listener="#{lotBean.initMasksets}"
+			                	process="@this"
+			                	update="lotMasksetSCM"/>
+			                <p:ajax event="toggleSelect"
+			                 	listener="#{lotBean.initMasksets}"
+			                 	process="@this"
+			                 	update="lotMasksetSCM"/>
+			            </p:selectCheckboxMenu>
+		                <p:selectCheckboxMenu id="lotMasksetSCM"
+		                	label="Maskset"
+			             	styleClass="mb-2 ml-2"
+			             	scrollHeight="500"
+			             	value="#{lotBean.filter.masksets}"
+			             	style="margin-right:10px;">
+			                <f:selectItems value="#{lotBean.masksets}"/>
+			                <p:ajax listener="#{lotBean.initLayers}"
+			                	process="@this"
+			                	update="lotLayerSCM"/>
+			                <p:ajax event="toggleSelect"
+			                 	listener="#{lotBean.initLayers}"
+			                 	process="@this"
+			                 	update="lotLayerSCM"/>
+			            </p:selectCheckboxMenu>
+		                <p:selectCheckboxMenu id="lotLayerSCM"
+		                	label="Layer"
+			             	styleClass="mb-2 ml-2"
+			             	scrollHeight="500"
+			             	value="#{lotBean.filter.layers}"
+			             	style="margin-right:10px;">
+			                <f:selectItems value="#{lotBean.layers}"/>
+			                <p:ajax listener="#{lotBean.initLotIds}"
+			                	process="@this"
+			                	update="lotLotIdSCM"/>
+			                <p:ajax event="toggleSelect"
+			                 	listener="#{lotBean.initLotIds}"
+			                 	process="@this"
+			                 	update="lotLotIdSCM"/>
+			            </p:selectCheckboxMenu>
+		                <p:selectCheckboxMenu id="lotLotIdSCM"
+		                	label="Lot ID"
+			             	styleClass="mb-2 ml-2"
+			             	scrollHeight="500"
+			             	value="#{lotBean.filter.lotIds}"
+			             	style="margin-right:10px;">
+			                <f:selectItems value="#{lotBean.lotIds}"/>
+			                <p:ajax listener="#{lotBean.initLotStarts}"
+			                	process="@this"
+			                	update="lotStartSCM"/>
+			                <p:ajax event="toggleSelect"
+			                 	listener="#{lotBean.initLotStarts}"
+			                 	process="@this"
+			                 	update="lotStartSCM"/>
+			            </p:selectCheckboxMenu>
+		                <p:selectCheckboxMenu id="lotStartSCM"
+		                	label="Lot Starts"
+			             	styleClass="mb-2 ml-2"
+			             	scrollHeight="500"
+			             	value="#{lotBean.lotStarts}"
+			             	style="margin-right:10px;">
+			                <f:selectItems value="#{lotBean.getFormattedLotStarts()}"/>
+			            </p:selectCheckboxMenu>
+						<p:commandButton id="lotApplyCB"
+			               	value="Apply"
+			                styleClass="mb-2 ml-2"
+			               	actionListener="#{lotBean.apply}"
+			                update="lotDT elithoTabView:lotGrow"
+							oncomplete="resizeLotTable();return false;"/>
+					</span>
+				</div>
 			</f:facet>
         	
         </p:dataTable>
