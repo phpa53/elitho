@@ -1,3 +1,73 @@
+.deeplitho-shadow {
+	font-weight: bold;
+	font-size: 40px !important;
+ 	text-shadow: 1px 1px yellow;
+}
+.top-banner {
+    position: relative;
+    height: 50px;                      /* fixed height, adjust as needed */
+    width: 100%;                        /* full page width (can also omit) */
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;             /* scales image to cover entire banner */
+
+    display: flex;                      /* for centering the link */
+    align-items: center;                /* vertical centering */
+    justify-content: space-between;     /* left, center, right distribution */
+
+    box-sizing: border-box;
+    border-radius: 10px;
+    overflow: hidden;
+}
+/* overlay that makes the background image look transparent */
+.top-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0; /* top:0; right:0; bottom:0; left:0 */
+    background-color: rgba(0, 0, 0, 0.1); /* adjust last value for “opacity” */
+    pointer-events: none;                 /* clicks go through to the link */
+}
+
+/* keep banner content above the overlay */
+.top-banner > * {
+    position: relative;
+    z-index: 1;
+}
+.banner-left {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+.banner-logo {
+    height: 32px;
+    width: auto;
+    cursor: pointer;
+}
+.banner-center {
+    flex: 1;                    /* take remaining space */
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.banner-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: #ffffff;
+    font-size: 0.85rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    white-space: nowrap;        /* keep on one line */
+    margin-right: 10px;
+}
+/* Optional: reduce title shrink if space is tight */
+.banner-center {
+    flex: 0 1 auto;
+    margin: 0 16px;
+}
+
 html, body {
 	max-width: 100%;
 	overflow-x: hidden;
@@ -24,9 +94,24 @@ body .ui-menu.ui-menubar {
     table-layout: auto;
 }
 
+body .ui-datatable .ui-paginator {
+    padding: 0!important;
+}
 
+.ui-tabs .ui-tabs-panel {
+	padding: 0 !important;
+}
 
-
+.image-grid .image-cell {
+    border: 1px solid #ccc;
+    padding: 6px;
+    margin: 4px;
+    box-sizing: border-box;
+}
+.image-grid .image {
+    max-width: 150px;
+    max-height: 150px;
+}
 
 
 

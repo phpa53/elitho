@@ -24,6 +24,7 @@ public class LotDTO {
 	private String maskset;
 	private String layer;
 	private String cluster;
+	private String tsLotId;
 	private LocalDateTime start;
 
 	public String getRowKey() {

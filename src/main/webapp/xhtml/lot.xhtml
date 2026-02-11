@@ -14,14 +14,11 @@
 	<h:form id="lotForm" prependId="false">
 		
 		<p:growl id="lotGrowl" showDetail="true" life="3000"/>
-        	
-        <h:inputText id="lotdetailsurl" value="#{lotBean.lotDetailsUrl}" style="display:none;"/>
 		
 		<p:dataTable id="lotDT"
         	widgetVar="lotDTW"
         	var="lot"
         	value="#{lotBean.getLots()}"
-        	reflow="true"
         	rowKey="#{lot.getRowKey()}"
 			scrollable="true"
 			scrollHeight="1800"
@@ -57,9 +54,11 @@
         	<p:ajax event="rowDblselect"
 				listener="#{lotBean.onLotRowDblClick}"
 				update="lotdetailsurl"
-				oncomplete="var url=$('#lotdetailsurl').val(); if (url) {window.open(url, '_blank');}"/>
+				oncomplete="var url=$('#elithoTabView\\:lotDT\\:lotdetailsurl').val();
+					if (url) {window.open(url, '_blank');}"/>
         	
         	<f:facet name="header">
+        		<h:inputText id="lotdetailsurl" value="#{lotBean.lotDetailsUrl}" style="display:none;"/>
 	        	<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
 	                	margin-top:3px;margin_bottom:3px;">
                     <span style="margin-top:-5px;">
@@ -211,19 +210,19 @@
                 <h:outputText value="#{lot.techno}"/>
 			</p:column>
 			<p:column headerText="Maskset"
-        		style="width:80px;text-align:center;"
+        		style="width:130px;text-align:center;"
 				sortBy="#{lot.maskset}"
             	filterBy="#{lot.maskset}">
                 <h:outputText value="#{lot.maskset}"/>
 			</p:column>
 			<p:column headerText="Maskset"
-        		style="width:120px;text-align:left;"
+        		style="width:120px;text-align:center;"
 				sortBy="#{lot.layer}"
             	filterBy="#{lot.layer}">
                 <h:outputText value="#{lot.layer}"/>
 			</p:column>
 			<p:column headerText="Lot ID"
-        		style="width:130px;text-align:left;"
+        		style="width:200px;text-align:center;"
 				sortBy="#{lot.lotId}"
             	filterBy="#{lot.lotId}">
                 <h:outputText value="#{lot.lotId}"/>

@@ -11,6 +11,49 @@
 	xmlns:pass="jakarta.faces.passthrough"
 	xmlns:ui="jakarta.faces.facelets">
 	
-	<ui:include src="lot.xhtml"/>
+	<h:form>
+        <p:outputPanel id="topBanner"
+	        styleClass="top-banner"
+	        style="background-image: url('#{resource['images/theme.jpg']}');">
+	        <h:panelGroup layout="block" styleClass="banner-left">
+		        <p:tooltip for="@next" value="Go to Home page" showEffect="fade" hideEffect="fade" position="bottom"/>
+	        	<p:link id="fsmTopHomeLink"
+	        		value="DEEPLITHO"
+	            	styleClass="banner-left deeplitho-shadow"
+	            	style="text-decoration:none"
+	        		href="#{topBean.getHomeUrl()}"/>
+	        	<h:outputText value="INTEGRATION"
+	        		style="font-size:30px;font-weight:bold;color:chartreuse;margin-left:10px;margin-top:5px;"
+	        		rendered="#{topBean.appEnv eq 'int'}"/>
+	        </h:panelGroup>
+	        <h:panelGroup layout="block" styleClass="banner-center">
+	            <h:outputText value="#{topBean.appLabel}"/>
+	        </h:panelGroup>
+	        <h:panelGroup layout="block" styleClass="banner-right">
+	        	<p:tooltip for="@next"
+	        		value="Manage your acoount"
+	        		showEffect="fade"
+	        		hideEffect="fade"
+	        		position="bottom"/>
+	        	<div>
+	        		<span>
+		        	<p:link id="fsmTopUsernameLink"
+		        		style="color:white;"
+		        		value="Logged in as: #{topBean.userName}" 
+		        		href="#{topBean.keycloakUrl}/../realms/deeplitho/account"/>
+			        	<br/>
+			        	<h:outputText value="Version #{topBean.appVersion}"
+			        		style="color:white;font-size:12px;font-style:italic;"/>
+		        	</span>
+	        	</div>
+	        </h:panelGroup>
+	    </p:outputPanel>
+    </h:form>
+	
+	<p:tabView id="elithoTabView" widgetVar="elithoTabViewWV">
+		<p:tab title="Lots" >
+			<ui:include src="lot.xhtml"/>
+		</p:tab>
+	</p:tabView>
 	
 </ui:component>

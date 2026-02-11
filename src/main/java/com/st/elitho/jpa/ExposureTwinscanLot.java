@@ -41,6 +41,8 @@ public final class ExposureTwinscanLot implements Serializable {
 	@Column
 	private String lithoclusterid;
 	@Column
+	private String twinscanlotid;
+	@Column
 	private Float principalgridsizex;
 	@Column
 	private Float principalgridsizey;
@@ -57,6 +59,7 @@ public final class ExposureTwinscanLot implements Serializable {
 			.layer(this.twinscanlayerid)
 			.cluster(this.lithoclusterid)
 			.start(this.twinscanlotstart)
+			.tsLotId(this.twinscanlotid)
 			.build();
 	}
 

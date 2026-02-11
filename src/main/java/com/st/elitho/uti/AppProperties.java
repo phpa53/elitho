@@ -22,6 +22,7 @@ public final class AppProperties {
 	public static final String APP_LABEL = "application.label";
 	public static final String HOME_URL = System.getProperty("litho.home.url");
 	public static final String KEYCLOAK_URL = System.getProperty("litho.keycloak.url");
+	public static final String IMAGESTORE_DIR = System.getProperty("litho.elitho.images.store");
 	private static final String PROP_FILENAME = "/application.properties";
 	private static final AppProperties INSTANCE = new AppProperties();
 	private transient AbstractConfiguration appConfiguration;
