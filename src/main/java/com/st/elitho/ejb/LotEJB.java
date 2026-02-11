@@ -39,6 +39,12 @@ public class LotEJB implements Serializable {
 
 	}
 
+	public LotDTO getLot(final String lotId, final String startDate) {
+		return this.lotRefreshEJB.getAllLots().stream()
+			.filter(lot -> lot.getLotId().equals(lotId) && lot.getFormattedStart().equals(startDate))
+			.findFirst().orElse(LotDTO.NULL);
+	}
+
 	public List<String> getToolsFromDates(final LocalDate fromDate, final LocalDate toDate) throws LotException {
 
 		if (fromDate == null) {
@@ -53,9 +59,10 @@ public class LotEJB implements Serializable {
 	}
 
 
-	public List<String> getMatchedList(final List<String> values, final Function<LotDTO, String> fieldExtractor) {
+	public List<String> getMatchedList(final List<String> values, final Function<LotDTO, String> matchingValue,
+		final Function<LotDTO, String> fieldExtractor) {
 	    return this.lotRefreshEJB.getAllLots().stream()
-	        .filter(lot -> LotDTO.matches(values, fieldExtractor.apply(lot)))
+	        .filter(lot -> LotDTO.matches(values, matchingValue.apply(lot)))
 	        .map(fieldExtractor).distinct().sorted().toList();
 	}
 

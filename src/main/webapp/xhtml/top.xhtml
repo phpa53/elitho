@@ -11,21 +11,6 @@
 	xmlns:pass="jakarta.faces.passthrough"
 	xmlns:ui="jakarta.faces.facelets">
 	
-	<h:outputLink value="#{topBean.getHomeUrl()}" rendered="false">
-        <h:graphicImage name="wafer.png" library="images" alt="Home"/>
-    </h:outputLink>
-	<p:tabView id="elithoTabView" widgetVar="elithoTabViewWV" activeIndex="#{topBean.activeTab}">
-		<p:tab title="Lots" >
-			<ui:include src="lot.xhtml"/>
-		</p:tab>
-		<ui:remove>
-		<p:tab title="Wafers" >
-			<ui:include src="wafer.xhtml"/>
-		</p:tab>
-		<p:tab title="Details">
-			<ui:include src="detailedwafer.xhtml"/>
-		</p:tab>
-		</ui:remove>
-	</p:tabView>
+	<ui:include src="lot.xhtml"/>
 	
 </ui:component>

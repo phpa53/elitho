@@ -14,13 +14,15 @@
 	<h:form id="lotForm" prependId="false">
 		
 		<p:growl id="lotGrowl" showDetail="true" life="3000"/>
+        	
+        <h:inputText id="lotdetailsurl" value="#{lotBean.lotDetailsUrl}" style="display:none;"/>
 		
 		<p:dataTable id="lotDT"
         	widgetVar="lotDTW"
         	var="lot"
         	value="#{lotBean.getLots()}"
         	reflow="true"
-        	rowKey="#{lot.lotId}"
+        	rowKey="#{lot.getRowKey()}"
 			scrollable="true"
 			scrollHeight="1800"
 			lazy="false"
@@ -52,22 +54,34 @@
 			cache="true"
         	showGridlines="true">
         	
+        	<p:ajax event="rowDblselect"
+				listener="#{lotBean.onLotRowDblClick}"
+				update="lotdetailsurl"
+				oncomplete="var url=$('#lotdetailsurl').val(); if (url) {window.open(url, '_blank');}"/>
+        	
         	<f:facet name="header">
 	        	<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
-	                	margin-top:5px;">
+	                	margin-top:3px;margin_bottom:3px;">
                     <span style="margin-top:-5px;">
-                    	<p:commandButton icon="pi pi-file-excel" styleClass="mb-2 ml-2">
+                    	<p:commandButton icon="pi pi-file-excel" styleClass="ml-2" title="export">
 		                    <p:dataExporter type="xlsx"
 			                    target="lotDT"
 			                    fileName="elitho-lot-#{lotBean.getExcelExtension()}"
 			                    postProcessor="#{lotBean.postProcessXLS}"
 			                    exportFooter="false"/>
 		                </p:commandButton>
-				    	<p:outputLabel for="@next" value="From:" styleClass="mb-2 ml-2"/>
+		                <p:commandButton icon="pi pi-times-circle"
+		                	title="Clear Filter"
+		                	styleClass="ml-1"
+		                	actionListener="#{lotBean.initFilter()}"
+		                	update="lotFromDateDP lotToDateDP lotToolSCM lotTechnoSCM lotMasksetSCM lotLayerSCM
+		                		lotLotIdSCM lotStartSCM"/>
+				    	<p:outputLabel for="@next" value="From:" styleClass="ml-2"/>
 		                <p:datePicker id="lotFromDateDP"
 		                	widgetVar="lotFromDateDP"
-		                	styleClass="mb-2 ml-1"
+		                	styleClass="ml-1"
 		                	value="#{lotBean.lotDates.fromDate}"
+		                	size="6"
 		                	mindate="#{lotBean.lotDates.fromDateMin}"
 		                	maxdate="#{lotBean.lotDates.fromDateMax}"
 		                	pattern="dd MMM yy"
@@ -77,11 +91,12 @@
 		                		update="lotToDateDP"
 		                		oncomplete="PF('lotFromDateDP').hide();"/>
 		                </p:datePicker>
-				    	<p:outputLabel for="@next" value="To:" styleClass="mb-2 ml-2"/>
+				    	<p:outputLabel for="@next" value="To:" styleClass="ml-2"/>
 		                <p:datePicker id="lotToDateDP"
 		                	widgetVar="lotToDateDP"
-		                	styleClass="mb-2 ml-1"
+		                	styleClass="ml-1"
 		                	value="#{lotBean.lotDates.toDate}"
+		                	size="6"
 		                	mindate="#{lotBean.lotDates.toDateMin}"
 		                	maxdate="#{lotBean.lotDates.toDateMax}"
 		                	pattern="dd MMM yy"
@@ -93,14 +108,13 @@
 		                </p:datePicker>
 		                <p:selectCheckboxMenu id="lotToolSCM"
 		                	label="Tool"
-			             	styleClass="mb-2 ml-2"
+			             	style="margin-left:5px;"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.tools}"
-			             	style="margin-right:10px;">
+			             	value="#{lotBean.filter.tools}">
 			                <f:selectItems value="#{lotBean.tools}"/>
 			                <p:ajax listener="#{lotBean.initTechnos}"
 			                	process="@this"
-			                	update="lotToolSCM"/>
+			                	update="lotTechnoSCM"/>
 			                <p:ajax event="toggleSelect"
 			                 	listener="#{lotBean.initTechnos}"
 			                 	process="@this"
@@ -108,10 +122,9 @@
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotTechnoSCM"
 		                	label="Techno"
-			             	styleClass="mb-2 ml-2"
+			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.technos}"
-			             	style="margin-right:10px;">
+			             	value="#{lotBean.filter.technos}">
 			                <f:selectItems value="#{lotBean.technos}"/>
 			                <p:ajax listener="#{lotBean.initMasksets}"
 			                	process="@this"
@@ -123,10 +136,9 @@
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotMasksetSCM"
 		                	label="Maskset"
-			             	styleClass="mb-2 ml-2"
+			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.masksets}"
-			             	style="margin-right:10px;">
+			             	value="#{lotBean.filter.masksets}">
 			                <f:selectItems value="#{lotBean.masksets}"/>
 			                <p:ajax listener="#{lotBean.initLayers}"
 			                	process="@this"
@@ -138,10 +150,9 @@
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotLayerSCM"
 		                	label="Layer"
-			             	styleClass="mb-2 ml-2"
+			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.layers}"
-			             	style="margin-right:10px;">
+			             	value="#{lotBean.filter.layers}">
 			                <f:selectItems value="#{lotBean.layers}"/>
 			                <p:ajax listener="#{lotBean.initLotIds}"
 			                	process="@this"
@@ -153,10 +164,9 @@
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotLotIdSCM"
 		                	label="Lot ID"
-			             	styleClass="mb-2 ml-2"
+			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.lotIds}"
-			             	style="margin-right:10px;">
+			             	value="#{lotBean.filter.lotIds}">
 			                <f:selectItems value="#{lotBean.lotIds}"/>
 			                <p:ajax listener="#{lotBean.initLotStarts}"
 			                	process="@this"
@@ -168,24 +178,59 @@
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotStartSCM"
 		                	label="Lot Starts"
-			             	styleClass="mb-2 ml-2"
+			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.lotStarts}"
-			             	style="margin-right:10px;">
+			             	value="#{lotBean.lotStarts}">
 			                <f:selectItems value="#{lotBean.getFormattedLotStarts()}"/>
 			            </p:selectCheckboxMenu>
 						<p:commandButton id="lotApplyCB"
 			               	value="Apply"
-			                styleClass="mb-2 ml-2"
+			                styleClass="ml-1"
 			               	actionListener="#{lotBean.apply}"
-			                update="lotDT elithoTabView:lotGrow"
+			                update="lotDT"
 							oncomplete="resizeLotTable();return false;"/>
 					</span>
 				</div>
 			</f:facet>
+			<p:column headerText="Start"
+        		style="width:110px;text-align:center;"
+				sortBy="#{lot.start}"
+            	filterBy="#{lot.start}">
+                <h:outputText value="#{lot.getFormattedStart()}"/>
+			</p:column>
+			<p:column headerText="Cluster"
+        		style="width:100px;text-align:center;"
+				sortBy="#{lot.cluster}"
+            	filterBy="#{lot.cluster}">
+                <h:outputText value="#{lot.cluster}"/>
+			</p:column>
+			<p:column headerText="Techno"
+        		style="width:80px;text-align:center;"
+				sortBy="#{lot.techno}"
+            	filterBy="#{lot.techno}">
+                <h:outputText value="#{lot.techno}"/>
+			</p:column>
+			<p:column headerText="Maskset"
+        		style="width:80px;text-align:center;"
+				sortBy="#{lot.maskset}"
+            	filterBy="#{lot.maskset}">
+                <h:outputText value="#{lot.maskset}"/>
+			</p:column>
+			<p:column headerText="Maskset"
+        		style="width:120px;text-align:left;"
+				sortBy="#{lot.layer}"
+            	filterBy="#{lot.layer}">
+                <h:outputText value="#{lot.layer}"/>
+			</p:column>
+			<p:column headerText="Lot ID"
+        		style="width:130px;text-align:left;"
+				sortBy="#{lot.lotId}"
+            	filterBy="#{lot.lotId}">
+                <h:outputText value="#{lot.lotId}"/>
+			</p:column>
+			<p:column/>
         	
         </p:dataTable>
-		
 		
     </h:form>
 	

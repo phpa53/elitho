@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title>#{lotDetailsBean.lotId}</title>
+</h:head>
+
+<h:body>
+    <h:form>
+        <h2>Details for lot: #{lotDetailsBean.lotId}</h2>
+        <!-- show fields from lotDetailsBean.lot -->
+        <h:outputText value="Start: #{lotDetailsBean.startDate}"/>
+    </h:form>
+</h:body>
+</html>

@@ -1,11 +1,17 @@
 package com.st.elitho.jsf;
 
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import org.primefaces.event.SelectEvent;
 
 import com.st.elitho.dto.LotDTO;
 import com.st.elitho.dto.LotDateDTO;
@@ -16,8 +22,9 @@ import com.st.elitho.uti.LoggerUtils;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.model.SelectItem;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +32,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Named
-@SessionScoped
+@ViewScoped
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -42,7 +49,10 @@ public class LotBean implements Serializable {
 	private List<LocalDateTime> lotStarts;
 	private LotFilterDTO filter;
 	private LotDTO selectedLot;
-	private final transient List<LotDTO> lots = new ArrayList<>();
+	private String lotDetailsUrl;
+	private final List<LotDTO> lots = new ArrayList<>();
+	@Inject
+    private TopBean topBean;
 	@EJB
 	private transient LotEJB lotEJB;
 
@@ -70,11 +80,21 @@ public class LotBean implements Serializable {
 	public void apply() {
 
 		this.lots.clear();
+
 		try {
+
 			this.lots.addAll(this.lotEJB.getLots(this.filter));
+			Collections.sort(this.lots, Comparator.comparing(LotDTO::getCluster)
+				.thenComparing(LotDTO::getTechno)
+				.thenComparing(LotDTO::getMaskset)
+				.thenComparing(LotDTO::getLayer)
+				.thenComparing(LotDTO::getLotId));
 			LoggerUtils.info(log, String.format("Found %d lots", this.lots.size()));
+
 		} catch (final LotException e) {
+
 			LoggerUtils.warn(log, e.getMessage());
+
 		}
 
 	}
@@ -98,19 +118,19 @@ public class LotBean implements Serializable {
 	}
 
 	public void initTechnos() {
-		this.technos = this.lotEJB.getMatchedList(this.tools, LotDTO::getTechno);
+		this.technos = this.lotEJB.getMatchedList(this.filter.getTools(), LotDTO::getCluster, LotDTO::getTechno);
 	}
 
 	public void initMasksets() {
-		this.masksets = this.lotEJB.getMatchedList(this.technos, LotDTO::getMaskset);
+		this.masksets = this.lotEJB.getMatchedList(this.filter.getTechnos(), LotDTO::getTechno, LotDTO::getMaskset);
 	}
 
 	public void initLayers() {
-		this.layers = this.lotEJB.getMatchedList(this.masksets, LotDTO::getLayer);
+		this.layers = this.lotEJB.getMatchedList(this.filter.getMasksets(), LotDTO::getMaskset, LotDTO::getLayer);
 	}
 
 	public void initLotIds() {
-		this.lotIds = this.lotEJB.getMatchedList(this.layers, LotDTO::getLotId);
+		this.lotIds = this.lotEJB.getMatchedList(this.filter.getLayers(), LotDTO::getLayer, LotDTO::getLotId);
 	}
 
 	public void initLotStarts() {
@@ -122,5 +142,22 @@ public class LotBean implements Serializable {
 	    return this.lotStarts.stream()
 	    	.map(ldt -> new SelectItem(ldt, ldt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")))).toList();
 	}
+
+	public void onLotRowDblClick(final SelectEvent<LotDTO> event) {
+
+        final var lot = event.getObject();
+
+        if (lot != null) {
+
+        	final var encodedLotId = URLEncoder.encode(lot.getLotId(), StandardCharsets.UTF_8);
+            final var encodedStart = URLEncoder.encode(lot.getFormattedStart(), StandardCharsets.UTF_8);
+
+        	this.selectedLot = lot;
+            this.lotDetailsUrl = String.format("xhtml/lotdetails.xhtml?lotId=%s&startDate=%s",
+            	encodedLotId, encodedStart);
+
+        }
+
+    }
 
 }

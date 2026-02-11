@@ -12,7 +12,7 @@ function resizeTables() {
 
 function resizeLotTable() {
 	var height = $(this).height() - 290;
-	var tableBody = $("#elithoTabView\\:lotDT").find(".ui-datatable-scrollable-body");
+	var tableBody = $("lotDT").find(".ui-datatable-scrollable-body");
 	tableBody.height(height);
 }
 
@@ -20,13 +20,13 @@ var wipScrollTop;
 var wipScrollLeft;
 
 function saveWipScrollPos() {
-	wipScrollTop = $("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollTop();
-	wipScrollLeft = $("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollLeft();
+	wipScrollTop = $("#lotDT > .ui-datatable-scrollable-body").scrollTop();
+	wipScrollLeft = $("#lotDT > .ui-datatable-scrollable-body").scrollLeft();
 }
 
 function setWipScrollPos() {
-	$("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollTop(wipScrollTop);
-	$("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollLeft(wipScrollLeft);
+	$("#lotDT > .ui-datatable-scrollable-body").scrollTop(wipScrollTop);
+	$("#lotDT > .ui-datatable-scrollable-body").scrollLeft(wipScrollLeft);
 }
 
 

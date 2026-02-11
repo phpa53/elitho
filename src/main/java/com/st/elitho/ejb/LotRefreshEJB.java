@@ -45,6 +45,7 @@ public class LotRefreshEJB implements Serializable {
 	@Schedule(hour = "*", minute = "*/10", second = "0", persistent = false)
 	public void refresh() {
 
+		LoggerWrapper.info(LOGGER, "Loading lots ...");
 		this.lots.clear();
 		this.lots.addAll(this.elithoEM.createQuery("select etl from ExposureTwinscanLot etl", ExposureTwinscanLot.class)
 			.getResultList().stream().map(ExposureTwinscanLot::toDTO).toList());
