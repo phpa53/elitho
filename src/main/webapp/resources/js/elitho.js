@@ -11,7 +11,7 @@ function resizeTables() {
 }
 
 function resizeLotTable() {
-	var height = $(this).height() - 290;
+	var height = $(this).height() - 340;
 	var tableBody = $("#elithoTabView\\:lotDT").find(".ui-datatable-scrollable-body");
 	tableBody.height(height);
 }

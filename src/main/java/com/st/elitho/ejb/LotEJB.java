@@ -40,9 +40,7 @@ public class LotEJB implements Serializable {
 	}
 
 	public LotDTO getLot(final String lotId, final String startDate) {
-		return this.lotRefreshEJB.getAllLots().stream()
-			.filter(lot -> lot.getLotId().equals(lotId) && lot.getFormattedStart().equals(startDate))
-			.findFirst().orElse(LotDTO.NULL);
+		return this.lotRefreshEJB.getLot(lotId, startDate);
 	}
 
 	public List<String> getToolsFromDates(final LocalDate fromDate, final LocalDate toDate) throws LotException {

@@ -64,36 +64,47 @@
 
 	<h:form id="lotDetailsForm">
         
-        <p:panelGrid styleClass="lotdetails-grid" columns="5" layout="tabular">
+        <p:panelGrid id="lotDetailsPG" styleClass="lotdetails-grid" columns="5" layout="tabular">
         	<f:facet name="header">
         		<p:tooltip for="@next" value="Mode"/>
         		<p:selectOneButton id="lotdetailsmodeCB" value="#{lotDetailsBean.mode}" styleClass="ml-1">
-		            <p:ajax event="change" listener="#{lotDetailsBean.modeChanged}"/>
 		            <f:selectItem itemLabel="Lot" itemValue="lot"/>
-		            <f:selectItem itemLabel="Layer" itemValue="layer"/>
+		            <f:selectItem itemLabel="Cluster" itemValue="cluster"/>
+		            <p:ajax event="change" listener="#{lotDetailsBean.modeChanged}" update="lotDetailsPG"/>
 		        </p:selectOneButton>
         		<p:tooltip for="@next" value="Scope"/>
         		<p:selectOneButton id="lotdetailsscopeCB" value="#{lotDetailsBean.scope}" styleClass="ml-1">
-		            <p:ajax event="change" listener="#{lotDetailsBean.scopeChanged}"/>
 		            <f:selectItem itemLabel="Detection" itemValue="detection"/>
 		            <f:selectItem itemLabel="Systematic" itemValue="systematic"/>
+		            <p:ajax event="change" listener="#{lotDetailsBean.scopeChanged}" update="lotDetailsPG"/>
 		        </p:selectOneButton>
-		        <p:commandButton icon="pi pi-angle-left"
+		        <p:commandButton id="lotdetailspreviousCB"
+		        	icon="pi pi-angle-left"
                 	title="Previous"
                 	styleClass="ml-1"
+                	disabled="#{lotDetailsBean.previousDisabled}"
                 	actionListener="#{lotDetailsBean.previous()}"
-                	update=""/>
-		        <p:commandButton icon="pi pi-angle-right"
+                	update="@this lotDetailsPanel lotdetailsindexOL lotdetailsstartOL
+                		lotdetailsnextCB lotdetailsbackCB"/>
+                <p:outputLabel id="lotdetailsindexOL" value="#{lotDetailsBean.getIndexLabel()}"
+                	style="color:blue;font-size:12;styleClass="ml-1"/>
+		        <p:commandButton id="lotdetailsnextCB"
+		        	icon="pi pi-angle-right"
                 	title="Next"
                 	styleClass="ml-1"
+                	disabled="#{lotDetailsBean.nextDisabled}"
                 	actionListener="#{lotDetailsBean.next()}"
-                	update=""/>
-		        <p:commandButton icon="pi pi-angle-double-left"
+                	update="@this lotDetailsPanel lotdetailsstartOL lotdetailsindexOL
+                		lotdetailspreviousCB lotdetailsbackCB"/>
+		        <p:commandButton id="lotdetailsbackCB"
+		        	icon="pi pi-arrow-left"
                 	title="Back"
                 	styleClass="ml-1"
+                	disabled="#{lotDetailsBean.backDisabled}"
                 	actionListener="#{lotDetailsBean.back()}"
-                	update=""/>
-                <p:outputLabel value="Start: #{lotDetailsBean.getSelectedStartDate()}"
+                	update="@this lotDetailsPanel lotdetailsstartOL lotdetailsindexOL
+                		lotdetailspreviousCB lotdetailsnextCB"/>
+                <p:outputLabel id="lotdetailsstartOL" value="Start: #{lotDetailsBean.getSelectedStartDate()}"
                 	style="color:blue;font-size:16;font-weight:bold" styleClass="ml-2"/>
         	</f:facet>
         	<p:row rendered="#{not empty LotDetailsBean.row0}">
@@ -118,13 +129,14 @@
         	</p:row>
         </p:panelGrid>
         
-        
+        <p:panel id="lotDetailsPanel">
         <h2>Details for lot: #{lotDetailsBean.lot.lotId}</h2>
         <p><h:outputText value="Cluster #{lotDetailsBean.lot.cluster}"/></p>
         <p><h:outputText value="Techno: #{lotDetailsBean.lot.techno}"/></p>
         <p><h:outputText value="Maskset: #{lotDetailsBean.lot.maskset}"/></p>
         <p><h:outputText value="Layer: #{lotDetailsBean.lot.layer}"/></p>
         <p><h:outputText value="Start: #{lotDetailsBean.lot.start}"/></p>
+        </p:panel>
         
         
         

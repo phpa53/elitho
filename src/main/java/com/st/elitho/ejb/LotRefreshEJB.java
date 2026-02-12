@@ -57,4 +57,10 @@ public class LotRefreshEJB implements Serializable {
 		return this.lots;
 	}
 
+	public LotDTO getLot(final String lotId, final String startDate) {
+		return this.lots.stream()
+			.filter(lot -> lot.getLotId().equals(lotId) && lot.getFormattedStart().equals(startDate))
+			.findFirst().orElse(LotDTO.NULL);
+	}
+
 }
