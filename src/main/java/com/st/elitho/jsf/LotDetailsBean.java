@@ -36,10 +36,21 @@ public class LotDetailsBean implements Serializable {
 
     private static final long serialVersionUID = -2413130791061025040L;
     private static final int WAFER_NB = 25;
+    private static final String MODE_LOT = "lot";
+    private static final String MODE_LAYER = "layer";
+    private static final String SCOPE_DETECTION = "detection";
+    private static final String SCOPE_SYSTEMATIC = "systematic";
 	private String lotId;
     private String startDate;
     private LotDTO lot;
     private List<StreamedContent> waferImages;
+    private String mode;
+    private String scope;
+    private List<Integer> row0;
+    private List<Integer> row1;
+    private List<Integer> row2;
+    private List<Integer> row3;
+    private List<Integer> row4;
     @EJB
     private transient LotEJB lotEJB;
     @EJB
@@ -61,6 +72,9 @@ public class LotDetailsBean implements Serializable {
         	LoggerUtils.warn(log, String.format("Unable to load lot details for lot %s and start date %s",
         		this.lotId, this.startDate));
         }
+
+        this.mode = MODE_LOT;
+        this.scope = SCOPE_DETECTION;
 
     }
 
@@ -92,6 +106,26 @@ public class LotDetailsBean implements Serializable {
 
     public List<StreamedContent> getWaferImages() {
         return this.waferImages;
+    }
+
+    public void modeChanged() {
+
+    }
+
+    public void scopeChanged() {
+
+    }
+
+    public void previous() {
+
+    }
+
+    public void next() {
+
+    }
+
+    public void back() {
+
     }
 
 }

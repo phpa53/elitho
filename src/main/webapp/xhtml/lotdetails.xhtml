@@ -11,7 +11,14 @@
 	xmlns:ui="jakarta.faces.facelets">
 
 <h:head>
-    <title>#{lotDetailsBean.lotId}</title>
+   	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	</f:facet>
+	<title>#{lotDetailsBean.lotId}</title>
+	<h:outputStylesheet library="css" name="elitho.css"/>
+	<h:outputStylesheet library="css" name="primeflex.min.css"/>
+	<h:outputScript library="js" name="elitho.js"/>
 </h:head>
 
 <h:body>
@@ -55,9 +62,73 @@
 	    </p:outputPanel>
     </h:form>
 
-	<ui:remove>
 	<h:form id="lotDetailsForm">
-	    <p:panel header="Detection wafers" style="margin:1rem;">
+        
+        <p:panelGrid styleClass="lotdetails-grid" columns="5" layout="tabular">
+        	<f:facet name="header">
+        		<p:tooltip for="@next" value="Mode"/>
+        		<p:selectOneButton id="lotdetailsmodeCB" value="#{lotDetailsBean.mode}" styleClass="ml-1">
+		            <p:ajax event="change" listener="#{lotDetailsBean.modeChanged}"/>
+		            <f:selectItem itemLabel="Lot" itemValue="lot"/>
+		            <f:selectItem itemLabel="Layer" itemValue="layer"/>
+		        </p:selectOneButton>
+        		<p:tooltip for="@next" value="Scope"/>
+        		<p:selectOneButton id="lotdetailsscopeCB" value="#{lotDetailsBean.scope}" styleClass="ml-1">
+		            <p:ajax event="change" listener="#{lotDetailsBean.scopeChanged}"/>
+		            <f:selectItem itemLabel="Detection" itemValue="detection"/>
+		            <f:selectItem itemLabel="Systematic" itemValue="systematic"/>
+		        </p:selectOneButton>
+		        <p:commandButton icon="pi pi-angle-left"
+                	title="Previous"
+                	styleClass="ml-1"
+                	actionListener="#{lotDetailsBean.previous()}"
+                	update=""/>
+		        <p:commandButton icon="pi pi-angle-right"
+                	title="Next"
+                	styleClass="ml-1"
+                	actionListener="#{lotDetailsBean.next()}"
+                	update=""/>
+		        <p:commandButton icon="pi pi-angle-double-left"
+                	title="Back"
+                	styleClass="ml-1"
+                	actionListener="#{lotDetailsBean.back()}"
+                	update=""/>
+        	</f:facet>
+        	<p:row rendered="#{not empty LotDetailsBean.row0}">
+        		<p:columns value="#{LotDetailsBean.row0}" var="col">
+        		</p:columns>
+        	</p:row>
+        	<p:row rendered="#{not empty LotDetailsBean.row1}">
+        		<p:columns value="#{LotDetailsBean.row1}" var="col">
+        		</p:columns>
+        	</p:row>
+        	<p:row rendered="#{not empty LotDetailsBean.row2}">
+        		<p:columns value="#{LotDetailsBean.row2}" var="col">
+        		</p:columns>
+        	</p:row>
+        	<p:row rendered="#{not empty LotDetailsBean.row3}">
+        		<p:columns value="#{LotDetailsBean.row3}" var="col">
+        		</p:columns>
+        	</p:row>
+        	<p:row rendered="#{not empty LotDetailsBean.row4}">
+        		<p:columns value="#{LotDetailsBean.row4}" var="col">
+        		</p:columns>
+        	</p:row>
+        </p:panelGrid>
+        
+        
+        <h2>Details for lot: #{lotDetailsBean.lot.lotId}</h2>
+        <p><h:outputText value="Cluster #{lotDetailsBean.lot.cluster}"/></p>
+        <p><h:outputText value="Techno: #{lotDetailsBean.lot.techno}"/></p>
+        <p><h:outputText value="Maskset: #{lotDetailsBean.lot.maskset}"/></p>
+        <p><h:outputText value="Layer: #{lotDetailsBean.lot.layer}"/></p>
+        <p><h:outputText value="Start: #{lotDetailsBean.lot.start}"/></p>
+        
+        
+        
+        
+        
+	    <p:panel header="Detection wafers" style="margin:1rem;" rendered="false">
 	        <p:dataGrid value="#{lotDetailsBean.waferImages}"
 	        	var="img"
                 columns="5"
@@ -69,17 +140,8 @@
 	            </p:panel>
 	        </p:dataGrid>
 	    </p:panel>
+	    
 	</h:form>
-    </ui:remove>
-
-    <h:form>
-        <h2>Details for lot: #{lotDetailsBean.lot.lotId}</h2>
-        <p><h:outputText value="Cluster #{lotDetailsBean.lot.cluster}"/></p>
-        <p><h:outputText value="Techno: #{lotDetailsBean.lot.techno}"/></p>
-        <p><h:outputText value="Maskset: #{lotDetailsBean.lot.maskset}"/></p>
-        <p><h:outputText value="Layer: #{lotDetailsBean.lot.layer}"/></p>
-        <p><h:outputText value="Start: #{lotDetailsBean.lot.start}"/></p>
-    </h:form>
     
 </h:body>
 </html>

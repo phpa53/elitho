@@ -115,24 +115,38 @@ public class LotBean implements Serializable {
 
 	public void initTools() {
 		this.tools = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getCluster);
+		initTechnos(this.tools);
 	}
-
 	public void initTechnos() {
 		this.technos = this.lotEJB.getMatchedList(this.filter.getTools(), LotDTO::getCluster, LotDTO::getTechno);
+		initMasksets(this.technos);
 	}
-
+	public void initTechnos(final List<String> preFilteredTools) {
+		this.technos = this.lotEJB.getMatchedList(preFilteredTools, LotDTO::getCluster, LotDTO::getTechno);
+		initMasksets(this.technos);
+	}
 	public void initMasksets() {
 		this.masksets = this.lotEJB.getMatchedList(this.filter.getTechnos(), LotDTO::getTechno, LotDTO::getMaskset);
+		initLayers(this.masksets);
 	}
-
+	public void initMasksets(final List<String> preFilteredTechnos) {
+		this.masksets = this.lotEJB.getMatchedList(preFilteredTechnos, LotDTO::getTechno, LotDTO::getMaskset);
+		initLayers(this.masksets);
+	}
 	public void initLayers() {
 		this.layers = this.lotEJB.getMatchedList(this.filter.getMasksets(), LotDTO::getMaskset, LotDTO::getLayer);
+		initLotIds(this.layers);
 	}
-
+	public void initLayers(final List<String> preFilteredMasksets) {
+		this.layers = this.lotEJB.getMatchedList(preFilteredMasksets, LotDTO::getMaskset, LotDTO::getLayer);
+		initLotIds(this.layers);
+	}
 	public void initLotIds() {
 		this.lotIds = this.lotEJB.getMatchedList(this.filter.getLayers(), LotDTO::getLayer, LotDTO::getLotId);
 	}
-
+	public void initLotIds(final List<String> preFilteredLayers) {
+		this.lotIds = this.lotEJB.getMatchedList(preFilteredLayers, LotDTO::getLayer, LotDTO::getLotId);
+	}
 	public void initLotStarts() {
 		this.lotStarts = Optional.ofNullable(this.lotIds).orElseGet(ArrayList::new).size() == 1
 			? this.lotEJB.getLotStarts(this.lotIds.get(0)) : List.of();

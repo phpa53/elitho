@@ -113,11 +113,11 @@
 			                <f:selectItems value="#{lotBean.tools}"/>
 			                <p:ajax listener="#{lotBean.initTechnos}"
 			                	process="@this"
-			                	update="lotTechnoSCM"/>
+			                	update="lotTechnoSCM lotMasksetSCM lotLayerSCM lotLotIdSCM"/>
 			                <p:ajax event="toggleSelect"
 			                 	listener="#{lotBean.initTechnos}"
 			                 	process="@this"
-			                 	update="lotTechnoSCM"/>
+			                 	update="lotTechnoSCM lotMasksetSCM lotLayerSCM lotLotIdSCM"/>
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotTechnoSCM"
 		                	label="Techno"
@@ -127,11 +127,11 @@
 			                <f:selectItems value="#{lotBean.technos}"/>
 			                <p:ajax listener="#{lotBean.initMasksets}"
 			                	process="@this"
-			                	update="lotMasksetSCM"/>
+			                	update="lotMasksetSCM lotLayerSCM lotLotIdSCM"/>
 			                <p:ajax event="toggleSelect"
 			                 	listener="#{lotBean.initMasksets}"
 			                 	process="@this"
-			                 	update="lotMasksetSCM"/>
+			                 	update="lotMasksetSCM lotLayerSCM lotLotIdSCM"/>
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotMasksetSCM"
 		                	label="Maskset"
@@ -141,11 +141,11 @@
 			                <f:selectItems value="#{lotBean.masksets}"/>
 			                <p:ajax listener="#{lotBean.initLayers}"
 			                	process="@this"
-			                	update="lotLayerSCM"/>
+			                	update="lotLayerSCM lotLotIdSCM"/>
 			                <p:ajax event="toggleSelect"
 			                 	listener="#{lotBean.initLayers}"
 			                 	process="@this"
-			                 	update="lotLayerSCM"/>
+			                 	update="lotLayerSCM lotLotIdSCM"/>
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotLayerSCM"
 		                	label="Layer"

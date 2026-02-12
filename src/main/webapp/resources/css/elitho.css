@@ -102,6 +102,7 @@ body .ui-datatable .ui-paginator {
 	padding: 0 !important;
 }
 
+/*
 .image-grid .image-cell {
     border: 1px solid #ccc;
     padding: 6px;
@@ -112,6 +113,35 @@ body .ui-datatable .ui-paginator {
     max-width: 150px;
     max-height: 150px;
 }
+*/
+
+.ui-panelgrid.lotdetails-grid .ui-grid-responsive .ui-panelgrid-cell {
+    text-align: center;
+}
+
+#lotdetailsmodeCB .ui-button {
+    width: 80px;
+    text-align: center;
+}
+#lotdetailsscopeCB .ui-button {
+    width: 120px;
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
