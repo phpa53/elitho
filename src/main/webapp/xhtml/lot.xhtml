@@ -12,6 +12,20 @@
 	xmlns:ui="jakarta.faces.facelets">
 	
 	<h:form id="lotForm" prependId="false">
+	
+		<p:ajaxStatus styleClass="block mb-4">
+	        <f:facet name="start">
+	            <i class="pi pi-spin pi-spinner loading-icon"></i>
+	        </f:facet>
+	    </p:ajaxStatus>
+		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false"
+			showHeader="false">
+			<div class="text-center">
+            	<i class="pi pi-spin pi-spinner loading-icon"></i>
+			</div>
+		</p:dialog>
 		
 		<p:growl id="lotGrowl" showDetail="true" life="3000"/>
 		
@@ -27,6 +41,7 @@
 			virtualScroll="false"
 			tableStyle="width:overflow"
 			styleClass="custom-footer-paginator"
+        	style="margin-top:-20px;"
 			resizableColumns="true"
 			resizeMode="expand"
 			size="small"
