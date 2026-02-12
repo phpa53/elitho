@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -35,11 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 public class LotDetailsBean implements Serializable {
 
     private static final long serialVersionUID = -2413130791061025040L;
+    public static final String MODE_LOT = "lot";
+    public static final String MODE_LAYER = "layer";
+    public static final String SCOPE_DETECTION = "detection";
+    public static final String SCOPE_SYSTEMATIC = "systematic";
     private static final int WAFER_NB = 25;
-    private static final String MODE_LOT = "lot";
-    private static final String MODE_LAYER = "layer";
-    private static final String SCOPE_DETECTION = "detection";
-    private static final String SCOPE_SYSTEMATIC = "systematic";
 	private String lotId;
     private String startDate;
     private LotDTO lot;
@@ -89,7 +90,7 @@ public class LotDetailsBean implements Serializable {
 
         for (var wafer = 1; wafer <= WAFER_NB; wafer++) {
             try {
-                final var bytes = LotDetailsEJB.loadImage(this.lot, wafer);
+                final var bytes = LotDetailsEJB.loadImage(this.lot, this.mode, this.scope, wafer);
                 if (bytes != null && bytes.length > 0) {
                     final StreamedContent img = DefaultStreamedContent.builder()
                             .contentType("image/png")
@@ -126,6 +127,11 @@ public class LotDetailsBean implements Serializable {
 
     public void back() {
 
+    }
+
+    public String getSelectedStartDate() {
+    	return Optional.ofNullable(this.lot).orElse(LotDTO.NULL).getLotId().isEmpty()
+    		? "" : this.lot.getFormattedStart();
     }
 
 }

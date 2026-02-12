@@ -93,6 +93,8 @@
                 	styleClass="ml-1"
                 	actionListener="#{lotDetailsBean.back()}"
                 	update=""/>
+                <p:outputLabel value="Start: #{lotDetailsBean.getSelectedStartDate()}"
+                	style="color:blue;font-size:16;font-weight:bold" styleClass="ml-2"/>
         	</f:facet>
         	<p:row rendered="#{not empty LotDetailsBean.row0}">
         		<p:columns value="#{LotDetailsBean.row0}" var="col">
