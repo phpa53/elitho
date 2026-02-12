@@ -153,7 +153,8 @@
 						styleClass="ml-2 font-bold"
 						rendered="#{lotDetailsBean.mode.equals('cluster')}"/>
 					<p:outputLabel value="#{lotDetailsBean.lot.lotId}"
-						styleClass="ml-2"
+						styleClass="ml-2 font-bold"
+						style="color:blueviolet"
 						rendered="#{lotDetailsBean.mode.equals('cluster')}"/>
 					<p:outputLabel value="#{lotDetailsBean.lot.getFormattedStart()}"
 						styleClass="ml-2 font-bold"
@@ -163,7 +164,12 @@
 					<p:outputLabel value="#{lotDetailsBean.lot.maskset}"
 						styleClass="ml-2"/>
 					<p:outputLabel value="#{lotDetailsBean.lot.layer}"
-						styleClass="ml-2"/>
+						styleClass="ml-2 font-bold"
+						style="color:blueviolet"
+						rendered="#{lotDetailsBean.mode.equals('lot')}"/>
+					<p:outputLabel value="#{lotDetailsBean.lot.layer}"
+						styleClass="ml-2"
+						rendered="#{lotDetailsBean.mode.equals('cluster')}"/>
 				</span>
 			</div>
         </p:panel>
