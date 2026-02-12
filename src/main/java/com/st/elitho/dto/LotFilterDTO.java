@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class LotFilterDTO {
 
-	private List<String> tools;
+	private List<String> clusters;
 	private List<String> technos;
 	private List<String> masksets;
 	private List<String> layers;
@@ -24,7 +24,7 @@ public class LotFilterDTO {
 
 	public void init() {
 
-		this.tools = new ArrayList<>();
+		this.clusters = new ArrayList<>();
 		this.technos = new ArrayList<>();
 		this.masksets = new ArrayList<>();
 		this.layers = new ArrayList<>();

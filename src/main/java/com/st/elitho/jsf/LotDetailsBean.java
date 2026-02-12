@@ -49,9 +49,10 @@ public class LotDetailsBean implements Serializable {
     private List<Integer> row2;
     private List<Integer> row3;
     private List<Integer> row4;
+    private boolean firstDisabled;
     private boolean previousDisabled;
     private boolean nextDisabled;
-    private boolean backDisabled;
+    private boolean lastDisabled;
     private final List<LotDTO> similarLots = new ArrayList<>();
     private AtomicInteger lotIndex = new AtomicInteger();
     @EJB
@@ -75,7 +76,7 @@ public class LotDetailsBean implements Serializable {
         }
 
         this.mode = LotDetailsEJB.MODE_LOT;
-        this.scope = LotDetailsEJB.SCOPE_DETECTION;
+        this.scope = LotDetailsEJB.SCOPE_WAFER;
         initLots();
 
     }
@@ -85,7 +86,8 @@ public class LotDetailsBean implements Serializable {
     	this.similarLots.clear();
     	this.similarLots.addAll(this.selectedLot.getLotId().isEmpty()
     		? new ArrayList<>() : this.lotDetailsEJB.getSimilarLots(this.selectedLot, this.mode));
-    	back();
+        this.lotIndex.set(this.similarLots.indexOf(this.selectedLot));
+        updateNavigationState(true, this.lotIndex.intValue());
 
     }
 
@@ -93,46 +95,47 @@ public class LotDetailsBean implements Serializable {
     	return this.previousDisabled;
     }
 
+    public boolean isFirstDisabled() {
+    	return this.firstDisabled;
+    }
+
     public boolean isNextDisabled() {
     	return this.nextDisabled;
     }
 
-    public boolean isBackDisabled() {
-    	return this.backDisabled;
+    public boolean isLastDisabled() {
+    	return this.lastDisabled;
+    }
+
+    private void updateNavigationState(final boolean condition, final int index) {
+
+    	if (condition) {
+
+	    	this.lotIndex.set(index);
+	    	this.lot = this.similarLots.get(this.lotIndex.intValue());
+	    	this.firstDisabled = this.lotIndex.intValue() <= 0;
+	    	this.previousDisabled = this.lotIndex.intValue() <= 0;
+	        this.nextDisabled = this.lotIndex.intValue() >= this.similarLots.size() - 1;
+	        this.lastDisabled = this.lotIndex.intValue() >= this.similarLots.size() - 1;
+
+    	}
+
+    }
+
+    public void first() {
+    	updateNavigationState(this.lotIndex.intValue() > 0, 0);
     }
 
     public void previous() {
-
-    	if (this.lotIndex.intValue() > 0) {
-
-    		this.lot = this.similarLots.get(this.lotIndex.decrementAndGet());
-            this.previousDisabled = this.lotIndex.intValue() <= 0;
-            this.nextDisabled = this.lotIndex.intValue() >= this.similarLots.size() - 1;
-
-    	}
-
+    	updateNavigationState(this.lotIndex.intValue() > 0, this.lotIndex.decrementAndGet());
     }
 
     public void next() {
-
-    	if (this.lotIndex.intValue() < this.similarLots.size() - 1) {
-
-    		this.lot = this.similarLots.get(this.lotIndex.incrementAndGet());
-            this.previousDisabled = this.lotIndex.intValue() <= 0;
-            this.nextDisabled = this.lotIndex.intValue() >= this.similarLots.size() - 1;
-
-    	}
-
+    	updateNavigationState(this.lotIndex.intValue() < this.similarLots.size() - 1, this.lotIndex.incrementAndGet());
     }
 
-    public void back() {
-
-    	this.lot = this.selectedLot;
-        this.lotIndex.set(this.similarLots.indexOf(this.lot));
-        this.previousDisabled = this.lotIndex.intValue() <= 0;
-        this.nextDisabled = this.lotIndex.intValue() >= this.similarLots.size() - 1;
-        this.backDisabled = this.lotIndex.intValue() < 0;
-
+    public void last() {
+    	updateNavigationState(this.lotIndex.intValue() < this.similarLots.size() - 1, this.similarLots.size() - 1);
     }
 
     public String getIndexLabel() {

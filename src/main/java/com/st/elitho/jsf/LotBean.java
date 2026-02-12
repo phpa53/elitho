@@ -41,7 +41,7 @@ public class LotBean implements Serializable {
 
 	private static final long serialVersionUID = -5895065530297045121L;
 	private LotDateDTO lotDates;
-	private List<String> tools;
+	private List<String> clusters;
 	private List<String> technos;
 	private List<String> masksets;
 	private List<String> layers;
@@ -104,7 +104,7 @@ public class LotBean implements Serializable {
 		this.filter = new LotFilterDTO();
 		this.lotDates = new LotDateDTO();
 		this.lotDates.init();
-		initTools();
+		initClusters();
 		this.technos = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getTechno);
 		this.masksets = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getMaskset);
 		this.layers = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getLayer);
@@ -113,12 +113,12 @@ public class LotBean implements Serializable {
 
 	}
 
-	public void initTools() {
-		this.tools = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getCluster);
-		initTechnos(this.tools);
+	public void initClusters() {
+		this.clusters = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getCluster);
+		initTechnos(this.clusters);
 	}
 	public void initTechnos() {
-		this.technos = this.lotEJB.getMatchedList(this.filter.getTools(), LotDTO::getCluster, LotDTO::getTechno);
+		this.technos = this.lotEJB.getMatchedList(this.filter.getClusters(), LotDTO::getCluster, LotDTO::getTechno);
 		initMasksets(this.technos);
 	}
 	public void initTechnos(final List<String> preFilteredTools) {

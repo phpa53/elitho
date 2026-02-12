@@ -26,8 +26,8 @@ public class LotDetailsEJB implements Serializable {
 	private static final long serialVersionUID = 5506979560144904120L;
     public static final String MODE_LOT = "lot";
     public static final String MODE_CLUSTER = "cluster";
-    public static final String SCOPE_DETECTION = "detection";
-    public static final String SCOPE_SYSTEMATIC = "systematic";
+    public static final String SCOPE_WAFER = "wafer";
+    public static final String SCOPE_CHUCK = "chuck";
 	@EJB
 	private LotRefreshEJB lotRefreshEJB;
 
@@ -59,7 +59,7 @@ public class LotDetailsEJB implements Serializable {
 			.append(File.separator).append(MODE_LOT.equals(mode) ? "DetectionWafer" : "DetectionSystematic");
 
         final var imagePath = Path.of(fullDir.toString()).resolve(
-        	String.format(SCOPE_DETECTION.equals(scope) ? "W%02d.png" : "C%02d.png", wafer));
+        	String.format(SCOPE_WAFER.equals(scope) ? "W%02d.png" : "C%02d.png", wafer));
 
         return imagePath.toFile().exists() ? Files.readAllBytes(imagePath) : new byte[0];
 

@@ -70,42 +70,52 @@
         		<p:selectOneButton id="lotdetailsmodeCB" value="#{lotDetailsBean.mode}" styleClass="ml-1">
 		            <f:selectItem itemLabel="Lot" itemValue="lot"/>
 		            <f:selectItem itemLabel="Cluster" itemValue="cluster"/>
-		            <p:ajax event="change" listener="#{lotDetailsBean.modeChanged}" update="lotDetailsPG"/>
+		            <p:ajax event="change"
+		            	listener="#{lotDetailsBean.modeChanged}"
+		            	update="lotDetailsPG lotDetailsPanel"/>
 		        </p:selectOneButton>
         		<p:tooltip for="@next" value="Scope"/>
         		<p:selectOneButton id="lotdetailsscopeCB" value="#{lotDetailsBean.scope}" styleClass="ml-1">
-		            <f:selectItem itemLabel="Detection" itemValue="detection"/>
-		            <f:selectItem itemLabel="Systematic" itemValue="systematic"/>
-		            <p:ajax event="change" listener="#{lotDetailsBean.scopeChanged}" update="lotDetailsPG"/>
+		            <f:selectItem itemLabel="Wafer" itemValue="wafer"/>
+		            <f:selectItem itemLabel="Chuck" itemValue="chuck"/>
+		            <p:ajax event="change"
+		            	listener="#{lotDetailsBean.scopeChanged}"
+		            		update="lotDetailsPG lotDetailsPanel"/>
 		        </p:selectOneButton>
+		        <p:commandButton id="lotdetailsfirstCB"
+		        	icon="pi pi-angle-double-left"
+                	title="First"
+                	styleClass="ml-1"
+                	disabled="#{lotDetailsBeanfirstDisabled}"
+                	actionListener="#{lotDetailsBean.first()}"
+                	update="@this lotDetailsPanel lotdetailsindexOL
+                		lotdetailspreviousCB lotdetailsnextCB lotdetailslastCB"/>
 		        <p:commandButton id="lotdetailspreviousCB"
 		        	icon="pi pi-angle-left"
                 	title="Previous"
                 	styleClass="ml-1"
                 	disabled="#{lotDetailsBean.previousDisabled}"
                 	actionListener="#{lotDetailsBean.previous()}"
-                	update="@this lotDetailsPanel lotdetailsindexOL lotdetailsstartOL
-                		lotdetailsnextCB lotdetailsbackCB"/>
+                	update="@this lotDetailsPanel lotdetailsindexOL
+                		lotdetailsfirstCB lotdetailsnextCB lotdetailslastCB"/>
                 <p:outputLabel id="lotdetailsindexOL" value="#{lotDetailsBean.getIndexLabel()}"
-                	style="color:blue;font-size:12;styleClass="ml-1"/>
+                	style="color:blue;font-size:12;" styleClass="ml-1"/>
 		        <p:commandButton id="lotdetailsnextCB"
 		        	icon="pi pi-angle-right"
                 	title="Next"
                 	styleClass="ml-1"
                 	disabled="#{lotDetailsBean.nextDisabled}"
                 	actionListener="#{lotDetailsBean.next()}"
-                	update="@this lotDetailsPanel lotdetailsstartOL lotdetailsindexOL
-                		lotdetailspreviousCB lotdetailsbackCB"/>
-		        <p:commandButton id="lotdetailsbackCB"
-		        	icon="pi pi-arrow-left"
-                	title="Back"
+                	update="@this lotDetailsPanel lotdetailsindexOL
+                		lotdetailsfirstCB lotdetailspreviousCB lotdetailslastCB"/>
+		        <p:commandButton id="lotdetailslastCB"
+		        	icon="pi pi-angle-double-right"
+                	title="Next"
                 	styleClass="ml-1"
-                	disabled="#{lotDetailsBean.backDisabled}"
-                	actionListener="#{lotDetailsBean.back()}"
-                	update="@this lotDetailsPanel lotdetailsstartOL lotdetailsindexOL
-                		lotdetailspreviousCB lotdetailsnextCB"/>
-                <p:outputLabel id="lotdetailsstartOL" value="Start: #{lotDetailsBean.getSelectedStartDate()}"
-                	style="color:blue;font-size:16;font-weight:bold" styleClass="ml-2"/>
+                	disabled="#{lotDetailsBean.lastDisabled}"
+                	actionListener="#{lotDetailsBean.last()}"
+                	update="@this lotDetailsPanel lotdetailsindexOL
+                		lotdetailsfirstCB lotdetailspreviousCB lotdetailsnextCB"/>
         	</f:facet>
         	<p:row rendered="#{not empty LotDetailsBean.row0}">
         		<p:columns value="#{LotDetailsBean.row0}" var="col">
@@ -130,12 +140,32 @@
         </p:panelGrid>
         
         <p:panel id="lotDetailsPanel">
-        <h2>Details for lot: #{lotDetailsBean.lot.lotId}</h2>
-        <p><h:outputText value="Cluster #{lotDetailsBean.lot.cluster}"/></p>
-        <p><h:outputText value="Techno: #{lotDetailsBean.lot.techno}"/></p>
-        <p><h:outputText value="Maskset: #{lotDetailsBean.lot.maskset}"/></p>
-        <p><h:outputText value="Layer: #{lotDetailsBean.lot.layer}"/></p>
-        <p><h:outputText value="Start: #{lotDetailsBean.lot.start}"/></p>
+        	<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+		    	margin-top:5px;">
+				<span style="margin-top:-5px;">
+					<p:outputLabel value="#{lotDetailsBean.lot.lotId}"
+						styleClass="ml-2 font-bold"
+						rendered="#{lotDetailsBean.mode.equals('lot')}"/>
+					<p:outputLabel value="#{lotDetailsBean.lot.cluster}"
+						styleClass="ml-2"
+						rendered="#{lotDetailsBean.mode.equals('lot')}"/>
+					<p:outputLabel value="#{lotDetailsBean.lot.cluster}"
+						styleClass="ml-2 font-bold"
+						rendered="#{lotDetailsBean.mode.equals('cluster')}"/>
+					<p:outputLabel value="#{lotDetailsBean.lot.lotId}"
+						styleClass="ml-2"
+						rendered="#{lotDetailsBean.mode.equals('cluster')}"/>
+					<p:outputLabel value="#{lotDetailsBean.lot.getFormattedStart()}"
+						styleClass="ml-2 font-bold"
+						style="color:blueviolet"/>
+					<p:outputLabel value="#{lotDetailsBean.lot.techno}"
+						styleClass="ml-2"/>
+					<p:outputLabel value="#{lotDetailsBean.lot.maskset}"
+						styleClass="ml-2"/>
+					<p:outputLabel value="#{lotDetailsBean.lot.layer}"
+						styleClass="ml-2"/>
+				</span>
+			</div>
         </p:panel>
         
         

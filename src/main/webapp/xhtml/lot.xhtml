@@ -73,7 +73,7 @@
 		                	title="Clear Filter"
 		                	styleClass="ml-1"
 		                	actionListener="#{lotBean.initFilter()}"
-		                	update="lotFromDateDP lotToDateDP lotToolSCM lotTechnoSCM lotMasksetSCM lotLayerSCM
+		                	update="lotFromDateDP lotToDateDP lotClusterSCM lotTechnoSCM lotMasksetSCM lotLayerSCM
 		                		lotLotIdSCM lotStartSCM"/>
 				    	<p:outputLabel for="@next" value="From:" styleClass="ml-2"/>
 		                <p:datePicker id="lotFromDateDP"
@@ -105,12 +105,12 @@
 		                		update="lotFromDateDP"
 		                		oncomplete="PF('lotToDateDP').hide();"/>
 		                </p:datePicker>
-		                <p:selectCheckboxMenu id="lotToolSCM"
-		                	label="Tool"
+		                <p:selectCheckboxMenu id="lotClusterSCM"
+		                	label="Cluster"
 			             	style="margin-left:5px;"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.tools}">
-			                <f:selectItems value="#{lotBean.tools}"/>
+			             	value="#{lotBean.filter.clusters}">
+			                <f:selectItems value="#{lotBean.clusters}"/>
 			                <p:ajax listener="#{lotBean.initTechnos}"
 			                	process="@this"
 			                	update="lotTechnoSCM lotMasksetSCM lotLayerSCM lotLotIdSCM"/>

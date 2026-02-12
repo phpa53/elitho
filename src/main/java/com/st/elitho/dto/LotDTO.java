@@ -37,7 +37,7 @@ public class LotDTO {
 			&& matches(filter.getTechnos(), this.techno)
 			&& matches(filter.getMasksets(), this.maskset)
 			&& matches(filter.getLayers(), this.layer)
-			&& matches(filter.getTools(), this.cluster)
+			&& matches(filter.getClusters(), this.cluster)
 			&& (filter.getLotStart() == null || filter.getLotStart().equals(this.start.toLocalDate()));
 	}
 
