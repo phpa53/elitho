@@ -128,7 +128,15 @@ body .ui-datatable .ui-paginator {
     text-align: center;
 }
 
+.imageGrid {
+    margin-top: 10px;
+    /* any custom styling you want */
+}
 
+.imageGrid .ui-datagrid-column {
+    text-align: center;
+    padding: 4px;
+}
 
 
 

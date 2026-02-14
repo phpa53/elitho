@@ -171,6 +171,16 @@
 						styleClass="ml-2"
 						rendered="#{lotDetailsBean.mode.equals('cluster')}"/>
 				</span>
+                <span>
+                	<p:panel>
+                		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W01')}"
+                			style="width:350px;height:300px;"
+                			rendered="#{lotDetailsBean.isWaferValid('W01')}"/>
+                		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W02')}"
+                			style="width:350px;height:300px;"
+                			rendered="#{lotDetailsBean.isWaferValid('W02')}"/>
+                	</p:panel>
+                </span>
 			</div>
         </p:panel>
         

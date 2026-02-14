@@ -1,10 +1,12 @@
 package com.st.elitho.jsf;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,12 +17,11 @@ import com.st.elitho.dto.LotDTO;
 import com.st.elitho.ejb.LotDetailsEJB;
 import com.st.elitho.ejb.LotException;
 import com.st.elitho.uti.LoggerUtils;
-import com.st.elitho.uti.LoggerWrapper;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Named
-@ViewScoped
+@SessionScoped
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -36,12 +37,10 @@ import lombok.extern.slf4j.Slf4j;
 public class LotDetailsBean implements Serializable {
 
     private static final long serialVersionUID = -2413130791061025040L;
-    private static final int WAFER_NB = 25;
 	private String lotId;
     private String startDate;
     private LotDTO selectedLot;
     private LotDTO lot;
-    private List<StreamedContent> waferImages;
     private String mode;
     private String scope;
     private List<Integer> row0;
@@ -54,6 +53,7 @@ public class LotDetailsBean implements Serializable {
     private boolean nextDisabled;
     private boolean lastDisabled;
     private final List<LotDTO> similarLots = new ArrayList<>();
+    private final Map<String, Path> waferImagePaths = new HashMap<>();
     private AtomicInteger lotIndex = new AtomicInteger();
     @EJB
     private transient LotDetailsEJB lotDetailsEJB;
@@ -78,6 +78,7 @@ public class LotDetailsBean implements Serializable {
         this.mode = LotDetailsEJB.MODE_LOT;
         this.scope = LotDetailsEJB.SCOPE_WAFER;
         initLots();
+        updateImages();
 
     }
 
@@ -147,7 +148,7 @@ public class LotDetailsBean implements Serializable {
     }
 
     public void scopeChanged() {
-
+    	updateImages();
     }
 
     public String getSelectedStartDate() {
@@ -157,32 +158,50 @@ public class LotDetailsBean implements Serializable {
 
     public void updateImages() {
 
-    	this.waferImages = new ArrayList<>();
-
-        if (this.lot == null) {
-        	LoggerUtils.warn(log, "No selected lot, no images to load");
+        if (Optional.ofNullable(this.lot).orElse(LotDTO.NULL).getLotId().isEmpty()) {
+        	LoggerUtils.warn(log, "No valid lot");
             return;
         }
-
-        for (var wafer = 1; wafer <= WAFER_NB; wafer++) {
-            try {
-                final var bytes = LotDetailsEJB.loadImage(this.lot, this.mode, this.scope, wafer);
-                if (bytes != null && bytes.length > 0) {
-                    final StreamedContent img = DefaultStreamedContent.builder()
-                            .contentType("image/png")
-                            .stream(() -> new ByteArrayInputStream(bytes))
-                            .build();
-                    this.waferImages.add(img);
-                }
-            } catch (LotException | IOException e) {
-            	LoggerWrapper.warn(log, String.format("Cannot load image for wafer %s of lot %s: %s",
-            		wafer, this.lot.getLotId(), e.getMessage()));
-            }
+        if (!List.of(LotDetailsEJB.MODE_LOT, LotDetailsEJB.MODE_CLUSTER).contains(
+        	Optional.ofNullable(this.mode).orElse(""))) {
+        	LoggerUtils.warn(log, String.format("Mode value %s not valid", this.mode));
+            return;
         }
+        if (!List.of(LotDetailsEJB.SCOPE_WAFER, LotDetailsEJB.SCOPE_CHUCK).contains(
+        	Optional.ofNullable(this.scope).orElse(""))) {
+        	LoggerUtils.warn(log, String.format("Scope value %s not valid", this.scope));
+        }
+        try {
+			this.lotDetailsEJB.loadWaferImages(this.lot, this.mode, this.scope);
+		} catch (final LotException e) {
+			LoggerUtils.warn(log, e.getMessage());
+		}
+
     }
 
-    public List<StreamedContent> getWaferImages() {
-        return this.waferImages;
+    public List<String> getWaferImageNames() {
+        return new ArrayList<>(this.lotDetailsEJB.getWaferImageBytes().keySet());
+    }
+
+    public boolean isWaferValid(final String name) {
+    	return this.lotDetailsEJB.isWaferValid(name);
+    }
+
+
+    public StreamedContent getWaferImage(final String name) {
+
+        final var bytes = this.lotDetailsEJB.getWaferImageBytes().getOrDefault(name, new byte[0]);
+
+        if (Optional.ofNullable(bytes).orElse(new byte[0]).length == 0) {
+            return null;
+        }
+
+        return DefaultStreamedContent.builder()
+            .name(name)
+            .contentType("image/png")
+            .contentLength((long) bytes.length)
+            .stream(() -> new ByteArrayInputStream(bytes))
+            .build();
     }
 
 }
