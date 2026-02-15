@@ -171,23 +171,163 @@
 						styleClass="ml-2"
 						rendered="#{lotDetailsBean.mode.equals('cluster')}"/>
 				</span>
-                <span>
-                	<p:panel>
-                		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W01')}"
-                			style="width:350px;height:300px;"
-                			rendered="#{lotDetailsBean.isWaferValid('W01')}"/>
-                		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W02')}"
-                			style="width:350px;height:300px;"
-                			rendered="#{lotDetailsBean.isWaferValid('W02')}"/>
-                	</p:panel>
-                </span>
+			</div>
+			<div>
+               	<p:panel id="lotDetailsWaferPanel">
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W01')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W01')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W02')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W02')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W03')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W03')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W04')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W04')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W05')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W05')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W06')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W06')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W07')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W07')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W08')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W08')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W09')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W09')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W10')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W10')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W11')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W11')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W12')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W12')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W13')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W13')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W14')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W14')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W15')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W15')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W16')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W16')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W17')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W17')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W18')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W18')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W19')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W29')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W20')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W20')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W21')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W21')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W22')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W22')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W23')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W23')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W24')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('W24')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W25')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C25')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C01')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C01')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C02')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C02')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C03')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C03')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C04')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C04')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C05')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C05')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C06')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C06')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C07')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C07')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C08')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C08')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C09')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C09')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C10')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C10')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C11')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C11')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C12')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C12')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C13')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C13')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C14')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C14')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C15')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C15')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C16')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C16')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C17')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C17')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C18')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C18')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C19')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C29')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C20')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C20')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C21')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C21')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C22')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C22')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C23')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C23')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C24')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C24')}"/>
+               		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C25')}"
+               			style="width:350px;height:300px;"
+               			rendered="#{lotDetailsBean.isWaferValid('C25')}"/>
+               	</p:panel>
 			</div>
         </p:panel>
-        
-        
-        
-        
-        
+		<ui:remove>        
 	    <p:panel header="Detection wafers" style="margin:1rem;" rendered="false">
 	        <p:dataGrid value="#{lotDetailsBean.waferImages}"
 	        	var="img"
@@ -200,6 +340,7 @@
 	            </p:panel>
 	        </p:dataGrid>
 	    </p:panel>
+	    </ui:remove>
 	    
 	</h:form>
     

@@ -40,7 +40,7 @@ public class LotDetailsEJB implements Serializable {
     public static final String SCOPE_CHUCK = "chuck";
     public static final String IMAGEFILE_EXT = ".png";
     private static final int WAFER_NB = 25;
-    private final Map<String, byte[]> waferImageBytes = new HashMap<>();
+    private final Map<String, Map<String, byte[]>> waferImageBytes = new HashMap<>();
 	@EJB
 	private LotRefreshEJB lotRefreshEJB;
 
@@ -118,28 +118,53 @@ public class LotDetailsEJB implements Serializable {
 
 	}
 
-	public void loadWaferImages(final LotDTO lot, final String mode, final String scope)
-		throws LotException {
+	public void loadWaferImages(final LotDTO lot, final List<LotDTO> lots, final String mode, final String scope) {
 
 		this.waferImageBytes.clear();
-		getImagePaths(lot, mode, scope).forEach(path -> {
-			final var key = path.getFileName().toString().replace(IMAGEFILE_EXT, ""); // "W01"
-		        try {
-		            this.waferImageBytes.put(key, Files.readAllBytes(path));
-		        } catch (final IOException e) {
-		            LoggerWrapper.warn(log,
-		                "Could not read image file " + path + " (" + e.getMessage() + ")");
-		        }
+
+		try {
+			getImagePaths(lot, mode, scope).forEach(path -> {
+				final var key = path.getFileName().toString().replace(IMAGEFILE_EXT, ""); // "W01"
+				    try {
+				        this.waferImageBytes.computeIfAbsent(lot.getLotId(), _ -> new HashMap<String, byte[]>())
+				        	.put(key, Files.readAllBytes(path));
+				    } catch (final IOException e) {
+				        LoggerWrapper.warn(log,
+				            "Could not read image file " + path + " (" + e.getMessage() + ")");
+				    }
+				});
+		} catch (final LotException e) {
+			LoggerWrapper.warn(log, e.getMessage());
+		}
+
+		/*
+		lots.forEach(lot -> {
+				try {
+					getImagePaths(lot, mode, scope).forEach(path -> {
+					final var key = path.getFileName().toString().replace(IMAGEFILE_EXT, ""); // "W01"
+					    try {
+					        this.waferImageBytes.computeIfAbsent(lot.getLotId(), _ -> new HashMap<String, byte[]>())
+					        	.put(key, Files.readAllBytes(path));
+					    } catch (final IOException e) {
+					        LoggerWrapper.warn(log,
+					            "Could not read image file " + path + " (" + e.getMessage() + ")");
+					    }
+					});
+				} catch (final LotException e) {
+					LoggerWrapper.warn(log, e.getMessage());
+				}
 			});
+			*/
 
 	}
 
-	public Map<String, byte[]> getWaferImageBytes() {
-		return this.waferImageBytes;
+	public Map<String, byte[]> getWaferImageBytes(final String lotId) {
+		return this.waferImageBytes.getOrDefault(lotId, new HashMap<>());
 	}
 
-	public boolean isWaferValid(final String name) {
-    	return Optional.ofNullable(this.waferImageBytes).orElse(new HashMap<>()).containsKey(name);
+	public boolean isWaferValid(final String lotId, final String name) {
+    	return Optional.ofNullable(this.waferImageBytes).orElse(new HashMap<>())
+    		.getOrDefault(lotId, new HashMap<>()).containsKey(name);
     }
 
 }

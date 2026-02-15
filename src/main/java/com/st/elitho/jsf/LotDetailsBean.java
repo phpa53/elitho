@@ -15,7 +15,6 @@ import org.primefaces.model.StreamedContent;
 
 import com.st.elitho.dto.LotDTO;
 import com.st.elitho.ejb.LotDetailsEJB;
-import com.st.elitho.ejb.LotException;
 import com.st.elitho.uti.LoggerUtils;
 
 import jakarta.annotation.PostConstruct;
@@ -171,26 +170,24 @@ public class LotDetailsBean implements Serializable {
         	Optional.ofNullable(this.scope).orElse(""))) {
         	LoggerUtils.warn(log, String.format("Scope value %s not valid", this.scope));
         }
-        try {
-			this.lotDetailsEJB.loadWaferImages(this.lot, this.mode, this.scope);
-		} catch (final LotException e) {
-			LoggerUtils.warn(log, e.getMessage());
-		}
+		this.lotDetailsEJB.loadWaferImages(this.lot, this.similarLots, this.mode, this.scope);
 
     }
 
     public List<String> getWaferImageNames() {
-        return new ArrayList<>(this.lotDetailsEJB.getWaferImageBytes().keySet());
+        return new ArrayList<>(
+        	this.lotDetailsEJB.getWaferImageBytes(Optional.ofNullable(this.lot).orElse(LotDTO.NULL).getLotId()).keySet());
     }
 
     public boolean isWaferValid(final String name) {
-    	return this.lotDetailsEJB.isWaferValid(name);
+    	return this.lotDetailsEJB.isWaferValid(Optional.ofNullable(this.lot).orElse(LotDTO.NULL).getLotId(), name);
     }
 
 
     public StreamedContent getWaferImage(final String name) {
 
-        final var bytes = this.lotDetailsEJB.getWaferImageBytes().getOrDefault(name, new byte[0]);
+        final var bytes = this.lotDetailsEJB.getWaferImageBytes(Optional.ofNullable(this.lot).orElse(LotDTO.NULL)
+        	.getLotId()).getOrDefault(name, new byte[0]);
 
         if (Optional.ofNullable(bytes).orElse(new byte[0]).length == 0) {
             return null;
@@ -202,6 +199,7 @@ public class LotDetailsBean implements Serializable {
             .contentLength((long) bytes.length)
             .stream(() -> new ByteArrayInputStream(bytes))
             .build();
+
     }
 
 }
