@@ -1,9 +1,11 @@
 $(document).ready(function() {
 	resizeTables();
+	resizeLotWafers();
 });
 
 $(window).resize(function() {
 	resizeTables();
+	resizeLotWafers();
 });
 
 function resizeTables() {
@@ -29,7 +31,15 @@ function setWipScrollPos() {
 	$("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollLeft(wipScrollLeft);
 }
 
-
+function resizeLotWafers() {
+	var height = $(window).height() - 260;
+    var panel = $("#lotDetailsForm\\:lotDetailsWaferSP");
+    if (panel.length) {
+        panel.height(height);
+    } else {
+        console.log("resizeLotWafers: lotDetailsForm:lotDetailsWaferSP not found");
+    }
+}
 
 
 

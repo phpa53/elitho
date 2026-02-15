@@ -63,6 +63,20 @@
     </h:form>
 
 	<h:form id="lotDetailsForm">
+	
+		<p:ajaxStatus styleClass="block mb-4">
+	        <f:facet name="start">
+	            <i class="pi pi-spin pi-spinner loading-icon"></i>
+	        </f:facet>
+	    </p:ajaxStatus>
+		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false"
+			showHeader="false">
+			<div class="text-center">
+            	<i class="pi pi-spin pi-spinner loading-icon"></i>
+			</div>
+		</p:dialog>
         
         <p:panelGrid id="lotDetailsPG" styleClass="lotdetails-grid" columns="5" layout="tabular">
         	<f:facet name="header">
@@ -72,7 +86,8 @@
 		            <f:selectItem itemLabel="Cluster" itemValue="cluster"/>
 		            <p:ajax event="change"
 		            	listener="#{lotDetailsBean.modeChanged}"
-		            	update="lotDetailsPG lotDetailsPanel"/>
+		            	update="lotDetailsPG lotDetailsPanel"
+		            	oncomplete="resizeLotWafers();"/>
 		        </p:selectOneButton>
         		<p:tooltip for="@next" value="Scope"/>
         		<p:selectOneButton id="lotdetailsscopeCB" value="#{lotDetailsBean.scope}" styleClass="ml-1">
@@ -80,7 +95,8 @@
 		            <f:selectItem itemLabel="Chuck" itemValue="chuck"/>
 		            <p:ajax event="change"
 		            	listener="#{lotDetailsBean.scopeChanged}"
-		            		update="lotDetailsPG lotDetailsPanel"/>
+		            		update="lotDetailsPG lotDetailsPanel"
+		            	oncomplete="resizeLotWafers();"/>
 		        </p:selectOneButton>
 		        <p:commandButton id="lotdetailsfirstCB"
 		        	icon="pi pi-angle-double-left"
@@ -89,7 +105,8 @@
                 	disabled="#{lotDetailsBeanfirstDisabled}"
                 	actionListener="#{lotDetailsBean.first()}"
                 	update="@this lotDetailsPanel lotdetailsindexOL
-                		lotdetailspreviousCB lotdetailsnextCB lotdetailslastCB"/>
+                		lotdetailspreviousCB lotdetailsnextCB lotdetailslastCB"
+		            oncomplete="resizeLotWafers();"/>
 		        <p:commandButton id="lotdetailspreviousCB"
 		        	icon="pi pi-angle-left"
                 	title="Previous"
@@ -97,7 +114,8 @@
                 	disabled="#{lotDetailsBean.previousDisabled}"
                 	actionListener="#{lotDetailsBean.previous()}"
                 	update="@this lotDetailsPanel lotdetailsindexOL
-                		lotdetailsfirstCB lotdetailsnextCB lotdetailslastCB"/>
+                		lotdetailsfirstCB lotdetailsnextCB lotdetailslastCB"
+		            oncomplete="resizeLotWafers();"/>
                 <p:outputLabel id="lotdetailsindexOL" value="#{lotDetailsBean.getIndexLabel()}"
                 	style="color:blue;font-size:12;" styleClass="ml-1"/>
 		        <p:commandButton id="lotdetailsnextCB"
@@ -107,7 +125,8 @@
                 	disabled="#{lotDetailsBean.nextDisabled}"
                 	actionListener="#{lotDetailsBean.next()}"
                 	update="@this lotDetailsPanel lotdetailsindexOL
-                		lotdetailsfirstCB lotdetailspreviousCB lotdetailslastCB"/>
+                		lotdetailsfirstCB lotdetailspreviousCB lotdetailslastCB"
+		            oncomplete="resizeLotWafers();"/>
 		        <p:commandButton id="lotdetailslastCB"
 		        	icon="pi pi-angle-double-right"
                 	title="Next"
@@ -115,7 +134,8 @@
                 	disabled="#{lotDetailsBean.lastDisabled}"
                 	actionListener="#{lotDetailsBean.last()}"
                 	update="@this lotDetailsPanel lotdetailsindexOL
-                		lotdetailsfirstCB lotdetailspreviousCB lotdetailsnextCB"/>
+                		lotdetailsfirstCB lotdetailspreviousCB lotdetailsnextCB"
+		            oncomplete="resizeLotWafers();"/>
         	</f:facet>
         	<p:row rendered="#{not empty LotDetailsBean.row0}">
         		<p:columns value="#{LotDetailsBean.row0}" var="col">
@@ -173,7 +193,7 @@
 				</span>
 			</div>
 			<div>
-               	<p:panel id="lotDetailsWaferPanel">
+				<p:scrollPanel id="lotDetailsWaferSP" mode="native" style="width:100%;height:400px">
                		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W01')}"
                			style="width:350px;height:300px;"
                			rendered="#{lotDetailsBean.isWaferValid('W01')}"/>
@@ -324,7 +344,7 @@
                		<p:graphicImage value="#{lotDetailsBean.getWaferImage('C25')}"
                			style="width:350px;height:300px;"
                			rendered="#{lotDetailsBean.isWaferValid('C25')}"/>
-               	</p:panel>
+               	</p:scrollPanel>
 			</div>
         </p:panel>
 		<ui:remove>        

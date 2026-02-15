@@ -117,6 +117,7 @@ public class LotDetailsBean implements Serializable {
 	    	this.previousDisabled = this.lotIndex.intValue() <= 0;
 	        this.nextDisabled = this.lotIndex.intValue() >= this.similarLots.size() - 1;
 	        this.lastDisabled = this.lotIndex.intValue() >= this.similarLots.size() - 1;
+	    	updateImages();
 
     	}
 
