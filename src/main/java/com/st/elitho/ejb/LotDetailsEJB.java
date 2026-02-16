@@ -56,20 +56,20 @@ public class LotDetailsEJB implements Serializable {
 			.toList();
 	}
 
-	public static List<Path> getImagePaths(final LotDTO lot, final String mode, final String scope)
-		throws LotException {
+	public static List<Path> getImagePaths(final LotDTO lot, final String scope) throws LotException {
 
-		final var imageDir = getImageDir(lot, mode);
+		final var imageDir = getImageDir(lot, scope);
 
 		return IntStream.range(1, WAFER_NB + 1)
 			.mapToObj(wafernb -> Path.of(imageDir.toString()).resolve(
 				String.format(SCOPE_WAFER.equals(scope) ? "W%02d.png" : "C%02d.png", wafernb)))
+			.peek(path -> System.out.println("-------------->1 "+path))
 			.filter(path -> path.toFile().exists())
 			.toList();
 
 	}
 
-	private static String getImageDir(final LotDTO lot, final String mode) throws LotException {
+	private static String getImageDir(final LotDTO lot, final String scope) throws LotException {
 
 		if (lot == null) {
 			throw new LotException("Null lot");
@@ -89,7 +89,7 @@ public class LotDetailsEJB implements Serializable {
 			.append(File.separator).append(lot.getMaskset())
 			.append(File.separator).append(lot.getLayer())
 			.append(File.separator).append(lot.getTsLotId())
-			.append(File.separator).append(MODE_LOT.equals(mode) ? "DetectionWafer" : "DetectionSystematic");
+			.append(File.separator).append(SCOPE_WAFER.equals(scope) ? "DetectionWafer" : "DetectionSystematic");
 
         return fullDir.toString();
 
@@ -118,7 +118,7 @@ public class LotDetailsEJB implements Serializable {
 
 	}
 
-	public void loadWaferImages(final LotDTO lot, final String mode, final String scope)
+	public void loadWaferImages(final LotDTO lot, final String scope)
 		throws LotException {
 
 		if (Optional.ofNullable(lot).orElse(LotDTO.NULL).getLotId().isEmpty()) {
@@ -127,7 +127,7 @@ public class LotDetailsEJB implements Serializable {
 
 		this.waferImageBytes.clear();
 		try {
-			getImagePaths(lot, mode, scope).forEach(path -> {
+			getImagePaths(lot, scope).forEach(path -> {
 				final var key = path.getFileName().toString().replace(IMAGEFILE_EXT, ""); // "W01"
 				    try {
 				        this.waferImageBytes.computeIfAbsent(lot.getLotId(), _ -> new HashMap<String, byte[]>())

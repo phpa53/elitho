@@ -176,7 +176,7 @@ public class LotDetailsBean implements Serializable {
 		try {
 	        LoggerWrapper.info(log, String.format("Updating images for lot=%s, mode=%s scope=%s",
 	        	this.lot.getLotId(), this.mode, this.scope));
-			this.lotDetailsEJB.loadWaferImages(this.lot, this.mode, this.scope);
+			this.lotDetailsEJB.loadWaferImages(this.lot, this.scope);
 	        LoggerWrapper.info(log, String.format("Images updated for lot %s", this.lot.getLotId()));
 		} catch (final LotException e) {
 			LoggerUtils.warn(log, e.getMessage());
