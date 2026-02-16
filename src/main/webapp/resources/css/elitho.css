@@ -47,7 +47,7 @@
     flex: 1;                    /* take remaining space */
     text-align: center;
     color: #ffffff;
-    font-size: 1.4rem;
+    font-size: 40px;
     font-weight: 600;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }

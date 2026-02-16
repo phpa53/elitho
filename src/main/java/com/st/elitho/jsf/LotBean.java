@@ -84,7 +84,8 @@ public class LotBean implements Serializable {
 		try {
 
 			this.lots.addAll(this.lotEJB.getLots(this.filter));
-			Collections.sort(this.lots, Comparator.comparing(LotDTO::getCluster)
+			Collections.sort(this.lots, Comparator.comparing(LotDTO::getStart).reversed()
+				.thenComparing(LotDTO::getCluster)
 				.thenComparing(LotDTO::getTechno)
 				.thenComparing(LotDTO::getMaskset)
 				.thenComparing(LotDTO::getLayer)

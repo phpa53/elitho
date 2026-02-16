@@ -63,7 +63,6 @@ public class LotDetailsEJB implements Serializable {
 		return IntStream.range(1, WAFER_NB + 1)
 			.mapToObj(wafernb -> Path.of(imageDir.toString()).resolve(
 				String.format(SCOPE_WAFER.equals(scope) ? "W%02d.png" : "C%02d.png", wafernb)))
-			.peek(path -> System.out.println("-------------->1 "+path))
 			.filter(path -> path.toFile().exists())
 			.toList();
 

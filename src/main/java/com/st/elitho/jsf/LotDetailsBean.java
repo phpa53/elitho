@@ -61,6 +61,10 @@ public class LotDetailsBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        initFromRequest();
+    }
+
+    public void initFromRequest() {
 
         final var context = FacesContext.getCurrentInstance();
         final var params  = context.getExternalContext().getRequestParameterMap();

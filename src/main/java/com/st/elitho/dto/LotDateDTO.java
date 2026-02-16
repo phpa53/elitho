@@ -14,8 +14,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class LotDateDTO {
 
-	private static final int MONTHRANGE_DEF = 2;
-	private static final int MONTHRANGE_MAX = 6;
+	private static final int MONTHRANGE_DEF = 1;
+	private static final int MONTHRANGE_MAX = 1;
 	private static final int PERIOD_MAX = 24;
 	private LocalDate fromDate;
 	private LocalDate toDate;
@@ -25,7 +25,6 @@ public class LotDateDTO {
 	private LocalDate toDateMax;
 
 	public void init() {
-
 
 		this.fromDate = LocalDate.now().minusMonths(MONTHRANGE_DEF);
 		this.toDate = LocalDate.now();
