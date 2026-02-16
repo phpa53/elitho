@@ -20,7 +20,7 @@ import org.primefaces.model.StreamedContent;
 
 import com.st.elitho.dto.LotDTO;
 import com.st.elitho.uti.AppProperties;
-import com.st.safir.commons.logging.LoggerWrapper;
+import com.st.elitho.uti.LoggerWrapper;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateful;
@@ -118,12 +118,17 @@ public class LotDetailsEJB implements Serializable {
 
 	}
 
-	public void loadWaferImages(final LotDTO lot, final List<LotDTO> lots, final String mode, final String scope) {
+	public void loadWaferImages(final LotDTO lot, final List<LotDTO> lots, final String mode, final String scope)
+		throws LotException {
+
+		if (Optional.ofNullable(lot).orElse(LotDTO.NULL).getLotId().isEmpty()) {
+			throw new LotException("Lot not valid");
+		}
 
 		this.waferImageBytes.clear();
-
 		try {
 			getImagePaths(lot, mode, scope).forEach(path -> {
+				System.out.println("--------------->0 "+path);
 				final var key = path.getFileName().toString().replace(IMAGEFILE_EXT, ""); // "W01"
 				    try {
 				        this.waferImageBytes.computeIfAbsent(lot.getLotId(), _ -> new HashMap<String, byte[]>())

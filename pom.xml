@@ -3,7 +3,6 @@
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.st.litho</groupId>
 	<artifactId>elitho</artifactId>
@@ -12,15 +11,6 @@
     <name>elitho</name>
 	
 	<dependencies>
-	
-		
-		<dependency>
-		  <groupId>com.c2alliance.safir</groupId>
-		  <artifactId>ssoclient</artifactId>
-		  <version>4.0.4</version>
-		  <type>jar</type>
-		</dependency>
-	
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -43,13 +33,18 @@
 		    <version>6.1.0</version>
 		    <scope>provided</scope>
 		</dependency>
-		<!--
 		<dependency>
 		    <groupId>jakarta.faces</groupId>
 		    <artifactId>jakarta.faces-api</artifactId>
 		    <version>4.1.2</version>
+		    <scope>provided</scope>
 		</dependency>
-		-->
+		<dependency>
+		    <groupId>com.sun.mail</groupId>
+		    <artifactId>jakarta.mail</artifactId>
+		    <version>2.0.2</version>
+		    <scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
