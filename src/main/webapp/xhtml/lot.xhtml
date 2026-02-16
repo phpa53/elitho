@@ -124,7 +124,7 @@
 		                	label="Cluster"
 			             	style="margin-left:5px;"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.clusters}">
+			             	value="#{lotBean.lotFilter.clusters}">
 			                <f:selectItems value="#{lotBean.clusters}"/>
 			                <p:ajax listener="#{lotBean.initTechnos}"
 			                	process="@this"
@@ -138,7 +138,7 @@
 		                	label="Techno"
 			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.technos}">
+			             	value="#{lotBean.lotFilter.technos}">
 			                <f:selectItems value="#{lotBean.technos}"/>
 			                <p:ajax listener="#{lotBean.initMasksets}"
 			                	process="@this"
@@ -152,7 +152,7 @@
 		                	label="Maskset"
 			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.masksets}">
+			             	value="#{lotBean.lotFilter.masksets}">
 			                <f:selectItems value="#{lotBean.masksets}"/>
 			                <p:ajax listener="#{lotBean.initLayers}"
 			                	process="@this"
@@ -166,7 +166,7 @@
 		                	label="Layer"
 			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.layers}">
+			             	value="#{lotBean.lotFilter.layers}">
 			                <f:selectItems value="#{lotBean.layers}"/>
 			                <p:ajax listener="#{lotBean.initLotIds}"
 			                	process="@this"
@@ -180,7 +180,7 @@
 		                	label="Lot ID"
 			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.filter.lotIds}">
+			             	value="#{lotBean.lotFilter.lotIds}">
 			                <f:selectItems value="#{lotBean.lotIds}"/>
 			                <p:ajax listener="#{lotBean.initLotStarts}"
 			                	process="@this"
@@ -206,40 +206,67 @@
 					</span>
 				</div>
 			</f:facet>
-			<p:column headerText="Start"
-        		style="width:110px;text-align:center;"
-				sortBy="#{lot.start}"
-            	filterBy="#{lot.start}">
+			<p:column headerText="Start" style="width:110px;text-align:center;" sortBy="#{lot.start}">
                 <h:outputText value="#{lot.getFormattedStart()}"/>
 			</p:column>
 			<p:column headerText="Cluster"
         		style="width:100px;text-align:center;"
 				sortBy="#{lot.cluster}"
-            	filterBy="#{lot.cluster}">
+            	filterBy="#{lot.cluster}"
+            	filterFunction="#{lotBean.stringFilter}"
+          		filterMatchMode="contains">
+          		<f:facet name="filter">
+            		<p:inputText style="width:90px;"
+            			onkeydown="if (event.key === 'Enter') { PF('lotDTW').filter(); return false; }"/>
+                </f:facet>
                 <h:outputText value="#{lot.cluster}"/>
 			</p:column>
 			<p:column headerText="Techno"
         		style="width:80px;text-align:center;"
 				sortBy="#{lot.techno}"
-            	filterBy="#{lot.techno}">
+            	filterBy="#{lot.techno}"
+            	filterFunction="#{lotBean.stringFilter}"
+          		filterMatchMode="contains">
+          		<f:facet name="filter">
+            		<p:inputText style="width:80px;"
+            			onkeydown="if (event.key === 'Enter') { PF('lotDTW').filter(); return false; }"/>
+                </f:facet>
                 <h:outputText value="#{lot.techno}"/>
 			</p:column>
 			<p:column headerText="Maskset"
         		style="width:130px;text-align:center;"
 				sortBy="#{lot.maskset}"
-            	filterBy="#{lot.maskset}">
+            	filterBy="#{lot.maskset}"
+            	filterFunction="#{lotBean.stringFilter}"
+          		filterMatchMode="contains">
+          		<f:facet name="filter">
+            		<p:inputText style="width:120px;"
+            			onkeydown="if (event.key === 'Enter') { PF('lotDTW').filter(); return false; }"/>
+                </f:facet>
                 <h:outputText value="#{lot.maskset}"/>
 			</p:column>
 			<p:column headerText="Layer"
         		style="width:120px;text-align:center;"
 				sortBy="#{lot.layer}"
-            	filterBy="#{lot.layer}">
+            	filterBy="#{lot.layer}"
+            	filterFunction="#{lotBean.stringFilter}"
+          		filterMatchMode="contains">
+          		<f:facet name="filter">
+            		<p:inputText style="width:110px;"
+            			onkeydown="if (event.key === 'Enter') { PF('lotDTW').filter(); return false; }"/>
+                </f:facet>
                 <h:outputText value="#{lot.layer}"/>
 			</p:column>
 			<p:column headerText="Lot ID"
         		style="width:200px;text-align:center;"
 				sortBy="#{lot.lotId}"
-            	filterBy="#{lot.lotId}">
+            	filterBy="#{lot.lotId}"
+            	filterFunction="#{lotBean.stringFilter}"
+          		filterMatchMode="contains">
+          		<f:facet name="filter">
+            		<p:inputText style="width:190px;"
+            			onkeydown="if (event.key === 'Enter') { PF('lotDTW').filter(); return false; }"/>
+                </f:facet>
                 <h:outputText value="#{lot.lotId}"/>
 			</p:column>
 			<p:column/>

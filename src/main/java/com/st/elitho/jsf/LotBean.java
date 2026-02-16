@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.primefaces.event.SelectEvent;
@@ -45,9 +46,10 @@ public class LotBean implements Serializable {
 	private List<String> technos;
 	private List<String> masksets;
 	private List<String> layers;
+	private List<String> layersByClusters;
 	private List<String> lotIds;
 	private List<LocalDateTime> lotStarts;
-	private LotFilterDTO filter;
+	private LotFilterDTO lotFilter;
 	private LotDTO selectedLot;
 	private String lotDetailsUrl;
 	private final List<LotDTO> lots = new ArrayList<>();
@@ -83,7 +85,7 @@ public class LotBean implements Serializable {
 
 		try {
 
-			this.lots.addAll(this.lotEJB.getLots(this.filter));
+			this.lots.addAll(this.lotEJB.getLots(this.lotFilter));
 			Collections.sort(this.lots, Comparator.comparing(LotDTO::getStart).reversed()
 				.thenComparing(LotDTO::getCluster)
 				.thenComparing(LotDTO::getTechno)
@@ -102,7 +104,7 @@ public class LotBean implements Serializable {
 
 	public void initFilter() {
 
-		this.filter = new LotFilterDTO();
+		this.lotFilter = new LotFilterDTO();
 		this.lotDates = new LotDateDTO();
 		this.lotDates.init();
 		initClusters();
@@ -119,7 +121,7 @@ public class LotBean implements Serializable {
 		initTechnos(this.clusters);
 	}
 	public void initTechnos() {
-		this.technos = this.lotEJB.getMatchedList(this.filter.getClusters(), LotDTO::getCluster, LotDTO::getTechno);
+		this.technos = this.lotEJB.getMatchedList(this.lotFilter.getClusters(), LotDTO::getCluster, LotDTO::getTechno);
 		initMasksets(this.technos);
 	}
 	public void initTechnos(final List<String> preFilteredTools) {
@@ -127,7 +129,7 @@ public class LotBean implements Serializable {
 		initMasksets(this.technos);
 	}
 	public void initMasksets() {
-		this.masksets = this.lotEJB.getMatchedList(this.filter.getTechnos(), LotDTO::getTechno, LotDTO::getMaskset);
+		this.masksets = this.lotEJB.getMatchedList(this.lotFilter.getTechnos(), LotDTO::getTechno, LotDTO::getMaskset);
 		initLayers(this.masksets);
 	}
 	public void initMasksets(final List<String> preFilteredTechnos) {
@@ -135,7 +137,10 @@ public class LotBean implements Serializable {
 		initLayers(this.masksets);
 	}
 	public void initLayers() {
-		this.layers = this.lotEJB.getMatchedList(this.filter.getMasksets(), LotDTO::getMaskset, LotDTO::getLayer);
+		this.layersByClusters =
+			this.lotEJB.getMatchedList(this.lotFilter.getClusters(), LotDTO::getCluster, LotDTO::getLayer);
+		this.layers = this.lotEJB.getMatchedList(this.lotFilter.getMasksets(), LotDTO::getMaskset, LotDTO::getLayer)
+			.stream().filter(layer -> this.layersByClusters.contains(layer)).toList();
 		initLotIds(this.layers);
 	}
 	public void initLayers(final List<String> preFilteredMasksets) {
@@ -143,7 +148,7 @@ public class LotBean implements Serializable {
 		initLotIds(this.layers);
 	}
 	public void initLotIds() {
-		this.lotIds = this.lotEJB.getMatchedList(this.filter.getLayers(), LotDTO::getLayer, LotDTO::getLotId);
+		this.lotIds = this.lotEJB.getMatchedList(this.lotFilter.getLayers(), LotDTO::getLayer, LotDTO::getLotId);
 	}
 	public void initLotIds(final List<String> preFilteredLayers) {
 		this.lotIds = this.lotEJB.getMatchedList(preFilteredLayers, LotDTO::getLayer, LotDTO::getLotId);
@@ -173,6 +178,12 @@ public class LotBean implements Serializable {
 
         }
 
+    }
+
+    @SuppressWarnings("static-method")
+	public boolean stringFilter(final Object value, final Object filter, final Locale locale) {
+    	return filter == null || filter.toString().isBlank() ||
+    		value != null && value.toString().toLowerCase(locale).contains(filter.toString().toLowerCase(locale));
     }
 
 }
