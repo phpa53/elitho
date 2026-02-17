@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -23,6 +24,7 @@ import com.st.elitho.uti.LoggerWrapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import lombok.AllArgsConstructor;
@@ -95,6 +97,16 @@ public class LotDetailsBean implements Serializable {
         this.lotIndex.set(this.similarLots.indexOf(this.selectedLot));
         updateNavigationState(true, this.lotIndex.intValue());
 
+    }
+
+    @SuppressWarnings("static-method")
+	public void showHelp() {
+    	PrimeFaces.current().dialog().showMessageDynamic(new FacesMessage(FacesMessage.SEVERITY_INFO, "Help", """
+	    	Lot : Navigate across layers for a given Lot ID\n
+			Cluster : Navigate across time ordered lots for a given Cluster ID\n
+			Wafer : Display Wafer Detection Map\n
+			Chuck : Display Chuck Systematic Map\n
+    	"""));
     }
 
     public String getLotDetailsLabel() {

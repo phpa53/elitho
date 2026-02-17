@@ -68,23 +68,24 @@
 
 	<h:form id="lotDetailsForm">
 	
-		<p:ajaxStatus styleClass="block mb-4">
-	        <f:facet name="start">
-	            <i class="pi pi-spin pi-spinner loading-icon"></i>
-	        </f:facet>
-	    </p:ajaxStatus>
-		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
-
+		<p:ajaxStatus styleClass="block mb-4"
+			onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()"/>
 		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false"
 			showHeader="false">
 			<div class="text-center">
-            	<i class="pi pi-spin pi-spinner loading-icon"></i>
+            	<i class="mt-4 pi pi-spin pi-spinner loading-icon"/>
 			</div>
 		</p:dialog>
         
         <p:panelGrid id="lotDetailsPG" styleClass="lotdetails-grid" columns="5" layout="tabular">
         	<f:facet name="header">
-        		<p:tooltip for="@next" value="Mode"/>
+        		<p:tooltip for="@next" value="Help"/>
+        		<p:commandButton icon="pi pi-question"
+        			styleClass="ml-1 mr-1 rounded-button ui-button-help"
+        			action="#{lotDetailsBean.showHelp}"
+        			process="@this"
+        			update="@none"/>
         		<p:selectOneButton id="lotdetailsmodeCB" value="#{lotDetailsBean.mode}" styleClass="ml-1">
 		            <f:selectItem itemLabel="Lot" itemValue="lot"/>
 		            <f:selectItem itemLabel="Cluster" itemValue="cluster"/>
@@ -93,7 +94,6 @@
 		            	update="lotDetailsPG lotDetailsPanel"
 		            	oncomplete="resizeLotWafers();"/>
 		        </p:selectOneButton>
-        		<p:tooltip for="@next" value="Scope"/>
         		<p:selectOneButton id="lotdetailsscopeCB" value="#{lotDetailsBean.scope}" styleClass="ml-1">
 		            <f:selectItem itemLabel="Wafer" itemValue="wafer"/>
 		            <f:selectItem itemLabel="Chuck" itemValue="chuck"/>
