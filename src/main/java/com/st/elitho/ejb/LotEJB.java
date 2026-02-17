@@ -11,11 +11,13 @@ import com.st.elitho.dto.LotDTO;
 import com.st.elitho.dto.LotDateDTO;
 import com.st.elitho.dto.LotFilterDTO;
 
+import jakarta.ejb.DependsOn;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@DependsOn(value = "LotRefreshEJB")
 @NoArgsConstructor
 @Stateless
 @Slf4j
@@ -56,6 +58,37 @@ public class LotEJB implements Serializable {
 
 	}
 
+	public List<String> getFilteredTechnos(final List<String> clusters) {
+		return this.lotRefreshEJB.getAllLots().stream()
+			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
+			.map(LotDTO::getTechno).distinct().sorted().toList();
+	}
+
+	public List<String> getFilteredMasksets(final List<String> clusters, final List<String> technos) {
+		return this.lotRefreshEJB.getAllLots().stream()
+			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
+			.filter(lot -> technos.isEmpty() || technos.contains(lot.getTechno()))
+			.map(LotDTO::getMaskset).distinct().sorted().toList();
+	}
+
+	public List<String> getFilteredLayers(final List<String> clusters, final List<String> technos,
+		final List<String> masksets) {
+		return this.lotRefreshEJB.getAllLots().stream()
+			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
+			.filter(lot -> technos.isEmpty() || technos.contains(lot.getTechno()))
+			.filter(lot -> masksets.isEmpty() || masksets.contains(lot.getMaskset()))
+			.map(LotDTO::getLayer).distinct().sorted().toList();
+	}
+
+	public List<String> getFilteredLotIds(final List<String> clusters, final List<String> technos,
+		final List<String> masksets, final List<String> layers) {
+		return this.lotRefreshEJB.getAllLots().stream()
+			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
+			.filter(lot -> technos.isEmpty() || technos.contains(lot.getTechno()))
+			.filter(lot -> masksets.isEmpty() || masksets.contains(lot.getMaskset()))
+			.filter(lot -> layers.isEmpty() || layers.contains(lot.getLayer()))
+			.map(LotDTO::getLotId).distinct().sorted().toList();
+	}
 
 	public List<String> getMatchedList(final List<String> values, final Function<LotDTO, String> matchingValue,
 		final Function<LotDTO, String> fieldExtractor) {

@@ -3,6 +3,7 @@ package com.st.elitho.jsf;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,6 +95,11 @@ public class LotDetailsBean implements Serializable {
         this.lotIndex.set(this.similarLots.indexOf(this.selectedLot));
         updateNavigationState(true, this.lotIndex.intValue());
 
+    }
+
+    public String getLotDetailsLabel() {
+    	return this.lotId == null ? "" : String.format("%s(%s) %s", this.lot.getLotId(), this.lot.getLayer(),
+    		this.lot.getStart().format(DateTimeFormatter.ofPattern("dd-MM-yy HH:mm")));
     }
 
     public boolean isPreviousDisabled() {

@@ -46,7 +46,6 @@ public class LotBean implements Serializable {
 	private List<String> technos;
 	private List<String> masksets;
 	private List<String> layers;
-	private List<String> layersByClusters;
 	private List<String> lotIds;
 	private List<LocalDateTime> lotStarts;
 	private LotFilterDTO lotFilter;
@@ -107,51 +106,47 @@ public class LotBean implements Serializable {
 		this.lotFilter = new LotFilterDTO();
 		this.lotDates = new LotDateDTO();
 		this.lotDates.init();
-		initClusters();
-		this.technos = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getTechno);
-		this.masksets = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getMaskset);
-		this.layers = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getLayer);
-		this.lotIds = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getLotId);
 		this.lotStarts = new ArrayList<>();
+		initClusters();
 
 	}
 
 	public void initClusters() {
 		this.clusters = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getCluster);
-		initTechnos(this.clusters);
+		this.lotFilter.setClusters(new ArrayList<>());
+		initTechnos();
+	}
+	private List<String> getFilteredClusters() {
+		return Optional.ofNullable(this.lotFilter.getClusters()).orElse(List.of()).isEmpty() ? this.clusters
+			: this.lotFilter.getClusters();
 	}
 	public void initTechnos() {
-		this.technos = this.lotEJB.getMatchedList(this.lotFilter.getClusters(), LotDTO::getCluster, LotDTO::getTechno);
-		initMasksets(this.technos);
+		this.technos = this.lotEJB.getFilteredTechnos(getFilteredClusters());
+		initMasksets();
 	}
-	public void initTechnos(final List<String> preFilteredTools) {
-		this.technos = this.lotEJB.getMatchedList(preFilteredTools, LotDTO::getCluster, LotDTO::getTechno);
-		initMasksets(this.technos);
+	private List<String> getFilteredTechnos() {
+		return Optional.ofNullable(this.lotFilter.getTechnos()).orElse(List.of()).isEmpty() ? this.technos
+			: this.lotFilter.getTechnos();
 	}
 	public void initMasksets() {
-		this.masksets = this.lotEJB.getMatchedList(this.lotFilter.getTechnos(), LotDTO::getTechno, LotDTO::getMaskset);
-		initLayers(this.masksets);
+		this.masksets = this.lotEJB.getFilteredMasksets(getFilteredClusters(), getFilteredTechnos());
+		initLayers();
 	}
-	public void initMasksets(final List<String> preFilteredTechnos) {
-		this.masksets = this.lotEJB.getMatchedList(preFilteredTechnos, LotDTO::getTechno, LotDTO::getMaskset);
-		initLayers(this.masksets);
+	private List<String> getFilteredMasksets() {
+		return Optional.ofNullable(this.lotFilter.getMasksets()).orElse(List.of()).isEmpty() ? this.masksets
+			: this.lotFilter.getMasksets();
 	}
 	public void initLayers() {
-		this.layersByClusters =
-			this.lotEJB.getMatchedList(this.lotFilter.getClusters(), LotDTO::getCluster, LotDTO::getLayer);
-		this.layers = this.lotEJB.getMatchedList(this.lotFilter.getMasksets(), LotDTO::getMaskset, LotDTO::getLayer)
-			.stream().filter(layer -> this.layersByClusters.contains(layer)).toList();
-		initLotIds(this.layers);
+		this.layers = this.lotEJB.getFilteredLayers(getFilteredClusters(), getFilteredTechnos(), getFilteredMasksets());
+		initLotIds();
 	}
-	public void initLayers(final List<String> preFilteredMasksets) {
-		this.layers = this.lotEJB.getMatchedList(preFilteredMasksets, LotDTO::getMaskset, LotDTO::getLayer);
-		initLotIds(this.layers);
+	private List<String> getFilteredLayers() {
+		return Optional.ofNullable(this.lotFilter.getLayers()).orElse(List.of()).isEmpty() ? this.layers
+			: this.lotFilter.getLayers();
 	}
 	public void initLotIds() {
-		this.lotIds = this.lotEJB.getMatchedList(this.lotFilter.getLayers(), LotDTO::getLayer, LotDTO::getLotId);
-	}
-	public void initLotIds(final List<String> preFilteredLayers) {
-		this.lotIds = this.lotEJB.getMatchedList(preFilteredLayers, LotDTO::getLayer, LotDTO::getLotId);
+		this.lotIds = this.lotEJB.getFilteredLotIds(getFilteredClusters(), getFilteredTechnos(), getFilteredMasksets(),
+			getFilteredLayers());
 	}
 	public void initLotStarts() {
 		this.lotStarts = Optional.ofNullable(this.lotIds).orElseGet(ArrayList::new).size() == 1
