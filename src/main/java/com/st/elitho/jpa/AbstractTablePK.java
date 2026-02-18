@@ -1,0 +1,8 @@
+package com.st.elitho.jpa;
+
+import lombok.Data;
+
+@Data
+public sealed abstract class AbstractTablePK permits ELithoJobPK { // NOPMD
+	// No abstract method
+}

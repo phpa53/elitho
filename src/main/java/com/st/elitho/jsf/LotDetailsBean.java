@@ -206,6 +206,10 @@ public class LotDetailsBean implements Serializable {
 
     }
 
+    public boolean isNoImage() {
+    	return this.lotDetailsEJB.isWaferImagesEmpty(Optional.ofNullable(this.lot).orElse(LotDTO.NULL).getLotId());
+    }
+
     public List<String> getWaferImageNames() {
         return new ArrayList<>(this.lotDetailsEJB.getWaferImageBytes(Optional.ofNullable(this.lot).orElse(LotDTO.NULL)
         	.getLotId()).keySet());

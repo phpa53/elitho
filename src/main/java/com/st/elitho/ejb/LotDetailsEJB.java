@@ -151,4 +151,9 @@ public class LotDetailsEJB implements Serializable {
     		.getOrDefault(lotId, new HashMap<>()).containsKey(name);
     }
 
+	public boolean isWaferImagesEmpty(final String lotId) {
+    	return Optional.ofNullable(this.waferImageBytes).orElse(new HashMap<>())
+    		.getOrDefault(lotId, new HashMap<>()).isEmpty();
+    }
+
 }

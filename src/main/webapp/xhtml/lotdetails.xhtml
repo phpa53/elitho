@@ -86,7 +86,11 @@
         			action="#{lotDetailsBean.showHelp}"
         			process="@this"
         			update="@none"/>
-        		<p:selectOneButton id="lotdetailsmodeCB" value="#{lotDetailsBean.mode}" styleClass="ml-1">
+        		<p:selectOneButton id="lotdetailsmodeCB"
+        			value="#{lotDetailsBean.mode}"
+        			styleClass="ml-1"
+        			unselectable="false"
+        			required="true">
 		            <f:selectItem itemLabel="Lot" itemValue="lot"/>
 		            <f:selectItem itemLabel="Cluster" itemValue="cluster"/>
 		            <p:ajax event="change"
@@ -94,7 +98,11 @@
 		            	update="lotDetailsPG lotDetailsPanel"
 		            	oncomplete="resizeLotWafers();"/>
 		        </p:selectOneButton>
-        		<p:selectOneButton id="lotdetailsscopeCB" value="#{lotDetailsBean.scope}" styleClass="ml-1">
+        		<p:selectOneButton id="lotdetailsscopeCB"
+        			value="#{lotDetailsBean.scope}"
+        			styleClass="ml-1"
+        			unselectable="false"
+        			required="true">
 		            <f:selectItem itemLabel="Wafer" itemValue="wafer"/>
 		            <f:selectItem itemLabel="Chuck" itemValue="chuck"/>
 		            <p:ajax event="change"
@@ -198,6 +206,7 @@
 			</div>
 			<div>
 				<p:scrollPanel id="lotDetailsWaferSP" mode="native" style="width:100%;height:400px">
+					<p:outputLabel value="No data" rendered="#{lotDetailsBean.isNoImage()}"/>
                		<p:graphicImage value="#{lotDetailsBean.getWaferImage('W01')}"
                			style="width:350px;height:300px;"
                			cache="false"

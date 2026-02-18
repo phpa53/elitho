@@ -13,9 +13,13 @@
 	
 	<h:form id="lotForm" prependId="false">
 	
+		<ui:remove>
 		<p:ajaxStatus styleClass="block mb-4"
-			onstart="PF('statusDialog').show()"
-			onsuccess="PF('statusDialog').hide()"/>
+		    onstart="PF('statusDialog').show()"
+		    onsuccess="PF('statusDialog').hide()"/>
+		</ui:remove>
+		<p:ajaxStatus styleClass="block mb-4"/>
+	
 		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false"
 			showHeader="false">
 			<div class="text-center">
@@ -85,18 +89,20 @@
 		                	styleClass="ml-1"
 		                	actionListener="#{lotBean.initFilter()}"
 		                	update="lotFromDateDP lotToDateDP lotClusterSCM lotTechnoSCM lotMasksetSCM lotLayerSCM
-		                		lotLotIdSCM lotStartSCM"/>
+		                		lotLotIdSCM lotStartSCM"
+						    onstart="PF('statusDialog').show();"
+						    oncomplete="PF('statusDialog').hide();return false;"/>
 				    	<p:outputLabel for="@next" value="From:" styleClass="ml-2"/>
 		                <p:datePicker id="lotFromDateDP"
 		                	widgetVar="lotFromDateDP"
 		                	styleClass="ml-1"
-		                	value="#{lotBean.lotDates.fromDate}"
+		                	value="#{lotBean.dateFilter.fromDate}"
 		                	size="6"
-		                	mindate="#{lotBean.lotDates.fromDateMin}"
-		                	maxdate="#{lotBean.lotDates.fromDateMax}"
+		                	mindate="#{lotBean.dateFilter.fromDateMin}"
+		                	maxdate="#{lotBean.dateFilter.fromDateMax}"
 		                	pattern="dd MMM yy"
 		                	showWeek="true">
-		                	<p:ajax listener="#{lotBean.lotDates.updateToDate()}"
+		                	<p:ajax listener="#{lotBean.dateFilter.updateToDate()}"
 		                		process="@this"
 		                		update="lotToDateDP"
 		                		oncomplete="PF('lotFromDateDP').hide();"/>
@@ -105,30 +111,35 @@
 		                <p:datePicker id="lotToDateDP"
 		                	widgetVar="lotToDateDP"
 		                	styleClass="ml-1"
-		                	value="#{lotBean.lotDates.toDate}"
+		                	value="#{lotBean.dateFilter.toDate}"
 		                	size="6"
-		                	mindate="#{lotBean.lotDates.toDateMin}"
-		                	maxdate="#{lotBean.lotDates.toDateMax}"
+		                	mindate="#{lotBean.dateFilter.toDateMin}"
+		                	maxdate="#{lotBean.dateFilter.toDateMax}"
 		                	pattern="dd MMM yy"
 		                	showWeek="true">
-		                	<p:ajax listener="#{lotBean.lotDates.updateFromDate()}"
+		                	<p:ajax listener="#{lotBean.dateFilter.updateFromDate()}"
 		                		process="@this"
 		                		update="lotFromDateDP"
 		                		oncomplete="PF('lotToDateDP').hide();"/>
 		                </p:datePicker>
 		                <p:selectCheckboxMenu id="lotClusterSCM"
 		                	label="Cluster"
-			             	style="margin-left:5px;"
+			             	styleClass="ml-4"
 			             	scrollHeight="500"
 			             	value="#{lotBean.lotFilter.clusters}">
 			                <f:selectItems value="#{lotBean.clusters}"/>
-			                <p:ajax listener="#{lotBean.initTechnos}"
+			                <p:ajax event="itemSelect"
+			                	listener="#{lotBean.initTechnos}"
 			                	process="@this"
-			                	update="lotTechnoSCM lotMasksetSCM lotLayerSCM lotLotIdSCM"/>
+			                	update="lotTechnoSCM lotMasksetSCM lotLayerSCM lotLotIdSCM lotStartSCM"/>
+			                <p:ajax event="itemUnselect"
+			                	listener="#{lotBean.initTechnos}"
+			                	process="@this"
+			                	update="lotTechnoSCM lotMasksetSCM lotLayerSCM lotLotIdSCM lotStartSCM"/>
 			                <p:ajax event="toggleSelect"
 			                 	listener="#{lotBean.initTechnos}"
 			                 	process="@this"
-			                 	update="lotTechnoSCM lotMasksetSCM lotLayerSCM lotLotIdSCM"/>
+			                 	update="lotTechnoSCM lotMasksetSCM lotLayerSCM lotLotIdSCM lotStartSCM"/>
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotTechnoSCM"
 		                	label="Techno"
@@ -136,13 +147,18 @@
 			             	scrollHeight="500"
 			             	value="#{lotBean.lotFilter.technos}">
 			                <f:selectItems value="#{lotBean.technos}"/>
-			                <p:ajax listener="#{lotBean.initMasksets}"
+			                <p:ajax event="itemSelect"
+			                	listener="#{lotBean.initMasksets}"
 			                	process="@this"
-			                	update="lotMasksetSCM lotLayerSCM lotLotIdSCM"/>
+			                	update="lotMasksetSCM lotLayerSCM lotLotIdSCM lotStartSCM"/>
+			                <p:ajax event="itemUnselect"
+			                	listener="#{lotBean.initMasksets}"
+			                	process="@this"
+			                	update="lotMasksetSCM lotLayerSCM lotLotIdSCM lotStartSCM"/>
 			                <p:ajax event="toggleSelect"
 			                 	listener="#{lotBean.initMasksets}"
 			                 	process="@this"
-			                 	update="lotMasksetSCM lotLayerSCM lotLotIdSCM"/>
+			                 	update="lotMasksetSCM lotLayerSCM lotLotIdSCM lotStartSCM"/>
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotMasksetSCM"
 		                	label="Maskset"
@@ -150,13 +166,18 @@
 			             	scrollHeight="500"
 			             	value="#{lotBean.lotFilter.masksets}">
 			                <f:selectItems value="#{lotBean.masksets}"/>
-			                <p:ajax listener="#{lotBean.initLayers}"
+			                <p:ajax event="itemSelect"
+			                	listener="#{lotBean.initLayers}"
 			                	process="@this"
-			                	update="lotLayerSCM lotLotIdSCM"/>
+			                	update="lotLayerSCM lotLotIdSCM lotStartSCM"/>
+			                <p:ajax event="itemUnselect"
+			                	listener="#{lotBean.initLayers}"
+			                	process="@this"
+			                	update="lotLayerSCM lotLotIdSCM lotStartSCM"/>
 			                <p:ajax event="toggleSelect"
 			                 	listener="#{lotBean.initLayers}"
 			                 	process="@this"
-			                 	update="lotLayerSCM lotLotIdSCM"/>
+			                 	update="lotLayerSCM lotLotIdSCM lotStartSCM"/>
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotLayerSCM"
 		                	label="Layer"
@@ -164,13 +185,18 @@
 			             	scrollHeight="500"
 			             	value="#{lotBean.lotFilter.layers}">
 			                <f:selectItems value="#{lotBean.layers}"/>
-			                <p:ajax listener="#{lotBean.initLotIds}"
+			                <p:ajax event="itemSelect"
+			                	listener="#{lotBean.initLotIds}"
 			                	process="@this"
-			                	update="lotLotIdSCM"/>
+			                	update="lotLotIdSCM lotStartSCM"/>
+			                <p:ajax event="itemUnselect"
+			                	listener="#{lotBean.initLotIds}"
+			                	process="@this"
+			                	update="lotLotIdSCM lotStartSCM"/>
 			                <p:ajax event="toggleSelect"
 			                 	listener="#{lotBean.initLotIds}"
 			                 	process="@this"
-			                 	update="lotLotIdSCM"/>
+			                 	update="lotLotIdSCM lotStartSCM"/>
 			            </p:selectCheckboxMenu>
 		                <p:selectCheckboxMenu id="lotLotIdSCM"
 		                	label="Lot ID"
@@ -178,7 +204,12 @@
 			             	scrollHeight="500"
 			             	value="#{lotBean.lotFilter.lotIds}">
 			                <f:selectItems value="#{lotBean.lotIds}"/>
-			                <p:ajax listener="#{lotBean.initLotStarts}"
+			                <p:ajax event="itemSelect"
+			                	listener="#{lotBean.initLotStarts}"
+			                	process="@this"
+			                	update="lotStartSCM"/>
+			                <p:ajax event="itemUnselect"
+			                	listener="#{lotBean.initLotStarts}"
 			                	process="@this"
 			                	update="lotStartSCM"/>
 			                <p:ajax event="toggleSelect"
@@ -190,7 +221,7 @@
 		                	label="Lot Starts"
 			             	styleClass="ml-1"
 			             	scrollHeight="500"
-			             	value="#{lotBean.lotStarts}">
+			             	value="#{lotBean.lotFilter.lotStarts}">
 			                <f:selectItems value="#{lotBean.getFormattedLotStarts()}"/>
 			            </p:selectCheckboxMenu>
 						<p:commandButton id="lotApplyCB"
@@ -198,7 +229,8 @@
 			                styleClass="ml-1"
 			               	actionListener="#{lotBean.apply}"
 			                update="lotDT"
-							oncomplete="resizeLotTable();return false;"/>
+						    onstart="PF('statusDialog').show();"
+						    oncomplete="PF('statusDialog').hide();resizeLotTable();return false;"/>
 					</span>
 				</div>
 			</f:facet>

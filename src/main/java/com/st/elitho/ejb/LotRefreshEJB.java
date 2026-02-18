@@ -33,8 +33,8 @@ public class LotRefreshEJB implements Serializable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LotRefreshEJB.class);
 	private final transient List<LotDTO> lots = new ArrayList<>();
 	@SuppressWarnings("resource")
-	@PersistenceContext(unitName = "elithoPU")
-	private transient EntityManager elithoEM;
+	@PersistenceContext(unitName = "deeplithoPU")
+	private transient EntityManager deeplithoEM;
 
 	@PostConstruct
 	public void init() {
@@ -47,7 +47,8 @@ public class LotRefreshEJB implements Serializable {
 
 		LoggerWrapper.info(LOGGER, "Loading lots ...");
 		this.lots.clear();
-		this.lots.addAll(this.elithoEM.createQuery("select etl from ExposureTwinscanLot etl", ExposureTwinscanLot.class)
+		this.lots.addAll(this.deeplithoEM
+			.createQuery("select etl from ExposureTwinscanLot etl", ExposureTwinscanLot.class)
 			.getResultList().stream().map(ExposureTwinscanLot::toDTO).toList());
 		LoggerWrapper.info(LOGGER, String.format("%d lots loaded", this.lots.size()));
 

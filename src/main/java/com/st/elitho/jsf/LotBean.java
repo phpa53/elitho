@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LotBean implements Serializable {
 
 	private static final long serialVersionUID = -5895065530297045121L;
-	private LotDateDTO lotDates;
+	private LotDateDTO dateFilter;
 	private List<String> clusters;
 	private List<String> technos;
 	private List<String> masksets;
@@ -104,53 +104,92 @@ public class LotBean implements Serializable {
 	public void initFilter() {
 
 		this.lotFilter = new LotFilterDTO();
-		this.lotDates = new LotDateDTO();
-		this.lotDates.init();
+		this.dateFilter = new LotDateDTO();
+		this.dateFilter.init();
 		this.lotStarts = new ArrayList<>();
 		initClusters();
 
 	}
 
 	public void initClusters() {
-		this.clusters = this.lotEJB.getAttributeList(this.lotDates, LotDTO::getCluster);
 		this.lotFilter.setClusters(new ArrayList<>());
-		initTechnos();
+		try {
+			this.clusters = this.lotEJB.getFilteredClusters(this.dateFilter);
+			initTechnos();
+		} catch (final LotException e) {
+			LoggerUtils.warn(log, e.getMessage());
+		}
 	}
 	private List<String> getFilteredClusters() {
 		return Optional.ofNullable(this.lotFilter.getClusters()).orElse(List.of()).isEmpty() ? this.clusters
 			: this.lotFilter.getClusters();
 	}
 	public void initTechnos() {
-		this.technos = this.lotEJB.getFilteredTechnos(getFilteredClusters());
-		initMasksets();
+		this.lotFilter.setTechnos(new ArrayList<>());
+		try {
+			this.technos = this.lotEJB.getFilteredTechnos(this.dateFilter, getFilteredClusters());
+			initMasksets();
+		} catch (final LotException e) {
+			LoggerUtils.warn(log, e.getMessage());
+		}
 	}
 	private List<String> getFilteredTechnos() {
 		return Optional.ofNullable(this.lotFilter.getTechnos()).orElse(List.of()).isEmpty() ? this.technos
 			: this.lotFilter.getTechnos();
 	}
 	public void initMasksets() {
-		this.masksets = this.lotEJB.getFilteredMasksets(getFilteredClusters(), getFilteredTechnos());
-		initLayers();
+		this.lotFilter.setMasksets(new ArrayList<>());
+		try {
+			this.masksets = this.lotEJB.getFilteredMasksets(this.dateFilter, getFilteredClusters(),
+				getFilteredTechnos());
+			initLayers();
+		} catch (final LotException e) {
+			LoggerUtils.warn(log, e.getMessage());
+		}
 	}
 	private List<String> getFilteredMasksets() {
 		return Optional.ofNullable(this.lotFilter.getMasksets()).orElse(List.of()).isEmpty() ? this.masksets
 			: this.lotFilter.getMasksets();
 	}
 	public void initLayers() {
-		this.layers = this.lotEJB.getFilteredLayers(getFilteredClusters(), getFilteredTechnos(), getFilteredMasksets());
-		initLotIds();
+		this.lotFilter.setLayers(new ArrayList<>());
+		try {
+			this.layers = this.lotEJB.getFilteredLayers(this.dateFilter, getFilteredClusters(),
+				getFilteredTechnos(), getFilteredMasksets());
+			initLotIds();
+		} catch (final LotException e) {
+			LoggerUtils.warn(log, e.getMessage());
+		}
 	}
 	private List<String> getFilteredLayers() {
 		return Optional.ofNullable(this.lotFilter.getLayers()).orElse(List.of()).isEmpty() ? this.layers
 			: this.lotFilter.getLayers();
 	}
 	public void initLotIds() {
-		this.lotIds = this.lotEJB.getFilteredLotIds(getFilteredClusters(), getFilteredTechnos(), getFilteredMasksets(),
-			getFilteredLayers());
+		this.lotFilter.setLotIds(new ArrayList<>());
+		try {
+			this.lotIds = this.lotEJB.getFilteredLotIds(this.dateFilter, getFilteredClusters(), getFilteredTechnos(),
+				getFilteredMasksets(), getFilteredLayers());
+			initLotStarts();
+		} catch (final LotException e) {
+			LoggerUtils.warn(log, e.getMessage());
+		}
+	}
+	private List<String> getFilteredLotIds() {
+		return Optional.ofNullable(this.lotFilter.getLotIds()).orElse(List.of()).isEmpty() ? this.lotIds
+			: this.lotFilter.getLotIds();
 	}
 	public void initLotStarts() {
-		this.lotStarts = Optional.ofNullable(this.lotIds).orElseGet(ArrayList::new).size() == 1
-			? this.lotEJB.getLotStarts(this.lotIds.get(0)) : List.of();
+		this.lotFilter.setLotStarts(new ArrayList<>());
+		this.lotStarts = new ArrayList<>();
+		try {
+			if (Optional.ofNullable(this.lotFilter.getLotIds()).orElse(new ArrayList<>()).size() == 1) {
+				this.lotStarts = this.lotEJB.getFilteredLotStarts(this.dateFilter, getFilteredClusters(),
+					getFilteredTechnos(), getFilteredMasksets(), getFilteredLayers(), getFilteredLotIds());
+			}
+		} catch (final LotException e) {
+			LoggerUtils.warn(log, e.getMessage());
+		}
 	}
 
 	public List<SelectItem> getFormattedLotStarts() {

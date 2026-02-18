@@ -2,7 +2,6 @@ package com.st.elitho.ejb;
 
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Function;
@@ -45,49 +44,73 @@ public class LotEJB implements Serializable {
 		return this.lotRefreshEJB.getLot(lotId, startDate);
 	}
 
-	public List<String> getToolsFromDates(final LocalDate fromDate, final LocalDate toDate) throws LotException {
+	public List<LotDTO> getLotsFromDates(final LotDateDTO dateFilter)
+		throws LotException {
 
-		if (fromDate == null) {
+		if (dateFilter == null) {
+			throw new LotException("Null filter");
+		}
+		if (dateFilter.getFromDate() == null) {
 			throw new LotException("No start date");
 		}
-		if (toDate == null) {
+		if (dateFilter.getToDate() == null) {
 			throw new LotException("No end date");
 		}
 
-		return this.lotRefreshEJB.getAllLots().stream().map(LotDTO::getCluster).distinct().sorted().toList();
+		return this.lotRefreshEJB.getAllLots().stream()
+			.filter(lot -> lot.getStart().toLocalDate().isAfter(dateFilter.getFromDate())
+				&& lot.getStart().toLocalDate().isBefore(dateFilter.getToDate())).toList();
 
 	}
 
-	public List<String> getFilteredTechnos(final List<String> clusters) {
-		return this.lotRefreshEJB.getAllLots().stream()
+	public List<String> getFilteredClusters(final LotDateDTO dateFilter) throws LotException {
+		return getLotsFromDates(dateFilter).stream().map(LotDTO::getCluster).distinct().sorted().toList();
+	}
+
+	public List<String> getFilteredTechnos(final LotDateDTO dateFilter, final List<String> clusters)
+		throws LotException {
+		return getLotsFromDates(dateFilter).stream()
 			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
 			.map(LotDTO::getTechno).distinct().sorted().toList();
 	}
 
-	public List<String> getFilteredMasksets(final List<String> clusters, final List<String> technos) {
-		return this.lotRefreshEJB.getAllLots().stream()
+	public List<String> getFilteredMasksets(final LotDateDTO dateFilter, final List<String> clusters,
+		final List<String> technos) throws LotException {
+		return getLotsFromDates(dateFilter).stream()
 			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
 			.filter(lot -> technos.isEmpty() || technos.contains(lot.getTechno()))
 			.map(LotDTO::getMaskset).distinct().sorted().toList();
 	}
 
-	public List<String> getFilteredLayers(final List<String> clusters, final List<String> technos,
-		final List<String> masksets) {
-		return this.lotRefreshEJB.getAllLots().stream()
+	public List<String> getFilteredLayers(final LotDateDTO dateFilter, final List<String> clusters,
+		final List<String> technos, final List<String> masksets) throws LotException {
+		return getLotsFromDates(dateFilter).stream()
 			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
 			.filter(lot -> technos.isEmpty() || technos.contains(lot.getTechno()))
 			.filter(lot -> masksets.isEmpty() || masksets.contains(lot.getMaskset()))
 			.map(LotDTO::getLayer).distinct().sorted().toList();
 	}
 
-	public List<String> getFilteredLotIds(final List<String> clusters, final List<String> technos,
-		final List<String> masksets, final List<String> layers) {
-		return this.lotRefreshEJB.getAllLots().stream()
+	public List<String> getFilteredLotIds(final LotDateDTO dateFilter, final List<String> clusters,
+		final List<String> technos, final List<String> masksets, final List<String> layers) throws LotException {
+		return getLotsFromDates(dateFilter).stream()
 			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
 			.filter(lot -> technos.isEmpty() || technos.contains(lot.getTechno()))
 			.filter(lot -> masksets.isEmpty() || masksets.contains(lot.getMaskset()))
 			.filter(lot -> layers.isEmpty() || layers.contains(lot.getLayer()))
 			.map(LotDTO::getLotId).distinct().sorted().toList();
+	}
+
+	public List<LocalDateTime> getFilteredLotStarts(final LotDateDTO dateFilter, final List<String> clusters,
+		final List<String> technos, final List<String> masksets, final List<String> layers, final List<String> lotIds)
+		throws LotException {
+		return getLotsFromDates(dateFilter).stream()
+			.filter(lot -> clusters.isEmpty() || clusters.contains(lot.getCluster()))
+			.filter(lot -> technos.isEmpty() || technos.contains(lot.getTechno()))
+			.filter(lot -> masksets.isEmpty() || masksets.contains(lot.getMaskset()))
+			.filter(lot -> layers.isEmpty() || layers.contains(lot.getLayer()))
+			.filter(lot -> lotIds.isEmpty() || lotIds.contains(lot.getLotId()))
+			.map(LotDTO::getStart).distinct().sorted().toList();
 	}
 
 	public List<String> getMatchedList(final List<String> values, final Function<LotDTO, String> matchingValue,
@@ -107,7 +130,7 @@ public class LotEJB implements Serializable {
 
 	public List<LocalDateTime> getLotStarts(final String lotId) {
 		return this.lotRefreshEJB.getAllLots().stream().filter(lot -> lot.getLotId().equals(lotId))
-			.map(LotDTO::getStart).toList();
+			.map(LotDTO::getStart).distinct().sorted().toList();
 	}
 
 }

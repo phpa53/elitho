@@ -38,7 +38,9 @@ public class LotDTO {
 			&& matches(filter.getMasksets(), this.maskset)
 			&& matches(filter.getLayers(), this.layer)
 			&& matches(filter.getClusters(), this.cluster)
-			&& (filter.getLotStart() == null || filter.getLotStart().equals(this.start.toLocalDate()));
+			&& (Optional.ofNullable(filter.getLotStarts()).orElse(new ArrayList<>()).isEmpty()
+				|| Optional.ofNullable(filter.getLotStarts()).orElse(new ArrayList<>()).size() == 1
+				&& filter.getLotStarts().get(0).equals(this.start.toLocalDate()));
 	}
 
 	public static boolean matches(final List<String> list, final String value) {

@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="jakarta.tags.core"
+	xmlns:cc="jakarta.faces.composite"
+	xmlns:f="jakarta.faces.core"
+	xmlns:faces="jakarta.faces"
+	xmlns:fn="jakarta.tags.functions"
+	xmlns:h="jakarta.faces.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pass="jakarta.faces.passthrough"
+	xmlns:ui="jakarta.faces.facelets">
+	
+	<h:form id="elithojobForm" prependId="false">
+		
+		<p:growl id="elithojobGrowl" showDetail="true" life="3000"/>
+		
+		<p:dataTable id="elithojobDT"
+        	widgetVar="elithojobDTW"
+        	var="item"
+        	value="#{eLithoJobBean.items}"
+        	rowKey="#{item.getKey()}"
+			scrollable="true"
+			scrollHeight="800"
+			lazy="false"
+			sortMode="multiple"
+			filterMode="advanced"
+			virtualScroll="false"
+			tableStyle="width:overflow"
+			resizableColumns="true"
+			resizeMode="expand"
+			draggableColumns="true"
+			size="small"
+			editable="true"
+			editInitEvent="click"
+			editMode="cell"
+            selectionMode="multiple"
+            selection="#{eLithoJobBean.selectedItems}"
+            selectionPageOnly="false"
+            disabledSelection="false"
+			stripedRows="true"
+			disabledTextSelection="false"
+			cache="true"
+        	showGridlines="true">
+        	
+        	<f:facet name="header">
+        		<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+		            margin-top:5px;margin-bottom:5px;">
+	            	<span style="margin-top:-5px;">
+		        		<p:commandButton value="Apply"
+			               	actionListener="#{eLithoJobBean.apply}"
+			                update="elithojobDT elithoTabView:elithojobGrowl"
+							oncomplete="resizeAlertJobTable();"/>
+	                    <p:commandButton id="elithojobNewCB"
+	                    	title="New"
+	                    	icon="pi pi-plus"
+		                    styleClass="ui-button-success"
+		                    style="margin-left:10px;"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    actionListener="#{eLithoJobBean.add()}"
+		                    update="elithojobDT elithoTabView:elithojobGrowl"
+		                    oncomplete="resizeAlertJobTable();"/>
+	                    <p:commandButton id="elithojobCopyCB"
+	                    	title="Copy"
+	                    	icon="pi pi-copy"
+		                    styleClass="ui-button-success"
+		                    style="margin-left:10px;"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoJobBean.copyDisabled()}"
+		                    actionListener="#{eLithoJobBean.copy()}"
+		                    update="elithojobDT elithoTabView:elithojobGrowl"
+		                    oncomplete="resizeAlertJobTable();"/>
+	                    <p:commandButton id="elithojobDeleteCB"
+	                    	title="Delete"
+	                    	value="#{eLithoJobBean.getDeleteLabel()}"
+		                	icon="pi pi-trash"
+		                	escape="false"
+		                    styleClass="ui-button-danger"
+		                    style="margin-left:10px;"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{empty eLithoJobBean.selectedItems}"
+		                    actionListener="#{eLithoJobBean.delete()}"
+		                    update="@this elithojobDT elithoTabView:elithojobGrowl"
+		                    oncomplete="resizeAlertJobTable();"/>
+	                    <p:commandButton id="elithojobSaveCB"
+	                    	title="Save"
+		                	icon="pi pi-save"
+		                    style="margin-left:10px;"
+		                    styleClass="ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoJobBean.saveDisabled()}"
+		                    actionListener="#{eLithoJobBean.save()}"
+		                    update="elithojobDT elithoTabView:elithojobGrowl"
+		                    oncomplete="resizeAlertJobTable();"/>
+	                    <p:commandButton id="elithojobDiscardCB"
+	                    	title="Discard"
+		                	icon="pi pi-undo"
+		                    styleClass="ui-button-info"
+		                    style="margin-left:10px;"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{not eLithoJobBean.anyItemChanged}"
+		                    actionListener="#{eLithoJobBean.discard()}"
+		                    update="elithojobDT elithoTabView:elithojobGrowl"
+		                    oncomplete="resizeAlertJobTable();"/>
+		               	<p:commandButton icon="pi pi-sort-alt-slash"
+		               		title="Reset Table"
+		               		style="margin-left:10px;"
+		               		styleClass="ui-button-secondary"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		               		action="#{eLithoJobBean.resetTable}"
+		               		update="elithojobDT"
+		                    oncomplete="resizeAlertJobTable();"/>
+						<p:outputLabel value="#{eLithoJobBean.numberOfChanges} row(s) changed"
+							style="font-weight:bold;color:orange;margin-left:10px;"
+		               		rendered="#{eLithoJobBean.numberOfChanges > 0}"/>
+						<p:outputLabel value="#{eLithoJobBean.numberOfDeletes} row(s) deleted"
+							style="font-weight:bold;color:orange;margin-left:10px;"
+		               		rendered="#{eLithoJobBean.numberOfDeletes > 0}"/>
+					</span>
+				</div>
+        	</f:facet>
+        	
+        	<p:ajax event="rowSelect" update="elithojobCopyCB elithojobDeleteCB"/>
+            <p:ajax event="rowUnselect" update="elithojobCopyCB elithojobDeleteCB"/>
+            <p:ajax event="rowSelectCheckbox" update="elithojobCopyCB elithojobDeleteCB"/>
+            <p:ajax event="rowUnselectCheckbox" update="elithojobCopyCB elithojobDeleteCB"/>
+            <p:ajax event="toggleSelect" update="elithojobCopyCB elithojobDeleteCB"/>
+        	
+        	<p:column style="width:10px;" styleClass="#{item.toBeFilled() ? 'cell-to-be-filled' : ''}"/>
+        	<p:column headerText="Machine ID"
+        		title="Litho Machine ID"
+        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('machineId') ? 'cell-changed' : ''}"
+				sortBy="#{item.machineId}"
+            	filterBy="#{item.machineId}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.machineId}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:inputText value="#{item.machineId}"
+                        	style="width:100%"
+                        	maxlength="100"
+                        	immediate="true"
+                        	valueChangeListener="#{eLithoJobBean.valueChanged}"
+                        	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+                        	<f:attribute name="item" value="#{item}"/>
+                        	<f:attribute name="attribute" value="machineId"/>
+                        	<p:ajax event="blur"
+	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
+                        		process="@this"
+		                    	update="elithojobDT elithoTabView:elithojobGrowl"
+                        		onstart="saveAlertjobScrollPos();"
+		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                        </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Detec."
+				title="Recipe Detection"
+        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('recipeDetection') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeDetection}"
+            	filterBy="#{item.recipeDetection}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.recipeDetection}"/>
+                    </f:facet>
+                    <f:facet name="input">
+	                    <p:inputText value="#{item.recipeDetection}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="recipeDetection"/>>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithojobDT elithoTabView:elithojobGrowl"
+                        		onstart="saveAlertjobScrollPos();"
+		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Defect"
+				title="Recipe Defect"
+        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('recipeDefect') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeDefect}"
+            	filterBy="#{item.recipeDefect}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.recipeDefect}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.recipeDefect}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
+                        	onstart="saveAlertjobScrollPos();"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="recipeDefect"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithojobDT elithoTabView:elithojobGrowl"
+		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Storage"
+				title="Recipe Storage"
+        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('recipeStorage') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeStorage}"
+            	filterBy="#{item.recipeStorage}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.recipeStorage}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.recipeStorage}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="recipeStorage"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithojobDT elithoTabView:elithojobGrowl"
+                        		onstart="saveAlertjobScrollPos();"
+		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Export"
+				title="Recipe Export"
+        		style="width:320px;text-align:left;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('recipeExport') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeExport}"
+            	filterBy="#{item.recipeExport}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.recipeExport}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.recipeExport}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="recipeExport"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithojobDT elithoTabView:elithojobGrowl"
+                        		onstart="saveAlertjobScrollPos();"
+		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Notification"
+				title="Recipe Notification"
+        		style="width:320px;text-align:left;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('recipeNotification') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeNotification}"
+            	filterBy="#{item.recipeNotification}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.recipeNotification}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.recipeNotification}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="recipeNotification"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithojobDT elithoTabView:elithojobGrowl"
+                        		onstart="saveAlertjobScrollPos();"
+		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<ui:remove>
+			<p:column headerText="Created"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.createdDate}" rendered="#{item.isCreatedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Created By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdBy}"
+            	filterBy="#{item.createdBy}">
+                <h:outputText value="#{item.createdBy}"/>
+            </p:column>
+			<p:column headerText="Last Modified"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.lastModifiedDate}" rendered="#{item.isLastModifiedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Last Modified By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedBy}"
+            	filterBy="#{item.lastModifiedBy}">
+                <h:outputText value="#{item.lastModifiedBy}"/>
+            </p:column>
+            </ui:remove>
+			<p:column displayPriority="99"/>
+	        	
+		</p:dataTable>
+		
+	</h:form>
+	
+</ui:component>
