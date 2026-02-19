@@ -86,7 +86,7 @@
         			action="#{lotDetailsBean.showHelp}"
         			process="@this"
         			update="@none"/>
-        		<p:selectOneButton id="lotdetailsmodeCB"
+        		<p:selectOneButton id="lotdetailsmodeSOB"
         			value="#{lotDetailsBean.mode}"
         			styleClass="ml-1"
         			unselectable="false"
@@ -98,7 +98,7 @@
 		            	update="lotDetailsPG lotDetailsPanel"
 		            	oncomplete="resizeLotWafers();"/>
 		        </p:selectOneButton>
-        		<p:selectOneButton id="lotdetailsscopeCB"
+        		<p:selectOneButton id="lotdetailsscopeSOB"
         			value="#{lotDetailsBean.scope}"
         			styleClass="ml-1"
         			unselectable="false"

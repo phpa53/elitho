@@ -30,20 +30,20 @@ public final class ELithoJobDTO
 	private static final long serialVersionUID = -7761148924100025484L;
 	private int machineId;
 	private List<String> recipeDetections;
-	private String recipeDefect;
+	private List<String> recipeDefects;
 	private String recipeStorage;
 	private String recipeExport;
-	private String recipeNotification;
+	private List<String> recipeNotifications;
 
 	@Override
 	public ELithoJob toEntity() {
 		return ELithoJob.builder()
 			.machineId(this.machineId)
 			.recipeDetection(getListAsString(this.recipeDetections))
-			.recipeDefect(this.recipeDefect)
+			.recipeDefect(getListAsString(this.recipeDefects))
 			.recipeStorage(this.recipeStorage)
 			.recipeExport(this.recipeExport)
-			.recipeNotification(this.recipeNotification)
+			.recipeNotification(getListAsString(this.recipeNotifications))
 			.build();
 	}
 
@@ -64,10 +64,10 @@ public final class ELithoJobDTO
 		return ELithoJobDTO.builder()
 			.machineId(0)
 			.recipeDetections(new ArrayList<>())
-			.recipeDefect(VALUE_DEFAULT)
+			.recipeDefects(new ArrayList<>())
 			.recipeStorage(VALUE_DEFAULT)
 			.recipeExport(VALUE_DEFAULT)
-			.recipeNotification(VALUE_DEFAULT)
+			.recipeNotifications(new ArrayList<>())
 			.build();
 	}
 
@@ -76,21 +76,21 @@ public final class ELithoJobDTO
 		return ELithoJobDTO.builder()
 			.machineId(0)
 			.recipeDetections(new ArrayList<>())
-			.recipeDefect(VALUE_DEFAULT)
+			.recipeDefects(new ArrayList<>())
 			.recipeStorage(VALUE_DEFAULT)
 			.recipeExport(VALUE_DEFAULT)
-			.recipeNotification(VALUE_DEFAULT)
+			.recipeNotifications(new ArrayList<>())
 			.build();
 	}
 
 	@Override
 	public boolean toBeFilled() {
-		return VALUE_DEFAULT.equals(this.machineId)
-			|| VALUE_DEFAULT.equals(this.recipeDetections)
-			|| VALUE_DEFAULT.equals(this.recipeDefect)
+		return this.machineId == 0
+			|| Optional.ofNullable(this.recipeDetections).orElse(new ArrayList<>()).isEmpty()
+			|| Optional.ofNullable(this.recipeDefects).orElse(new ArrayList<>()).isEmpty()
 			|| VALUE_DEFAULT.equals(this.recipeStorage)
 			|| VALUE_DEFAULT.equals(this.recipeExport)
-			|| VALUE_DEFAULT.equals(this.recipeNotification);
+			|| Optional.ofNullable(this.recipeNotifications).orElse(new ArrayList<>()).isEmpty();
 	}
 
 	@Override
@@ -139,11 +139,26 @@ public final class ELithoJobDTO
 	}
 
 	public String getDetectionListCompact() {
-
 		final var list = Optional.ofNullable(this.recipeDetections).orElse(new ArrayList<>());
-
 		return list.isEmpty() ? "" : String.format("%d detection%s", list.size(), list.size() == 1 ? "" : "s");
+	}
 
+	public String getDefectAsText() {
+		return getListAsText(this.recipeDefects);
+	}
+
+	public String getDefectListCompact() {
+		final var list = Optional.ofNullable(this.recipeDefects).orElse(new ArrayList<>());
+		return list.isEmpty() ? "" : String.format("%d defect%s", list.size(), list.size() == 1 ? "" : "s");
+	}
+
+	public String getNotificationAsText() {
+		return getListAsText(this.recipeNotifications);
+	}
+
+	public String getNotificationListCompact() {
+		final var list = Optional.ofNullable(this.recipeNotifications).orElse(new ArrayList<>());
+		return list.isEmpty() ? "" : String.format("%d notification%s", list.size(), list.size() == 1 ? "" : "s");
 	}
 
 }

@@ -1,22 +1,29 @@
+var elithojobExpanded;
+
 $(document).ready(function() {
 	resizeTables();
 	resizeLotWafers();
+	resizeElithojobTable();
+	elithojobExpanded = false;
+	
 });
 
 $(window).resize(function() {
 	resizeTables();
-	resizeLotWafers();
-	resizeElithojobTable();
 });
 
 function resizeTables() {
 	resizeLotTable();
+	resizeLotWafers();
+	resizeElithojobTable();
 }
 
 function resizeLotTable() {
 	var height = $(this).height() - 340;
 	var tableBody = $("#elithoTabView\\:lotDT").find(".ui-datatable-scrollable-body");
-	tableBody.height(height);
+	if (tableBody !== null && tableBody !== undefined) {
+		tableBody.height(height);
+	}
 }
 
 var lotScrollTop;
@@ -32,11 +39,9 @@ function setlotScrollPos() {
 function resizeLotWafers() {
 	var height = $(window).height() - 260;
     var panel = $("#lotDetailsForm\\:lotDetailsWaferSP");
-    if (panel.length) {
-        panel.height(height);
-    } else {
-        console.log("resizeLotWafers: lotDetailsForm:lotDetailsWaferSP not found");
-    }
+	if (panel !== null && panel !== undefined && panel.length) {
+		panel.height(height);
+	}
 }
 
 var elithoJobScrollTop;
@@ -50,9 +55,19 @@ function setElithojobScrollPos() {
 	$("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollLeft(elithoJobScrollLeft);
 }
 function resizeElithojobTable() {
-	var height = $(this).height() - 340;
+	var height = $(this).height() - 260;
 	var tableBody = $("#elithoTabView\\:elithojobDT").find(".ui-datatable-scrollable-body");
-	tableBody.height(height);
+	if (tableBody !== null && tableBody !== undefined) {
+		tableBody.height(height);
+	}
+}
+
+function updateElithoRows() {
+	if (elithojobExpanded) {
+		expandAllRows("elithojobDTW");
+	} else {
+		collapseAllRows("elithojobDTW");
+	}
 }
 
 function expandAllRows(widgetVar) {

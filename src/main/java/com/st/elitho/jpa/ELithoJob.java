@@ -47,10 +47,10 @@ public final class ELithoJob extends AbstractTable<ELithoJobDTO, ELithoJobPK> im
 		return ELithoJobDTO.builder()
 			.machineId(Optional.ofNullable(this.machineId).orElse(0))
 			.recipeDetections(getStringAsList(this.recipeDetection))
-			.recipeDefect(Optional.ofNullable(this.recipeDefect).orElse(""))
+			.recipeDefects(getStringAsList(this.recipeDefect))
 			.recipeStorage(Optional.ofNullable(this.recipeStorage).orElse(""))
 			.recipeExport(Optional.ofNullable(this.recipeExport).orElse(""))
-			.recipeNotification(Optional.ofNullable(this.recipeNotification).orElse(""))
+			.recipeNotifications(getStringAsList(this.recipeNotification))
 			/*
 			.createdDate(Optional.ofNullable(getCreated()).orElse(LocalDateTime.MIN))
 			.createdBy(getCreatedBy())

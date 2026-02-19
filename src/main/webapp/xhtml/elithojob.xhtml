@@ -50,7 +50,7 @@
 		        		<p:commandButton value="Apply"
 			               	actionListener="#{eLithoJobBean.apply}"
 			                update="elithojobDT elithoTabView:elithojobGrowl"
-							oncomplete="resizeElithojob();"/>
+							oncomplete="resizeElithojobTable();"/>
 	                    <p:commandButton id="elithojobNewCB"
 	                    	title="New"
 	                    	icon="pi pi-plus"
@@ -58,7 +58,7 @@
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		                    actionListener="#{eLithoJobBean.add()}"
 		                    update="elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeElithojob();"/>
+		                    oncomplete="resizeElithojobTable();"/>
 	                    <p:commandButton id="elithojobCopyCB"
 	                    	title="Copy"
 	                    	icon="pi pi-copy"
@@ -67,7 +67,7 @@
 		                    disabled="#{eLithoJobBean.copyDisabled()}"
 		                    actionListener="#{eLithoJobBean.copy()}"
 		                    update="elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeElithojob();"/>
+		                    oncomplete="resizeElithojobTable();"/>
 	                    <p:commandButton id="elithojobDeleteCB"
 	                    	title="Delete"
 	                    	value="#{eLithoJobBean.getDeleteLabel()}"
@@ -78,7 +78,7 @@
 		                    disabled="#{empty eLithoJobBean.selectedItems}"
 		                    actionListener="#{eLithoJobBean.delete()}"
 		                    update="@this elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeElithojob();"/>
+		                    oncomplete="resizeElithojobTable();"/>
 	                    <p:commandButton id="elithojobSaveCB"
 	                    	title="Save"
 		                	icon="pi pi-save"
@@ -87,7 +87,7 @@
 		                    disabled="#{eLithoJobBean.saveDisabled()}"
 		                    actionListener="#{eLithoJobBean.save()}"
 		                    update="elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeElithojob();"/>
+		                    oncomplete="resizeElithojobTable();"/>
 	                    <p:commandButton id="elithojobDiscardCB"
 	                    	title="Discard"
 		                	icon="pi pi-undo"
@@ -96,24 +96,37 @@
 		                    disabled="#{not eLithoJobBean.anyItemChanged}"
 		                    actionListener="#{eLithoJobBean.discard()}"
 		                    update="elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeElithojob();"/>
+		                    oncomplete="resizeElithojobTable();"/>
 		               	<p:commandButton icon="pi pi-sort-alt-slash"
 		               		title="Reset Table"
 		               		styleClass="ml-2 ui-button-secondary"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		               		action="#{eLithoJobBean.resetTable}"
 		               		update="elithojobDT"
-		                    oncomplete="resizeElithojob();"/>
+		                    oncomplete="resizeElithojobTable();"/>
+		                <p:tooltip for="@next" value="Column to expand"/>
+                 		<p:selectOneButton id="lotdetailsmodeSOB"
+		        			value="#{eLithoJobBean.columnToExpand}"
+		        			styleClass="ml-2"
+		        			unselectable="false"
+		        			required="true">
+				            <f:selectItem itemLabel="Detection" itemValue="detection"/>
+				            <f:selectItem itemLabel="Defect" itemValue="defect"/>
+				            <f:selectItem itemLabel="Notif" itemValue="notification"/>
+				            <p:ajax event="change"
+				            	update="elithojobDT"
+				            	oncomplete="updateElithoRows();resizeElithojobTable();"/>
+				        </p:selectOneButton>
 		                <p:commandButton icon="pi pi-angle-down"
 		                    styleClass="ml-2"
 		                    title="Expand All"
 		                    type="button"
-                 			onclick="expandAllRows('elithojobDTW');"/>
+                 			onclick="expandAllRows('elithojobDTW');elithojobExpanded=true;"/>
 		                <p:commandButton icon="pi pi-angle-right"
 		                    styleClass="ml-2"
 		                    title="Collapse All"
 		                	type="button"
-                 			onclick="collapseAllRows('elithojobDTW');"/>
+                 			onclick="collapseAllRows('elithojobDTW');elithojobExpanded=false;"/>
 						<p:outputLabel value="#{eLithoJobBean.numberOfChanges} row(s) changed"
 							style="font-weight:bold;color:orange;"
 							styleClass="ml-2"
@@ -159,7 +172,7 @@
                         		process="@this"
 		                    	update="elithojobDT elithoTabView:elithojobGrowl"
                         		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
+		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
                         </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -167,7 +180,7 @@
 			<p:column headerText="Detection"
 				title="Recipe Detection"
         		style="width:160px;text-align:center;color:#{item.getAttributeColor()};"
-        		styleClass="#{item.hasAttributeChanged('recipeDetection') ? 'cell-changed' : ''}"
+        		styleClass="#{item.hasAttributeChanged('recipeDetections') ? 'cell-changed' : ''}"
 				sortBy="#{item.recipeDetection}"
             	filterBy="#{item.recipeDetection}">
 	            <p:commandLink style="text-decoration:none;"
@@ -177,7 +190,7 @@
                		<h:outputText id="jobDetectionsOT"
                         value="#{item.getDetectionListCompact()}"
                         escape="false"/>
-               		<f:setPropertyActionListener target="#{notificationBean.selectedItem}" value="#{item}"/>
+               		<f:setPropertyActionListener target="#{eLithoJobBean.selectedItem}" value="#{item}"/>
            		</p:commandLink>
 			</p:column>
 			<p:column headerText="Defect"
@@ -186,28 +199,15 @@
         		styleClass="#{item.hasAttributeChanged('recipeDefect') ? 'cell-changed' : ''}"
 				sortBy="#{item.recipeDefect}"
             	filterBy="#{item.recipeDefect}">
-            	<p:cellEditor>
-                    <f:facet name="output">
-                		<h:outputText value="#{item.recipeDefect}"/>
-                    </f:facet>
-                    <f:facet name="input">
-                    	<p:inputText value="#{item.recipeDefect}"
-	                       	style="width:100%"
-	                       	maxlength="100"
-	                       	immediate="true"
-	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
-                        	onstart="saveElithojobScrollPos();"
-	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
-	                       	<f:attribute name="item" value="#{item}"/>
-	                       	<f:attribute name="attribute" value="recipeDefect"/>
-	                       	<p:ajax event="blur"
-	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
-	                       		process="@this"
-		                    	update="elithojobDT elithoTabView:elithojobGrowl"
-		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
-                       </p:inputText>
-                    </f:facet>
-                </p:cellEditor>
+	            <p:commandLink style="text-decoration:none;"
+                    update="elithoTabView:jobDefectUpdateDialogContent"
+                    process="@this"
+                    oncomplete="PF('jobDefectUpdateDialog').show();">
+               		<h:outputText id="jobDefectsOT"
+                        value="#{item.getDefectListCompact()}"
+                        escape="false"/>
+               		<f:setPropertyActionListener target="#{eLithoJobBean.selectedItem}" value="#{item}"/>
+           		</p:commandLink>
 			</p:column>
 			<p:column headerText="Storage"
 				title="Recipe Storage"
@@ -233,7 +233,7 @@
 	                       		process="@this"
 		                    	update="elithojobDT elithoTabView:elithojobGrowl"
                         		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
+		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -262,39 +262,26 @@
 	                       		process="@this"
 		                    	update="elithojobDT elithoTabView:elithojobGrowl"
                         		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
+		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
 			</p:column>
 			<p:column headerText="Notification"
 				title="Recipe Notification"
-        		style="width:320px;text-align:left;color:#{item.getAttributeColor()};"
+        		style="width:320px;text-align:center;color:#{item.getAttributeColor()};"
         		styleClass="#{item.hasAttributeChanged('recipeNotification') ? 'cell-changed' : ''}"
 				sortBy="#{item.recipeNotification}"
             	filterBy="#{item.recipeNotification}">
-            	<p:cellEditor>
-                    <f:facet name="output">
-                		<h:outputText value="#{item.recipeNotification}"/>
-                    </f:facet>
-                    <f:facet name="input">
-                    	<p:inputText value="#{item.recipeNotification}"
-	                       	style="width:100%"
-	                       	maxlength="100"
-	                       	immediate="true"
-	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
-	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
-	                       	<f:attribute name="item" value="#{item}"/>
-	                       	<f:attribute name="attribute" value="recipeNotification"/>
-	                       	<p:ajax event="blur"
-	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
-	                       		process="@this"
-		                    	update="elithojobDT elithoTabView:elithojobGrowl"
-                        		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
-                       </p:inputText>
-                    </f:facet>
-                </p:cellEditor>
+	            <p:commandLink style="text-decoration:none;"
+                    update="elithoTabView:jobNotificationUpdateDialogContent"
+                    process="@this"
+                    oncomplete="PF('jobNotificationUpdateDialog').show();">
+               		<h:outputText id="jobNotificationsOT"
+                        value="#{item.getNotificationListCompact()}"
+                        escape="false"/>
+               		<f:setPropertyActionListener target="#{eLithoJobBean.selectedItem}" value="#{item}"/>
+           		</p:commandLink>
 			</p:column>
 			<ui:remove>
 			<p:column headerText="Created"
@@ -324,7 +311,15 @@
             </ui:remove>
 			<p:column displayPriority="99"/>
 			<p:rowExpansion>
-        		<h:outputText value="#{item.getDetectionAsText()}" rendered="true" escape="false"/>
+        		<h:outputText value="#{item.getDetectionAsText()}"
+        			rendered="#{eLithoJobBean.columnToExpand eq 'detection'}"
+        			escape="false"/>
+        		<h:outputText value="#{item.getDefectAsText()}"
+        			rendered="#{eLithoJobBean.columnToExpand eq 'defect'}"
+        			escape="false"/>
+        		<h:outputText value="#{item.getNotificationAsText()}"
+        			rendered="#{eLithoJobBean.columnToExpand eq 'notification'}"
+        			escape="false"/>
             </p:rowExpansion>
 	        	
 		</p:dataTable>
@@ -337,8 +332,8 @@
 	        header="Update Job Detection"
 	        modal="true"
 	        resizable="true"
-	        width="600"
-	        height="350"
+	        width="520"
+	        height="200"
 	        closable="true">
 		    <h:panelGroup id="jobDetectionUpdateDialogContent" layout="block" style="padding:10px;">
                 <p:autoComplete id="jobDetectionAC"
@@ -349,29 +344,117 @@
 					forceSelection="true"
 					dropdown="true">
 					<p:ajax event="itemSelect"
-                        listener="#{eLithoJobBean.addSelectedDetectionToList}"
+                        listener="#{eLithoJobBean.addSectedDetectionToList}"
                         process="@this"
                         update="@this jobDetectionChips jobDetectionOL"/>
 				</p:autoComplete>
 	            <p:chips id="jobDetectionChips"
-	            	value="#{eLithoJobBean.selectedItem.detections}"
+	            	value="#{eLithoJobBean.selectedItem.recipeDetections}"
 					styleClass="chips-input-dialog"
 					addOnBlur="true">
 					<p:ajax event="itemSelect"
-		                listener="#{eLkithoBeanBean.validateLastDetection}"
+		                listener="#{eLithoJobBean.validateLastDetection}"
 		                process="@this"
 		                update="@this jobDetectionOL jobDetectionAC"/>
 	            </p:chips>
 		        <div style="margin-top:15px; text-align:right;">
 		        	<p:commandButton styleClass="mr-2"
 		        		value="Update"
-		        		update="elithoTabView:elithojobDT"
 		        		actionListener="#{eLithoJobBean.checkDetectionChanges()}"
+		        		update="elithoTabView:elithojobDT"
 		        		oncomplete="PF('jobDetectionUpdateDialog').hide();"/>
 		            <p:commandButton value="Close" type="button" onclick="PF('jobDetectionUpdateDialog').hide();"/>
 		        </div>
 		    </h:panelGroup>
-		    <p:ajax event="open" listener="#{notificationBean.resetDetectionChanges()}"/>
+		    <p:ajax event="open" listener="#{eLithoJobBean.resetDetectionChanges()}"/>
+		</p:dialog>
+	</h:form>
+	
+	<h:form id="jobDefectUpdateForm" prependId="false">
+		<p:dialog id="jobDefectUpdateDialog"
+	        widgetVar="jobDefectUpdateDialog"
+	        header="Update Job Defect"
+	        modal="true"
+	        resizable="true"
+	        width="520"
+	        height="200"
+	        closable="true">
+		    <h:panelGroup id="jobDefectUpdateDialogContent" layout="block" style="padding:10px;">
+                <p:autoComplete id="jobDefectAC"
+                	style="margin-bottom:20px;"
+                	completeMethod="#{eLithoJobBean.completeDefect}"
+                	value="#{eLithoJobBean.defectsToAdd}"
+					multiple="true"
+					forceSelection="true"
+					dropdown="true">
+					<p:ajax event="itemSelect"
+                        listener="#{eLithoJobBean.addSectedDefectToList}"
+                        process="@this"
+                        update="@this jobDefectChips jobDefectOL"/>
+				</p:autoComplete>
+	            <p:chips id="jobDefectChips"
+	            	value="#{eLithoJobBean.selectedItem.recipeDefects}"
+					styleClass="chips-input-dialog"
+					addOnBlur="true">
+					<p:ajax event="itemSelect"
+		                listener="#{eLithoJobBean.validateLastDefect}"
+		                process="@this"
+		                update="@this jobDefectOL jobDefectAC"/>
+	            </p:chips>
+		        <div style="margin-top:15px; text-align:right;">
+		        	<p:commandButton styleClass="mr-2"
+		        		value="Update"
+		        		actionListener="#{eLithoJobBean.checkDefectChanges()}"
+		        		update="elithoTabView:elithojobDT"
+		        		oncomplete="PF('jobDefectUpdateDialog').hide();"/>
+		            <p:commandButton value="Close" type="button" onclick="PF('jobDefectUpdateDialog').hide();"/>
+		        </div>
+		    </h:panelGroup>
+		    <p:ajax event="open" listener="#{eLithoJobBean.resetDefectChanges()}"/>
+		</p:dialog>
+	</h:form>
+	
+	<h:form id="jobNotificationUpdateForm" prependId="false">
+		<p:dialog id="jobNotificationUpdateDialog"
+	        widgetVar="jobNotificationUpdateDialog"
+	        header="Update Job Notification"
+	        modal="true"
+	        resizable="true"
+	        width="520"
+	        height="200"
+	        closable="true">
+		    <h:panelGroup id="jobNotificationUpdateDialogContent" layout="block" style="padding:10px;">
+                <p:autoComplete id="jobNotificationAC"
+                	style="margin-bottom:20px;"
+                	completeMethod="#{eLithoJobBean.completeNotification}"
+                	value="#{eLithoJobBean.notificationsToAdd}"
+					multiple="true"
+					forceSelection="true"
+					dropdown="true">
+					<p:ajax event="itemSelect"
+                        listener="#{eLithoJobBean.addSectedNotificationToList}"
+                        process="@this"
+                        update="@this jobNotificationChips jobNotificationOL"/>
+				</p:autoComplete>
+	            <p:chips id="jobNotificationChips"
+	            	value="#{eLithoJobBean.selectedItem.recipeNotifications}"
+					styleClass="chips-input-dialog"
+					addOnBlur="true">
+					<p:ajax event="itemSelect"
+		                listener="#{eLithoJobBean.validateLastNotification}"
+		                process="@this"
+		                update="@this jobNotificationOL jobNotificationAC"/>
+	            </p:chips>
+		        <div style="margin-top:15px; text-align:right;">
+		        	<p:commandButton styleClass="mr-2"
+		        		value="Update"
+		        		actionListener="#{eLithoJobBean.checkNotificationChanges()}"
+		        		update="elithoTabView:elithojobDT"
+		        		oncomplete="PF('jobNotificationUpdateDialog').hide();"/>
+		            <p:commandButton value="Close" type="button" onclick="PF('jobNotificationUpdateDialog').hide();"/>
+		        </div>
+		    </h:panelGroup>
+		    <p:ajax event="open" listener="#{eLithoJobBean.resetNotificationChanges()}"/>
 		</p:dialog>
 	</h:form>
 	
