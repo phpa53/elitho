@@ -1,6 +1,9 @@
 package com.st.elitho.jpa;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import com.st.elitho.dto.ELithoJobDTO;
@@ -43,7 +46,7 @@ public final class ELithoJob extends AbstractTable<ELithoJobDTO, ELithoJobPK> im
 	public ELithoJobDTO toDTO() {
 		return ELithoJobDTO.builder()
 			.machineId(Optional.ofNullable(this.machineId).orElse(0))
-			.recipeDetection(Optional.ofNullable(this.recipeDetection).orElse(""))
+			.recipeDetections(getStringAsList(this.recipeDetection))
 			.recipeDefect(Optional.ofNullable(this.recipeDefect).orElse(""))
 			.recipeStorage(Optional.ofNullable(this.recipeStorage).orElse(""))
 			.recipeExport(Optional.ofNullable(this.recipeExport).orElse(""))
@@ -62,6 +65,11 @@ public final class ELithoJob extends AbstractTable<ELithoJobDTO, ELithoJobPK> im
 		return ELithoJobPK.builder()
 			.machineId(this.machineId)
 			.build();
+	}
+
+	private static List<String> getStringAsList(final String value) {
+		return Optional.ofNullable(value).orElse("").isEmpty() ? new ArrayList<>()
+			: Arrays.asList(value.trim().split(";")).stream().map(String::trim).toList();
 	}
 
 }

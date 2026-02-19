@@ -2,7 +2,10 @@ package com.st.elitho.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.st.elitho.jpa.ELithoJob;
 import com.st.elitho.jpa.ELithoJobPK;
@@ -26,7 +29,7 @@ public final class ELithoJobDTO
 
 	private static final long serialVersionUID = -7761148924100025484L;
 	private int machineId;
-	private String recipeDetection;
+	private List<String> recipeDetections;
 	private String recipeDefect;
 	private String recipeStorage;
 	private String recipeExport;
@@ -36,7 +39,7 @@ public final class ELithoJobDTO
 	public ELithoJob toEntity() {
 		return ELithoJob.builder()
 			.machineId(this.machineId)
-			.recipeDetection(this.recipeDetection)
+			.recipeDetection(getListAsString(this.recipeDetections))
 			.recipeDefect(this.recipeDefect)
 			.recipeStorage(this.recipeStorage)
 			.recipeExport(this.recipeExport)
@@ -60,7 +63,7 @@ public final class ELithoJobDTO
 	public ELithoJobDTO getDefault() {
 		return ELithoJobDTO.builder()
 			.machineId(0)
-			.recipeDetection(VALUE_DEFAULT)
+			.recipeDetections(new ArrayList<>())
 			.recipeDefect(VALUE_DEFAULT)
 			.recipeStorage(VALUE_DEFAULT)
 			.recipeExport(VALUE_DEFAULT)
@@ -72,7 +75,7 @@ public final class ELithoJobDTO
 	public ELithoJobDTO getCopy() {
 		return ELithoJobDTO.builder()
 			.machineId(0)
-			.recipeDetection(VALUE_DEFAULT)
+			.recipeDetections(new ArrayList<>())
 			.recipeDefect(VALUE_DEFAULT)
 			.recipeStorage(VALUE_DEFAULT)
 			.recipeExport(VALUE_DEFAULT)
@@ -83,7 +86,7 @@ public final class ELithoJobDTO
 	@Override
 	public boolean toBeFilled() {
 		return VALUE_DEFAULT.equals(this.machineId)
-			|| VALUE_DEFAULT.equals(this.recipeDetection)
+			|| VALUE_DEFAULT.equals(this.recipeDetections)
 			|| VALUE_DEFAULT.equals(this.recipeDefect)
 			|| VALUE_DEFAULT.equals(this.recipeStorage)
 			|| VALUE_DEFAULT.equals(this.recipeExport)
@@ -118,6 +121,29 @@ public final class ELithoJobDTO
 	@Override
 	public boolean isLastModifiedDateValid() {
 		return !Optional.ofNullable(getLastModifiedDate()).orElse(LocalDateTime.MIN).equals(LocalDateTime.MIN);
+	}
+
+	private static String getListAsString(final List<String> list) {
+		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream().collect(Collectors.joining(";"));
+	}
+
+	private static String getListAsText(final List<String> list) {
+		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream()
+			.sorted()
+            .map(value -> String.format("%s<br/>", value))
+            .collect(Collectors.joining());
+	}
+
+	public String getDetectionAsText() {
+		return getListAsText(this.recipeDetections);
+	}
+
+	public String getDetectionListCompact() {
+
+		final var list = Optional.ofNullable(this.recipeDetections).orElse(new ArrayList<>());
+
+		return list.isEmpty() ? "" : String.format("%d detection%s", list.size(), list.size() == 1 ? "" : "s");
+
 	}
 
 }

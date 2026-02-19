@@ -6,6 +6,7 @@ $(document).ready(function() {
 $(window).resize(function() {
 	resizeTables();
 	resizeLotWafers();
+	resizeElithojobTable();
 });
 
 function resizeTables() {
@@ -18,19 +19,16 @@ function resizeLotTable() {
 	tableBody.height(height);
 }
 
-var wipScrollTop;
-var wipScrollLeft;
-
-function saveWipScrollPos() {
-	wipScrollTop = $("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollTop();
-	wipScrollLeft = $("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollLeft();
+var lotScrollTop;
+var lotScrollLeft;
+function savelotScrollPos() {
+	lotScrollTop = $("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollTop();
+	lotScrollLeft = $("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollLeft();
 }
-
-function setWipScrollPos() {
-	$("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollTop(wipScrollTop);
-	$("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollLeft(wipScrollLeft);
+function setlotScrollPos() {
+	$("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollTop(lotScrollTop);
+	$("#elithoTabView\\:lotDT > .ui-datatable-scrollable-body").scrollLeft(lotScrollLeft);
 }
-
 function resizeLotWafers() {
 	var height = $(window).height() - 260;
     var panel = $("#lotDetailsForm\\:lotDetailsWaferSP");
@@ -40,6 +38,56 @@ function resizeLotWafers() {
         console.log("resizeLotWafers: lotDetailsForm:lotDetailsWaferSP not found");
     }
 }
+
+var elithoJobScrollTop;
+var elithoJobScrollLeft;
+function saveElithojobScrollPos() {
+	elithoJobScrollTop = $("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoJobScrollLeft = $("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+}
+function setElithojobScrollPos() {
+	$("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollTop(elithoJobScrollTop);
+	$("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollLeft(elithoJobScrollLeft);
+}
+function resizeElithojobTable() {
+	var height = $(this).height() - 340;
+	var tableBody = $("#elithoTabView\\:elithojobDT").find(".ui-datatable-scrollable-body");
+	tableBody.height(height);
+}
+
+function expandAllRows(widgetVar) {
+    var dt = PF(widgetVar);
+    if (!dt) {
+        return;
+    }
+    dt.tbody.find('.ui-row-toggler.ui-icon-circle-triangle-e').each(function () {
+        this.click(); // simulate user click -> expands row
+    });
+}
+function collapseAllRows(widgetVar) {
+    var dt = PF(widgetVar);
+    if (!dt) {
+        return;
+    }
+    dt.tbody.find('.ui-row-toggler.ui-icon-circle-triangle-s').each(function () {
+        this.click(); // simulate user click -> collapses row
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

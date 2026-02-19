@@ -50,71 +50,77 @@
 		        		<p:commandButton value="Apply"
 			               	actionListener="#{eLithoJobBean.apply}"
 			                update="elithojobDT elithoTabView:elithojobGrowl"
-							oncomplete="resizeAlertJobTable();"/>
+							oncomplete="resizeElithojob();"/>
 	                    <p:commandButton id="elithojobNewCB"
 	                    	title="New"
 	                    	icon="pi pi-plus"
-		                    styleClass="ui-button-success"
-		                    style="margin-left:10px;"
+		                    styleClass="ml-2 ui-button-success"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		                    actionListener="#{eLithoJobBean.add()}"
 		                    update="elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeAlertJobTable();"/>
+		                    oncomplete="resizeElithojob();"/>
 	                    <p:commandButton id="elithojobCopyCB"
 	                    	title="Copy"
 	                    	icon="pi pi-copy"
-		                    styleClass="ui-button-success"
-		                    style="margin-left:10px;"
+		                    styleClass="ml-2 ui-button-success"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		                    disabled="#{eLithoJobBean.copyDisabled()}"
 		                    actionListener="#{eLithoJobBean.copy()}"
 		                    update="elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeAlertJobTable();"/>
+		                    oncomplete="resizeElithojob();"/>
 	                    <p:commandButton id="elithojobDeleteCB"
 	                    	title="Delete"
 	                    	value="#{eLithoJobBean.getDeleteLabel()}"
 		                	icon="pi pi-trash"
 		                	escape="false"
-		                    styleClass="ui-button-danger"
-		                    style="margin-left:10px;"
+		                    styleClass="ml-2 ui-button-danger"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		                    disabled="#{empty eLithoJobBean.selectedItems}"
 		                    actionListener="#{eLithoJobBean.delete()}"
 		                    update="@this elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeAlertJobTable();"/>
+		                    oncomplete="resizeElithojob();"/>
 	                    <p:commandButton id="elithojobSaveCB"
 	                    	title="Save"
 		                	icon="pi pi-save"
-		                    style="margin-left:10px;"
-		                    styleClass="ui-button-info"
+		                    styleClass="ml-2 ui-button-info"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		                    disabled="#{eLithoJobBean.saveDisabled()}"
 		                    actionListener="#{eLithoJobBean.save()}"
 		                    update="elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeAlertJobTable();"/>
+		                    oncomplete="resizeElithojob();"/>
 	                    <p:commandButton id="elithojobDiscardCB"
 	                    	title="Discard"
 		                	icon="pi pi-undo"
-		                    styleClass="ui-button-info"
-		                    style="margin-left:10px;"
+		                    styleClass="ml-2 ui-button-info"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		                    disabled="#{not eLithoJobBean.anyItemChanged}"
 		                    actionListener="#{eLithoJobBean.discard()}"
 		                    update="elithojobDT elithoTabView:elithojobGrowl"
-		                    oncomplete="resizeAlertJobTable();"/>
+		                    oncomplete="resizeElithojob();"/>
 		               	<p:commandButton icon="pi pi-sort-alt-slash"
 		               		title="Reset Table"
-		               		style="margin-left:10px;"
-		               		styleClass="ui-button-secondary"
+		               		styleClass="ml-2 ui-button-secondary"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		               		action="#{eLithoJobBean.resetTable}"
 		               		update="elithojobDT"
-		                    oncomplete="resizeAlertJobTable();"/>
+		                    oncomplete="resizeElithojob();"/>
+		                <p:commandButton icon="pi pi-angle-down"
+		                    styleClass="ml-2"
+		                    title="Expand All"
+		                    type="button"
+                 			onclick="expandAllRows('elithojobDTW');"/>
+		                <p:commandButton icon="pi pi-angle-right"
+		                    styleClass="ml-2"
+		                    title="Collapse All"
+		                	type="button"
+                 			onclick="collapseAllRows('elithojobDTW');"/>
 						<p:outputLabel value="#{eLithoJobBean.numberOfChanges} row(s) changed"
-							style="font-weight:bold;color:orange;margin-left:10px;"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
 		               		rendered="#{eLithoJobBean.numberOfChanges > 0}"/>
 						<p:outputLabel value="#{eLithoJobBean.numberOfDeletes} row(s) deleted"
-							style="font-weight:bold;color:orange;margin-left:10px;"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
 		               		rendered="#{eLithoJobBean.numberOfDeletes > 0}"/>
 					</span>
 				</div>
@@ -126,10 +132,12 @@
             <p:ajax event="rowUnselectCheckbox" update="elithojobCopyCB elithojobDeleteCB"/>
             <p:ajax event="toggleSelect" update="elithojobCopyCB elithojobDeleteCB"/>
         	
-        	<p:column style="width:10px;" styleClass="#{item.toBeFilled() ? 'cell-to-be-filled' : ''}"/>
+        	<p:column style="width:10px;" styleClass="#{item.toBeFilled() ? 'cell-to-be-filled' : ''}">
+                <p:rowToggler/>
+            </p:column>
         	<p:column headerText="Machine ID"
         		title="Litho Machine ID"
-        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		style="width:110px;text-align:center;color:#{item.getAttributeColor()};"
         		styleClass="#{item.hasAttributeChanged('machineId') ? 'cell-changed' : ''}"
 				sortBy="#{item.machineId}"
             	filterBy="#{item.machineId}">
@@ -150,40 +158,27 @@
 	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
                         		process="@this"
 		                    	update="elithojobDT elithoTabView:elithojobGrowl"
-                        		onstart="saveAlertjobScrollPos();"
-		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
                         </p:inputText>
                     </f:facet>
                 </p:cellEditor>
 			</p:column>
-			<p:column headerText="Detec."
+			<p:column headerText="Detection"
 				title="Recipe Detection"
-        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		style="width:160px;text-align:center;color:#{item.getAttributeColor()};"
         		styleClass="#{item.hasAttributeChanged('recipeDetection') ? 'cell-changed' : ''}"
 				sortBy="#{item.recipeDetection}"
             	filterBy="#{item.recipeDetection}">
-            	<p:cellEditor>
-                    <f:facet name="output">
-                		<h:outputText value="#{item.recipeDetection}"/>
-                    </f:facet>
-                    <f:facet name="input">
-	                    <p:inputText value="#{item.recipeDetection}"
-	                       	style="width:100%"
-	                       	maxlength="100"
-	                       	immediate="true"
-	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
-	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
-	                       	<f:attribute name="item" value="#{item}"/>
-	                       	<f:attribute name="attribute" value="recipeDetection"/>>
-	                       	<p:ajax event="blur"
-	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
-	                       		process="@this"
-		                    	update="elithojobDT elithoTabView:elithojobGrowl"
-                        		onstart="saveAlertjobScrollPos();"
-		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
-                       </p:inputText>
-                    </f:facet>
-                </p:cellEditor>
+	            <p:commandLink style="text-decoration:none;"
+                    update="elithoTabView:jobDetectionUpdateDialogContent"
+                    process="@this"
+                    oncomplete="PF('jobDetectionUpdateDialog').show();">
+               		<h:outputText id="jobDetectionsOT"
+                        value="#{item.getDetectionListCompact()}"
+                        escape="false"/>
+               		<f:setPropertyActionListener target="#{notificationBean.selectedItem}" value="#{item}"/>
+           		</p:commandLink>
 			</p:column>
 			<p:column headerText="Defect"
 				title="Recipe Defect"
@@ -201,7 +196,7 @@
 	                       	maxlength="100"
 	                       	immediate="true"
 	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
-                        	onstart="saveAlertjobScrollPos();"
+                        	onstart="saveElithojobScrollPos();"
 	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
 	                       	<f:attribute name="item" value="#{item}"/>
 	                       	<f:attribute name="attribute" value="recipeDefect"/>
@@ -209,7 +204,7 @@
 	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
 	                       		process="@this"
 		                    	update="elithojobDT elithoTabView:elithojobGrowl"
-		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -237,15 +232,15 @@
 	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
 	                       		process="@this"
 		                    	update="elithojobDT elithoTabView:elithojobGrowl"
-                        		onstart="saveAlertjobScrollPos();"
-		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
 			</p:column>
 			<p:column headerText="Export"
 				title="Recipe Export"
-        		style="width:320px;text-align:left;color:#{item.getAttributeColor()};"
+        		style="width:100px;text-align:left;color:#{item.getAttributeColor()};"
         		styleClass="#{item.hasAttributeChanged('recipeExport') ? 'cell-changed' : ''}"
 				sortBy="#{item.recipeExport}"
             	filterBy="#{item.recipeExport}">
@@ -256,7 +251,7 @@
                     <f:facet name="input">
                     	<p:inputText value="#{item.recipeExport}"
 	                       	style="width:100%"
-	                       	maxlength="100"
+	                       	maxlength="90"
 	                       	immediate="true"
 	                       	valueChangeListener="#{eLithoJobBean.valueChanged}"
 	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
@@ -266,8 +261,8 @@
 	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
 	                       		process="@this"
 		                    	update="elithojobDT elithoTabView:elithojobGrowl"
-                        		onstart="saveAlertjobScrollPos();"
-		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -295,8 +290,8 @@
 	                       		listener="#{eLithoJobBean.checkKeyUniqueness()}"
 	                       		process="@this"
 		                    	update="elithojobDT elithoTabView:elithojobGrowl"
-                        		onstart="saveAlertjobScrollPos();"
-		                    	oncomplete="resizeAlertJobTable();setAlertjobScrollPos();"/>
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojob();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -328,9 +323,56 @@
             </p:column>
             </ui:remove>
 			<p:column displayPriority="99"/>
+			<p:rowExpansion>
+        		<h:outputText value="#{item.getDetectionAsText()}" rendered="true" escape="false"/>
+            </p:rowExpansion>
 	        	
 		</p:dataTable>
 		
+	</h:form>
+	
+	<h:form id="jobDetectionUpdateForm" prependId="false">
+		<p:dialog id="jobDetectionUpdateDialog"
+	        widgetVar="jobDetectionUpdateDialog"
+	        header="Update Job Detection"
+	        modal="true"
+	        resizable="true"
+	        width="600"
+	        height="350"
+	        closable="true">
+		    <h:panelGroup id="jobDetectionUpdateDialogContent" layout="block" style="padding:10px;">
+                <p:autoComplete id="jobDetectionAC"
+                	style="margin-bottom:20px;"
+                	completeMethod="#{eLithoJobBean.completeDetection}"
+                	value="#{eLithoJobBean.detectionsToAdd}"
+					multiple="true"
+					forceSelection="true"
+					dropdown="true">
+					<p:ajax event="itemSelect"
+                        listener="#{eLithoJobBean.addSelectedDetectionToList}"
+                        process="@this"
+                        update="@this jobDetectionChips jobDetectionOL"/>
+				</p:autoComplete>
+	            <p:chips id="jobDetectionChips"
+	            	value="#{eLithoJobBean.selectedItem.detections}"
+					styleClass="chips-input-dialog"
+					addOnBlur="true">
+					<p:ajax event="itemSelect"
+		                listener="#{eLkithoBeanBean.validateLastDetection}"
+		                process="@this"
+		                update="@this jobDetectionOL jobDetectionAC"/>
+	            </p:chips>
+		        <div style="margin-top:15px; text-align:right;">
+		        	<p:commandButton styleClass="mr-2"
+		        		value="Update"
+		        		update="elithoTabView:elithojobDT"
+		        		actionListener="#{eLithoJobBean.checkDetectionChanges()}"
+		        		oncomplete="PF('jobDetectionUpdateDialog').hide();"/>
+		            <p:commandButton value="Close" type="button" onclick="PF('jobDetectionUpdateDialog').hide();"/>
+		        </div>
+		    </h:panelGroup>
+		    <p:ajax event="open" listener="#{notificationBean.resetDetectionChanges()}"/>
+		</p:dialog>
 	</h:form>
 	
 </ui:component>

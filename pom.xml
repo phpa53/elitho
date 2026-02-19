@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.st.litho</groupId>
 	<artifactId>elitho</artifactId>
-	<version>0.0.0-006</version>
+	<version>0.0.0-007</version>
 	<packaging>war</packaging>
     <name>elitho</name>
 	
