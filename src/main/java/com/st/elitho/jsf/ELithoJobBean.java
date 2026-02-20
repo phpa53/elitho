@@ -12,6 +12,7 @@ import org.primefaces.event.SelectEvent;
 
 import com.st.elitho.dto.ELithoJobDTO;
 import com.st.elitho.ejb.ELithoJobEJB;
+import com.st.elitho.uti.LoggerWrapper;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
@@ -34,14 +35,17 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
 
 	private static final long serialVersionUID = -3389167920821616173L;
 	private static final String COLTOEXPAND_DEF = "detection";
+	private static final String DETECTION_LBL = "detection";
+	private static final String DEFECT_LBL = "defect";
+	private static final String NOTIFICATIONL_LBL = "notification";
 	private List<ELithoJobDTO> selectedItems;
 	private ELithoJobDTO selectedItem;
 	private List<String> detectionsToAdd;
-	private String detectionLabel;
+	private String detectionMessage;
 	private List<String> defectsToAdd;
-	private String defectLabel;
+	private String defectMessage;
 	private List<String> notificationsToAdd;
-	private String notificationLabel;
+	private String notificationMessage;
 	private String columnToExpand;
 	private final transient List<String> detections = new ArrayList<>();
 	private final transient List<String> previousDetections = new ArrayList<>();
@@ -114,47 +118,22 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
     }
 
 	public void addSelectedDetectionToList(final SelectEvent<String> event) {
-
-        final var selectedDetection = event.getObject();
-
-        if (selectedDetection != null && this.selectedItem != null) {
-
-        	final var list = Optional.ofNullable(this.selectedItem.getRecipeDetections()).orElse(new ArrayList<>());
-
-        	this.detectionLabel = getDetectionValidationLabel(selectedDetection, list, false);
-        	if (this.detectionLabel.isEmpty()) {
-				list.add(selectedDetection);
-			}
-	        this.detectionsToAdd = new ArrayList<>();
-
-        }
-
+		try {
+			this.detectionMessage = addSelectedToList(event, DETECTION_LBL,
+				this.selectedItem == null ? new ArrayList<>() : this.selectedItem.getRecipeDetections(), false);
+			this.detectionsToAdd = new ArrayList<>();
+		} catch (final ELithoTableException e) {
+			LoggerWrapper.debug(log, e.getMessage());
+		}
     }
 
 	public void validateLastDetection() {
-
-    	final var list = Optional.ofNullable(this.selectedItem.getRecipeDetections()).orElse(new ArrayList<>());
-
-        if (list != null && !list.isEmpty()) {
-
-	        final var lastDetection = list.get(list.size() - 1);
-
-	        this.detectionLabel = getDetectionValidationLabel(lastDetection, list, true);
-	        if (!this.detectionLabel.isEmpty()) {
-	        	list.remove(list.size() - 1);
-	        }
-	        if (!list.isEmpty() && !this.detections.contains(lastDetection)) {
-	        	this.detections.add(lastDetection);
-	        }
-        }
-
-    }
-
-	private static String getDetectionValidationLabel(final String detection, final List<String> detections,
-		final boolean isChip) {
-    	return detections.contains(detection)
-    		&& (isChip && detections.subList(0, detections.size() - 1).contains(detection) || !isChip)
-    			? String.format("Detection already exists (%s)",  detection) : "";
+		try {
+			this.detectionMessage = validateLastEmail(DETECTION_LBL,
+				this.selectedItem == null ? new ArrayList<>() : this.selectedItem.getRecipeDetections());
+		} catch (final ELithoTableException e) {
+			LoggerWrapper.debug(log, e.getMessage());
+		}
     }
 
 	public void resetDetectionChanges() {
@@ -190,47 +169,22 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
     }
 
 	public void addSelectedDefectToList(final SelectEvent<String> event) {
-
-        final var selecteDefect = event.getObject();
-
-        if (selecteDefect != null && this.selectedItem != null) {
-
-        	final var list = Optional.ofNullable(this.selectedItem.getRecipeDefects()).orElse(new ArrayList<>());
-
-        	this.defectLabel = getDefectValidationLabel(selecteDefect, list, false);
-        	if (this.defectLabel.isEmpty()) {
-				list.add(selecteDefect);
-			}
-	        this.defectsToAdd = new ArrayList<>();
-
-        }
-
+		try {
+			this.defectMessage = addSelectedToList(event, DEFECT_LBL,
+				this.selectedItem == null ? new ArrayList<>() : this.selectedItem.getRecipeDefects(), false);
+			this.defectsToAdd = new ArrayList<>();
+		} catch (final ELithoTableException e) {
+			LoggerWrapper.debug(log, e.getMessage());
+		}
     }
 
 	public void validateLastDefect() {
-
-    	final var list = Optional.ofNullable(this.selectedItem.getRecipeDefects()).orElse(new ArrayList<>());
-
-        if (list != null && !list.isEmpty()) {
-
-	        final var lastDefect = list.get(list.size() - 1);
-
-	        this.defectLabel = getDefectValidationLabel(lastDefect, list, true);
-	        if (!this.defectLabel.isEmpty()) {
-	        	list.remove(list.size() - 1);
-	        }
-	        if (!list.isEmpty() && !this.defects.contains(lastDefect)) {
-	        	this.defects.add(lastDefect);
-	        }
-        }
-
-    }
-
-	private static String getDefectValidationLabel(final String defect, final List<String> defects,
-		final boolean isChip) {
-    	return defects.contains(defect)
-    		&& (isChip && defects.subList(0, defects.size() - 1).contains(defect) || !isChip)
-    			? String.format("Defect already exists (%s)",  defect) : "";
+		try {
+			this.defectMessage = validateLastEmail(DEFECT_LBL,
+				this.selectedItem == null ? new ArrayList<>() : this.selectedItem.getRecipeDefects());
+		} catch (final ELithoTableException e) {
+			LoggerWrapper.debug(log, e.getMessage());
+		}
     }
 
 	public void resetDefectChanges() {
@@ -265,48 +219,23 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
         return completeList(this.notifications, pattern);
     }
 
-	public void addSelectedNotificationToList(final SelectEvent<String> event) {
-
-        final var selecteNotification = event.getObject();
-
-        if (selecteNotification != null && this.selectedItem != null) {
-
-        	final var list = Optional.ofNullable(this.selectedItem.getRecipeNotifications()).orElse(new ArrayList<>());
-
-        	this.notificationLabel = getNotificationValidationLabel(selecteNotification, list, false);
-        	if (this.notificationLabel.isEmpty()) {
-				list.add(selecteNotification);
-			}
-	        this.notificationsToAdd = new ArrayList<>();
-
-        }
-
+	 public void addSelectedNotificationToList(final SelectEvent<String> event) {
+		try {
+			this.notificationMessage = addSelectedToList(event, NOTIFICATIONL_LBL,
+				this.selectedItem == null ? new ArrayList<>() : this.selectedItem.getRecipeNotifications(), false);
+			this.notificationsToAdd = new ArrayList<>();
+		} catch (final ELithoTableException e) {
+			LoggerWrapper.debug(log, e.getMessage());
+		}
     }
 
 	public void validateLastNotification() {
-
-    	final var list = Optional.ofNullable(this.selectedItem.getRecipeNotifications()).orElse(new ArrayList<>());
-
-        if (list != null && !list.isEmpty()) {
-
-	        final var lastNotification = list.get(list.size() - 1);
-
-	        this.notificationLabel = getNotificationValidationLabel(lastNotification, list, true);
-	        if (!this.notificationLabel.isEmpty()) {
-	        	list.remove(list.size() - 1);
-	        }
-	        if (!list.isEmpty() && !this.notifications.contains(lastNotification)) {
-	        	this.notifications.add(lastNotification);
-	        }
-        }
-
-    }
-
-	private static String getNotificationValidationLabel(final String notification, final List<String> notifications,
-		final boolean isChip) {
-    	return notifications.contains(notification)
-    		&& (isChip && notifications.subList(0, notifications.size() - 1).contains(notification) || !isChip)
-    			? String.format("Notification already exists (%s)",  notification) : "";
+		try {
+			this.notificationMessage = validateLastEmail(NOTIFICATIONL_LBL,
+				this.selectedItem == null ? new ArrayList<>() : this.selectedItem.getRecipeNotifications());
+		} catch (final ELithoTableException e) {
+			LoggerWrapper.debug(log, e.getMessage());
+		}
     }
 
 	public void resetNotificationChanges() {
