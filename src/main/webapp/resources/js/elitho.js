@@ -50,8 +50,10 @@ function resizeLotWafers() {
 var elithoJobScrollTop;
 var elithoJobScrollLeft;
 function saveElithoJobScrollPos() {
-	elithoJobScrollTop = $("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
-	elithoJobScrollLeft = $("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+	elithoJobScrollTop =
+		$("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoJobScrollLeft =
+		$("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
 }
 function setElithoJobScrollPos() {
 	$("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollTop(elithoJobScrollTop);
@@ -75,8 +77,10 @@ function updateElithoRows() {
 var elithoMachineScrollTop;
 var elithoMachineScrollLeft;
 function saveElithoMachineScrollPos() {
-	elithoMachineScrollTop = $("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
-	elithoMachineScrollLeft = $("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+	elithoMachineScrollTop =
+		$("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoMachineScrollLeft =
+		$("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
 }
 function setElithoMachineScrollPos() {
 	$("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollTop(elithoMachineScrollTop);
@@ -92,15 +96,19 @@ function resizeElithoMachineTable() {
 
 var elithoMissingNotificationScrollTop;
 var elithoMissingNotificationScrollLeft;
-function saveElithoMachineScrollPos() {
-	elithoMissingNotificationScrollTop = $("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
-	elithoMissingNotificationScrollLeft = $("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+function saveElithoMissingNotificationScrollPos() {
+	elithoMissingNotificationScrollTop =
+		$("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoMissingNotificationScrollLeft =
+		$("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
 }
-function setElithoMachineScrollPos() {
-	$("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollTop(elithoMissingNotificationScrollTop);
-	$("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollLeft(elithoMissingNotificationScrollLeft);
+function setElithoMissingNotificationScrollPos() {
+	$("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body")
+		.scrollTop(elithoMissingNotificationScrollTop);
+	$("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body")
+		.scrollLeft(elithoMissingNotificationScrollLeft);
 }
-function resizeElithoMachineTable() {
+function resizeElithoMissingNotificationTable() {
 	var height = $(this).height() - 260;
 	var tableBody = $("#elithoTabView\\:elithomissingnotificationDT").find(".ui-datatable-scrollable-body");
 	if (tableBody !== null && tableBody !== undefined) {

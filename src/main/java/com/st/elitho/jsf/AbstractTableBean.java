@@ -3,10 +3,12 @@ package com.st.elitho.jsf;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.primefaces.component.datatable.DataTable;
+import org.primefaces.event.SelectEvent;
 
 import com.st.elitho.dto.AbstractTableDTO;
 import com.st.elitho.ejb.AbstractTableEJB;
@@ -17,6 +19,8 @@ import com.st.elitho.uti.LoggerWrapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ValueChangeEvent;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -242,5 +246,103 @@ public abstract class AbstractTableBean<T extends AbstractTableDTO<?, ?, ?>, U e
 	    }
 
 	}
+
+	@SuppressWarnings("static-method")
+	public List<String> completeList(final List<String> list, final String pattern) {
+        return list.stream()
+        	.filter(str -> str.toLowerCase(Locale.ENGLISH).contains(pattern.toLowerCase(Locale.ENGLISH)))
+        	.distinct().sorted().toList();
+    }
+
+	public static String addSelectedToList(final SelectEvent<String> event, final String name,
+		final List<String> values, final boolean isChip) throws ELithoTableException {
+
+		if (Optional.ofNullable(values).orElse(new ArrayList<>()).isEmpty()) {
+			throw new ELithoTableException("");
+		}
+
+        final var object = event.getObject();
+        final var label = getValidationLabel(name, event.getObject(), values, isChip);
+
+    	if (label.isEmpty()) {
+			values.add(object);
+		}
+
+        return label;
+
+    }
+
+	public static String validateLastItem(final String name, final List<String> values) throws ELithoTableException {
+
+		if (Optional.ofNullable(values).orElse(new ArrayList<>()).isEmpty()) {
+			throw new ELithoTableException("");
+		}
+
+		final var lastItem = values.get(values.size() - 1);
+    	final var label = getValidationLabel(name, lastItem, values, true);
+
+        if (!label.isEmpty()) {
+        	values.removeLast();
+        }
+        if (!values.contains(lastItem)) {
+        	values.add(lastItem);
+        }
+    	return label;
+
+    }
+
+	private static String getValidationLabel(final String name, final String value, final List<String> values,
+		final boolean isChip) {
+    	return values.contains(value)
+    		&& (isChip && values.subList(0, values.size() - 1).contains(value) || !isChip)
+    			? String.format("%s already exists (%s)", name, value) : "";
+    }
+
+	public static String validateLastEmail(final String name, final List<String> values)
+		throws ELithoTableException {
+
+		if (Optional.ofNullable(values).orElse(new ArrayList<>()).isEmpty()) {
+			throw new ELithoTableException("");
+		}
+
+		final var lastItem = values.get(values.size() - 1);
+    	final var label = getEmailValidationLabel(name, lastItem, values, true);
+
+        if (!label.isEmpty()) {
+        	values.removeLast();
+        }
+        if (!values.contains(lastItem)) {
+        	values.add(lastItem);
+        }
+    	return label;
+
+    }
+
+	private static String getEmailValidationLabel(final String name, final String value, final List<String> values,
+		final boolean isChip) {
+    	return !isValidEmail(value) ? String.format("Wrong %s format (%s)", name, value) // NOPMD ternary
+    		: values.contains(value) && (isChip && values.subList(0, values.size() - 1).contains(value) || !isChip)
+    			? String.format("%s already exists (%s)", name, value) : "";
+    }
+
+	public static boolean isValidEmail(final String email) {
+
+    	boolean flag;
+
+        if (Optional.ofNullable(email).orElse("").isEmpty()) {
+			flag = false;
+		} else {
+	        try {
+	            new InternetAddress(email).validate();
+	            flag = true;
+	        } catch (final AddressException e) {
+	            log.debug(e.getMessage());
+	            flag = false;
+	        }
+		}
+
+        return flag;
+
+    }
 
 }

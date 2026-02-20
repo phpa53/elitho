@@ -51,14 +51,17 @@
     </h:form>
 	
 	<p:tabView id="elithoTabView" widgetVar="elithoTabViewWV">
-		<p:tab title="Lots" >
+		<p:tab title="Lots">
 			<ui:include src="lot.xhtml"/>
 		</p:tab>
-		<p:tab title="Job" >
+		<p:tab title="Job">
 			<ui:include src="elithojob.xhtml"/>
 		</p:tab>
-		<p:tab title="Machine" >
+		<p:tab title="Machine">
 			<ui:include src="elithomachine.xhtml"/>
+		</p:tab>
+		<p:tab title="Missing" titletip="Missing Notification">
+			<ui:include src="elithomissingnotification.xhtml"/>
 		</p:tab>
 	</p:tabView>
 	

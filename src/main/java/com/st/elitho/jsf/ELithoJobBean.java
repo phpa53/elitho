@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.TreeSet;
 
@@ -108,25 +107,23 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
 		super.resetTable("elithoTabView:elithojobForm:elithojobDT");
 	}
 
-	public List<String> completeDetection(final String str) {
-        return this.detections.stream()
-        	.filter(detection -> detection.toLowerCase(Locale.ENGLISH).contains(str.toLowerCase(Locale.ENGLISH)))
-        	.toList();
-    }
-
 	//------- Detection
+
+	public List<String> completeDetection(final String pattern) {
+        return completeList(this.detections, pattern);
+    }
 
 	public void addSelectedDetectionToList(final SelectEvent<String> event) {
 
-        final var selecteDetection = event.getObject();
+        final var selectedDetection = event.getObject();
 
-        if (selecteDetection != null && this.selectedItem != null) {
+        if (selectedDetection != null && this.selectedItem != null) {
 
         	final var list = Optional.ofNullable(this.selectedItem.getRecipeDetections()).orElse(new ArrayList<>());
 
-        	this.detectionLabel = getDetectionValidationLabel(selecteDetection, list, false);
+        	this.detectionLabel = getDetectionValidationLabel(selectedDetection, list, false);
         	if (this.detectionLabel.isEmpty()) {
-				list.add(selecteDetection);
+				list.add(selectedDetection);
 			}
 	        this.detectionsToAdd = new ArrayList<>();
 
@@ -187,6 +184,10 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
     }
 
 	//------- Defect
+
+	public List<String> completeDefect(final String pattern) {
+        return completeList(this.defects, pattern);
+    }
 
 	public void addSelectedDefectToList(final SelectEvent<String> event) {
 
@@ -259,6 +260,10 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
     }
 
 	//------- Notification
+
+	 public List<String> completeNotofication(final String pattern) {
+        return completeList(this.notifications, pattern);
+    }
 
 	public void addSelectedNotificationToList(final SelectEvent<String> event) {
 

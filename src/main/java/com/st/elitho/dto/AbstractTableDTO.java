@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.st.elitho.jpa.AbstractTable;
+import com.st.elitho.jsf.AbstractTableBean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -70,6 +71,18 @@ public sealed abstract class AbstractTableDTO<T extends AbstractTable<?, ?>, U, 
 		return list.isEmpty() ? "" : String.format("%d %s%s", list.size(), label, list.size() == 1 ? "" : "s");
 	}
 
+	@SuppressWarnings("static-method")
+	public String getFormattedEmailList(final List<String> list, final boolean wrap) {
+		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream()
+			.sorted()
+            .map(email -> String.format("%s%s", String.format("%s%s%s",
+            	AbstractTableBean.isValidEmail(email) ? "" : "<b><span style=\"color: red;\">",
+            		email,
+            		AbstractTableBean.isValidEmail(email) ? "" : "</span></b>"),
+            	wrap ? "<br/>" : ""))
+            .collect(Collectors.joining());
+	}
+
 	public void clearChangedAttributes() {
 		this.changedAttributes.clear();
 	}
@@ -93,5 +106,25 @@ public sealed abstract class AbstractTableDTO<T extends AbstractTable<?, ?>, U, 
 	public boolean isLastModifiedDateValid() {
 		return !Optional.ofNullable(this.lastModifiedDate).orElse(LocalDateTime.MIN).equals(LocalDateTime.MIN);
 	}
+
+	@SuppressWarnings("static-method")
+	public String getListTooltip(final List<String> list) {
+		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream()
+			.sorted()
+            .map(email -> String.format("%s<br/>", email))
+            .collect(Collectors.joining());
+	}
+
+	@SuppressWarnings("static-method")
+	public String getEmailListTooltipStyle(final List<String> list) {
+		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream()
+    		.filter(email -> !AbstractTableBean.isValidEmail(email)).findFirst().isPresent() ? "tooltip-error" : "";
+	}
+
+	@SuppressWarnings("static-method")
+	public String getEmailListColor(final List<String> list) {
+    	return Optional.ofNullable(list).orElse(new ArrayList<>()).stream()
+    		.filter(email -> !AbstractTableBean.isValidEmail(email)).findFirst().isPresent() ? "red" : "inherit";
+    }
 
 }

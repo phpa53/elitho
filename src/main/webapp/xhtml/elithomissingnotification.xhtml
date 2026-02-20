@@ -50,7 +50,7 @@
 		        		<p:commandButton value="Apply"
 			               	actionListener="#{eLithoMissingNotificationBean.apply}"
 			                update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
-							oncomplete="resizeElithomissingnotificarionTable();"/>
+							oncomplete="resizeElithoMissingNotificationTable();"/>
 	                    <p:commandButton id="elithomissingnotificationNewCB"
 	                    	title="New"
 	                    	icon="pi pi-plus"
@@ -58,7 +58,7 @@
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		                    actionListener="#{eLithoMissingNotificationBean.add()}"
 		                    update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
-		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+		                    oncomplete="resizeElithoMissingNotificationTable();"/>
 	                    <p:commandButton id="elithomissingnotificationCopyCB"
 	                    	title="Copy"
 	                    	icon="pi pi-copy"
@@ -67,7 +67,7 @@
 		                    disabled="#{eLithoMissingNotificationBean.copyDisabled()}"
 		                    actionListener="#{eLithoMissingNotificationBean.copy()}"
 		                    update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
-		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+		                    oncomplete="resizeElithoMissingNotificationTable();"/>
 	                    <p:commandButton id="elithomissingnotificationDeleteCB"
 	                    	title="Delete"
 	                    	value="#{eLithoMissingNotificationBean.getDeleteLabel()}"
@@ -78,7 +78,7 @@
 		                    disabled="#{empty eLithoMissingNotificationBean.selectedItems}"
 		                    actionListener="#{eLithoMissingNotificationBean.delete()}"
 		                    update="@this elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
-		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+		                    oncomplete="resizeElithoMissingNotificationTable();"/>
 	                    <p:commandButton id="elithomissingnotificationSaveCB"
 	                    	title="Save"
 		                	icon="pi pi-save"
@@ -87,7 +87,7 @@
 		                    disabled="#{eLithoMissingNotificationBean.saveDisabled()}"
 		                    actionListener="#{eLithoMissingNotificationBean.save()}"
 		                    update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
-		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+		                    oncomplete="resizeElithoMissingNotificationTable();"/>
 	                    <p:commandButton id="elithomissingnotificationDiscardCB"
 	                    	title="Discard"
 		                	icon="pi pi-undo"
@@ -96,14 +96,14 @@
 		                    disabled="#{not eLithoMissingNotificationBean.anyItemChanged}"
 		                    actionListener="#{eLithoMissingNotificationBean.discard()}"
 		                    update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
-		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+		                    oncomplete="resizeElithoMissingNotificationTable();"/>
 		               	<p:commandButton icon="pi pi-sort-alt-slash"
 		               		title="Reset Table"
 		               		styleClass="ml-2 ui-button-secondary"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		               		action="#{eLithoMissingNotificationBean.resetTable}"
 		               		update="elithomissingnotificationDT"
-		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+		                    oncomplete="resizeElithoMissingNotificationTable();"/>
 		                <p:tooltip for="@next" value="Column to expand"/>
 		                <p:commandButton icon="pi pi-angle-down"
 		                    styleClass="ml-2"
@@ -164,9 +164,9 @@
 	                       		listener="#{eLithoMissingNotificationBean.checkKeyUniqueness()}"
                         		process="@this"
 		                    	update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
-                        		onstart="saveElithomissingnotificarionScrollPos();"
-		                    	oncomplete="resizeElithomissingnotificarionTable();
-		                    		setElithomissingnotificarionScrollPos();"/>
+                        		onstart="saveElithoMissingNotificationScrollPos();"
+		                    	oncomplete="resizeElithoMissingNotificationTable();
+		                    		setElithoMissingNotificationScrollPos();"/>
                         </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -192,14 +192,19 @@
 				title="Email List"
         		style="width:160px;text-align:center;color:#{item.getAttributeColor()};"
         		styleClass="#{item.hasAttributeChanged('emails') ? 'cell-changed' : ''}"
-				sortBy="#{item.recipeDetection}"
-            	filterBy="#{item.recipeDetection}">
-	            <p:commandLink style="text-decoration:none;"
-                    update="elithoTabView:missnotifEmaillistUpdateDialogContent"
+				sortBy="#{item.emails}"
+            	filterBy="#{item.emails}">
+            	<p:tooltip for="@next"
+                      styleClass="#{item.getEmailListTooltipStyle(item.emails)}"
+                      value="#{item.getEmailListTooltip(item.emails)}"
+                      rendered="false"
+                      escape="false" />
+	            <p:commandLink style="color:#{item.getEmailListColor(item.emails)};text-decoration:none;"
+                    update="elithoTabView:missingnotificationEmailsUpdateDialogContent"
                     process="@this"
-                    oncomplete="PF('missnotifEmaillistUpdateDialog').show();">
-               		<h:outputText id="missnotifEmaillistsOT"
-               			value="#{item.getListCompactList(item.emails, 'emails')}"
+                    oncomplete="PF('missingnotificationEmailsUpdateDialog').show();">
+               		<h:outputText id="missingnotificationEmailssOT"
+               			value="#{item.getListCompactList(item.emails, 'email')}"
                         escape="false"/>
                		<f:setPropertyActionListener target="#{eLithoMissingNotificationBean.selectedItem}"
                			value="#{item}"/>
@@ -297,24 +302,31 @@
             </ui:remove>
 			<p:column displayPriority="99"/>
 			<p:rowExpansion>
+        		<h:outputText value="#{item.getFormattedEmailList(item.emails, true)}" escape="false"/>
+        		<ui:remove>
         		<h:outputText value="#{item.getListAsText(item.emails)}" escape="false"/>
+        		</ui:remove>
             </p:rowExpansion>
 	        	
 		</p:dataTable>
 		
 	</h:form>
 	
-	<h:form id="missnotifEmaillistUpdateForm" prependId="false">
-		<p:dialog id="missnotifEmaillistUpdateDialog"
-	        widgetVar="missnotifEmaillistUpdateDialog"
+	<h:form id="missingnotificationEmailsUpdateForm" prependId="false">
+		<p:dialog id="missingnotificationEmailsUpdateDialog"
+	        widgetVar="missingnotificationEmailsUpdateDialog"
 	        header="Update Email List"
 	        modal="true"
 	        resizable="true"
 	        width="520"
 	        height="200"
 	        closable="true">
-		    <h:panelGroup id="missnotifEmaillistUpdateDialogContent" layout="block" style="padding:10px;">
-                <p:autoComplete id="missnotifEmaillistAC"
+		    <h:panelGroup id="missingnotificationEmailsUpdateDialogContent" layout="block" style="padding:10px;">
+		    	<p:outputLabel id="missingnotificationEmailOL"
+		    		style="color:red;font-weight:bold;"
+		    		styleClass="mb-2"
+		    		value="#{eLithoMissingNotificationBean.emailMessage}"/>
+                <p:autoComplete id="missingnotificationEmailsAC"
                 	style="margin-bottom:20px;"
                 	completeMethod="#{eLithoMissingNotificationBean.completeEmail}"
                 	value="#{eLithoMissingNotificationBean.emailsToAdd}"
@@ -322,30 +334,30 @@
 					forceSelection="true"
 					dropdown="true">
 					<p:ajax event="itemSelect"
-                        listener="#{eLithoMissingNotificationBean.addSelectedDetectionToList}"
+                        listener="#{eLithoMissingNotificationBean.addSelectedEmailToList}"
                         process="@this"
-                        update="@thismissingnotificationEmaillistChipsmissingnotificationEmaillistOL"/>
+                        update="@this missingnotificationEmailsChips missingnotificationEmailOL"/>
 				</p:autoComplete>
-	            <p:chips id="missnotifEmaillistChips"
+	            <p:chips id="missingnotificationEmailsChips"
 	            	value="#{eLithoMissingNotificationBean.selectedItem.emails}"
 					styleClass="chips-input-dialog"
 					addOnBlur="true">
 					<p:ajax event="itemSelect"
-		                listener="#{eLithoMissingNotificationBean.validateLastEmailList}"
+		                listener="#{eLithoMissingNotificationBean.validateLastEmail}"
 		                process="@this"
-		                update="@thismissingnotificationEmaillistACmissingnotificationEmaillistsOT"/>
+		                update="@this missingnotificationEmailsAC missingnotificationEmailOL"/>
 	            </p:chips>
 		        <div style="margin-top:15px; text-align:right;">
 		        	<p:commandButton styleClass="mr-2"
 		        		value="Update"
-		        		actionListener="#{eLithoMissingNotificationBean.checkEmailListChanges()}"
+		        		actionListener="#{eLithoMissingNotificationBean.checkEmailsChanges()}"
 		        		update="elithoTabView:elithomissingnotificationDT"
-		        		oncomplete="PF('missnotifEmaillistUpdateDialog').hide();"/>
+		        		oncomplete="PF('missingnotificationEmailsUpdateDialog').hide();"/>
 		            <p:commandButton value="Close" type="button"
-		            	onclick="PF('missnotifEmaillistUpdateDialog').hide();"/>
+		            	onclick="PF('missingnotificationEmailsUpdateDialog').hide();"/>
 		        </div>
 		    </h:panelGroup>
-		    <p:ajax event="open" listener="#{eLithoMissingNotificationBean.resetEmailListChanges()}"/>
+		    <p:ajax event="open" listener="#{eLithoMissingNotificationBean.resetEmailsChanges()}"/>
 		</p:dialog>
 	</h:form>
 	
