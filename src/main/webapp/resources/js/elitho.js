@@ -1,10 +1,12 @@
 var elithojobExpanded;
 
 $(document).ready(function() {
+	elithojobExpanded = false;
 	resizeTables();
 	resizeLotWafers();
-	resizeElithojobTable();
-	elithojobExpanded = false;
+	resizeElithoJobTable();
+	resizeElithoMachineTable();
+	resizeElithoMissingNotificationTable();
 	
 });
 
@@ -15,7 +17,8 @@ $(window).resize(function() {
 function resizeTables() {
 	resizeLotTable();
 	resizeLotWafers();
-	resizeElithojobTable();
+	resizeElithoJobTable();
+	resizeElithoMissingNotificationTable();
 }
 
 function resizeLotTable() {
@@ -46,27 +49,62 @@ function resizeLotWafers() {
 
 var elithoJobScrollTop;
 var elithoJobScrollLeft;
-function saveElithojobScrollPos() {
+function saveElithoJobScrollPos() {
 	elithoJobScrollTop = $("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
 	elithoJobScrollLeft = $("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
 }
-function setElithojobScrollPos() {
+function setElithoJobScrollPos() {
 	$("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollTop(elithoJobScrollTop);
 	$("#elithoTabView\\:elithojobDT > .ui-datatable-scrollable-body").scrollLeft(elithoJobScrollLeft);
 }
-function resizeElithojobTable() {
+function resizeElithoJobTable() {
 	var height = $(this).height() - 260;
 	var tableBody = $("#elithoTabView\\:elithojobDT").find(".ui-datatable-scrollable-body");
 	if (tableBody !== null && tableBody !== undefined) {
 		tableBody.height(height);
 	}
 }
-
 function updateElithoRows() {
 	if (elithojobExpanded) {
 		expandAllRows("elithojobDTW");
 	} else {
 		collapseAllRows("elithojobDTW");
+	}
+}
+
+var elithoMachineScrollTop;
+var elithoMachineScrollLeft;
+function saveElithoMachineScrollPos() {
+	elithoMachineScrollTop = $("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoMachineScrollLeft = $("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+}
+function setElithoMachineScrollPos() {
+	$("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollTop(elithoMachineScrollTop);
+	$("#elithoTabView\\:elithoMachineDT > .ui-datatable-scrollable-body").scrollLeft(elithoMachineScrollLeft);
+}
+function resizeElithoMachineTable() {
+	var height = $(this).height() - 260;
+	var tableBody = $("#elithoTabView\\:elithomachineDT").find(".ui-datatable-scrollable-body");
+	if (tableBody !== null && tableBody !== undefined) {
+		tableBody.height(height);
+	}
+}
+
+var elithoMissingNotificationScrollTop;
+var elithoMissingNotificationScrollLeft;
+function saveElithoMachineScrollPos() {
+	elithoMissingNotificationScrollTop = $("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoMissingNotificationScrollLeft = $("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+}
+function setElithoMachineScrollPos() {
+	$("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollTop(elithoMissingNotificationScrollTop);
+	$("#elithoTabView\\:elithoMissingNotificationDT > .ui-datatable-scrollable-body").scrollLeft(elithoMissingNotificationScrollLeft);
+}
+function resizeElithoMachineTable() {
+	var height = $(this).height() - 260;
+	var tableBody = $("#elithoTabView\\:elithomissingnotificationDT").find(".ui-datatable-scrollable-body");
+	if (tableBody !== null && tableBody !== undefined) {
+		tableBody.height(height);
 	}
 }
 

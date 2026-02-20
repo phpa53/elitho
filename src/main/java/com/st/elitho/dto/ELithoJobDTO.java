@@ -1,11 +1,9 @@
 package com.st.elitho.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.st.elitho.jpa.ELithoJob;
 import com.st.elitho.jpa.ELithoJobPK;
@@ -56,7 +54,7 @@ public final class ELithoJobDTO
 
 	@Override
 	public String getKey() {
-		return String.format("%s", this.machineId);
+		return String.format("%d", this.machineId);
 	}
 
 	@Override
@@ -75,11 +73,11 @@ public final class ELithoJobDTO
 	public ELithoJobDTO getCopy() {
 		return ELithoJobDTO.builder()
 			.machineId(0)
-			.recipeDetections(new ArrayList<>())
-			.recipeDefects(new ArrayList<>())
-			.recipeStorage(VALUE_DEFAULT)
-			.recipeExport(VALUE_DEFAULT)
-			.recipeNotifications(new ArrayList<>())
+			.recipeDetections(this.recipeDetections)
+			.recipeDefects(this.recipeDefects)
+			.recipeStorage(this.recipeStorage)
+			.recipeExport(this.recipeExport)
+			.recipeNotifications(this.recipeNotifications)
 			.build();
 	}
 
@@ -91,74 +89,6 @@ public final class ELithoJobDTO
 			|| VALUE_DEFAULT.equals(this.recipeStorage)
 			|| VALUE_DEFAULT.equals(this.recipeExport)
 			|| Optional.ofNullable(this.recipeNotifications).orElse(new ArrayList<>()).isEmpty();
-	}
-
-	@Override
-	public void clearChangedAttributes() {
-		getChangedAttributes().clear();
-	}
-
-	@Override
-	public void setChangedAttributeName(final String name) {
-		getChangedAttributes().add(name);
-	}
-
-	@Override
-	public boolean hasAttributeChanged(final String name) {
-		return getChangedAttributes().contains(name);
-	}
-
-	@Override
-	public String getAttributeColor() {
-		return isDuplicatedPK() ? "red" : "inherit";
-	}
-
-	@Override
-	public boolean isCreatedDateValid() {
-		return !Optional.ofNullable(getCreatedDate()).orElse(LocalDateTime.MIN).equals(LocalDateTime.MIN);
-	}
-
-	@Override
-	public boolean isLastModifiedDateValid() {
-		return !Optional.ofNullable(getLastModifiedDate()).orElse(LocalDateTime.MIN).equals(LocalDateTime.MIN);
-	}
-
-	private static String getListAsString(final List<String> list) {
-		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream().collect(Collectors.joining(";"));
-	}
-
-	private static String getListAsText(final List<String> list) {
-		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream()
-			.sorted()
-            .map(value -> String.format("%s<br/>", value))
-            .collect(Collectors.joining());
-	}
-
-	public String getDetectionAsText() {
-		return getListAsText(this.recipeDetections);
-	}
-
-	public String getDetectionListCompact() {
-		final var list = Optional.ofNullable(this.recipeDetections).orElse(new ArrayList<>());
-		return list.isEmpty() ? "" : String.format("%d detection%s", list.size(), list.size() == 1 ? "" : "s");
-	}
-
-	public String getDefectAsText() {
-		return getListAsText(this.recipeDefects);
-	}
-
-	public String getDefectListCompact() {
-		final var list = Optional.ofNullable(this.recipeDefects).orElse(new ArrayList<>());
-		return list.isEmpty() ? "" : String.format("%d defect%s", list.size(), list.size() == 1 ? "" : "s");
-	}
-
-	public String getNotificationAsText() {
-		return getListAsText(this.recipeNotifications);
-	}
-
-	public String getNotificationListCompact() {
-		final var list = Optional.ofNullable(this.recipeNotifications).orElse(new ArrayList<>());
-		return list.isEmpty() ? "" : String.format("%d notification%s", list.size(), list.size() == 1 ? "" : "s");
 	}
 
 }

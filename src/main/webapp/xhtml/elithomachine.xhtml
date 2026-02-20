@@ -1,0 +1,469 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="jakarta.tags.core"
+	xmlns:cc="jakarta.faces.composite"
+	xmlns:f="jakarta.faces.core"
+	xmlns:faces="jakarta.faces"
+	xmlns:fn="jakarta.tags.functions"
+	xmlns:h="jakarta.faces.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pass="jakarta.faces.passthrough"
+	xmlns:ui="jakarta.faces.facelets">
+	
+	<h:form id="elithomachineForm" prependId="false">
+		
+		<p:growl id="elithomachineGrowl" showDetail="true" life="3000"/>
+		
+		<p:dataTable id="elithomachineDT"
+        	widgetVar="elithomachineDTW"
+        	var="item"
+        	value="#{eLithoMachineBean.items}"
+        	rowKey="#{item.getKey()}"
+			scrollable="true"
+			scrollHeight="800"
+			lazy="false"
+			sortMode="multiple"
+			filterMode="advanced"
+			virtualScroll="false"
+			tableStyle="width:overflow"
+			resizableColumns="true"
+			resizeMode="expand"
+			draggableColumns="true"
+			size="small"
+			editable="true"
+			editInitEvent="click"
+			editMode="cell"
+            selectionMode="multiple"
+            selection="#{eLithoMachineBean.selectedItems}"
+            selectionPageOnly="false"
+            disabledSelection="false"
+			stripedRows="true"
+			disabledTextSelection="false"
+			cache="true"
+        	showGridlines="true">
+        	
+        	<f:facet name="header">
+        		<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+		            margin-top:5px;margin-bottom:5px;">
+	            	<span style="margin-top:-5px;">
+		        		<p:commandButton value="Apply"
+			               	actionListener="#{eLithoMachineBean.apply}"
+			                update="elithomachineDT elithoTabView:elithomachineGrowl"
+							oncomplete="resizeElithojobTable();"/>
+	                    <p:commandButton id="elithomachineNewCB"
+	                    	title="New"
+	                    	icon="pi pi-plus"
+		                    styleClass="ml-2 ui-button-success"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    actionListener="#{eLithoMachineBean.add()}"
+		                    update="elithomachineDT elithoTabView:elithomachineGrowl"
+		                    oncomplete="resizeElithojobTable();"/>
+	                    <p:commandButton id="elithomachineCopyCB"
+	                    	title="Copy"
+	                    	icon="pi pi-copy"
+		                    styleClass="ml-2 ui-button-success"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoMachineBean.copyDisabled()}"
+		                    actionListener="#{eLithoMachineBean.copy()}"
+		                    update="elithomachineDT elithoTabView:elithomachineGrowl"
+		                    oncomplete="resizeElithojobTable();"/>
+	                    <p:commandButton id="elithomachineDeleteCB"
+	                    	title="Delete"
+	                    	value="#{eLithoMachineBean.getDeleteLabel()}"
+		                	icon="pi pi-trash"
+		                	escape="false"
+		                    styleClass="ml-2 ui-button-danger"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{empty eLithoMachineBean.selectedItems}"
+		                    actionListener="#{eLithoMachineBean.delete()}"
+		                    update="@this elithomachineDT elithoTabView:elithomachineGrowl"
+		                    oncomplete="resizeElithojobTable();"/>
+	                    <p:commandButton id="elithomachineSaveCB"
+	                    	title="Save"
+		                	icon="pi pi-save"
+		                    styleClass="ml-2 ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoMachineBean.saveDisabled()}"
+		                    actionListener="#{eLithoMachineBean.save()}"
+		                    update="elithomachineDT elithoTabView:elithomachineGrowl"
+		                    oncomplete="resizeElithojobTable();"/>
+	                    <p:commandButton id="elithomachineDiscardCB"
+	                    	title="Discard"
+		                	icon="pi pi-undo"
+		                    styleClass="ml-2 ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{not eLithoMachineBean.anyItemChanged}"
+		                    actionListener="#{eLithoMachineBean.discard()}"
+		                    update="elithomachineDT elithoTabView:elithomachineGrowl"
+		                    oncomplete="resizeElithojobTable();"/>
+		               	<p:commandButton icon="pi pi-sort-alt-slash"
+		               		title="Reset Table"
+		               		styleClass="ml-2 ui-button-secondary"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		               		action="#{eLithoMachineBean.resetTable}"
+		               		update="elithomachineDT"
+		                    oncomplete="resizeElithojobTable();"/>
+						<p:outputLabel value="#{eLithoMachineBean.numberOfChanges} row(s) changed"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
+		               		rendered="#{eLithoMachineBean.numberOfChanges > 0}"/>
+						<p:outputLabel value="#{eLithoMachineBean.numberOfDeletes} row(s) deleted"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
+		               		rendered="#{eLithoMachineBean.numberOfDeletes > 0}"/>
+					</span>
+				</div>
+        	</f:facet>
+        	
+        	<p:ajax event="rowSelect" update="elithomachineCopyCB elithomachineDeleteCB"/>
+            <p:ajax event="rowUnselect" update="elithomachineCopyCB elithomachineDeleteCB"/>
+            <p:ajax event="rowSelectCheckbox" update="elithomachineCopyCB elithomachineDeleteCB"/>
+            <p:ajax event="rowUnselectCheckbox" update="elithomachineCopyCB elithomachineDeleteCB"/>
+            <p:ajax event="toggleSelect" update="elithomachineCopyCB elithomachineDeleteCB"/>
+        	
+        	<p:column style="width:10px;" styleClass="#{item.toBeFilled() ? 'cell-to-be-filled' : ''}"/>
+        	<p:column headerText="M. ID"
+        		title="Litho Machine ID"
+        		style="width:80px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('machineId') ? 'cell-changed' : ''}"
+				sortBy="#{item.machineId}"
+            	filterBy="#{item.machineId}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.machineId}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:inputText value="#{item.machineId}"
+                        	style="width:100%"
+                        	maxlength="100"
+                        	immediate="true"
+                        	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+                        	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+                        	<f:attribute name="item" value="#{item}"/>
+                        	<f:attribute name="attribute" value="machineId"/>
+                        	<p:ajax event="blur"
+	                       		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+                        		process="@this"
+		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+                        </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Enabled"
+        		style="width:70px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('enabled') ? 'cell-changed' : ''}"
+				sortBy="#{item.enabled}"
+            	filterBy="#{item.enabled}">
+                <p:selectBooleanCheckbox value="#{item.enabled}"
+                    immediate="true"
+                	valueChangeListener="#{eLithoMachineBean.booleanValueChanged}">
+                    <f:attribute name="item" value="#{item}"/>
+                    <f:attribute name="attribute" value="enabled"/>
+                	<p:ajax process="@this"
+                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
+                      	onstart="saveElithoMachineScrollPos();"
+                    	oncomplete="resizeNotificationTable();setElithoMachineScrollPos();"/>
+                </p:selectBooleanCheckbox>
+			</p:column>
+	        <p:column headerText="M. NR"
+	        	title="Machine NR"
+        		style="width:70px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('machineNr') ? 'cell-changed' : ''}"
+				sortBy="#{item.machineNr}"
+            	filterBy="#{item.machineNr}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.machineNr}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.machineNr}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="0"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="machineNr"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithomachineDT elithoTabView:elithomachineGrowl"
+	                    		onstart="saveElithoMachineScrollPos"
+	                  			oncomplete="resizeElithoMachineTable();setElithoMachineScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+            <p:column headerText="IP"
+        		style="width:60px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('ip') ? 'cell-changed' : ''}"
+				sortBy="#{item.ip}"
+            	filterBy="#{item.ip}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.ip}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.ip}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="ip"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+            <p:column headerText="S. ID"
+            	title="Server ID"
+        		style="width:80px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('serverId') ? 'cell-changed' : ''}"
+				sortBy="#{item.serverId}"
+            	filterBy="#{item.serverId}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.serverId}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.serverId}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="serverId"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+	        <p:column headerText="ST. NR"
+	        	title="Seerver Thread NR"
+        		style="width:70px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('serverThreadNr') ? 'cell-changed' : ''}"
+				sortBy="#{item.serverThreadNr}"
+            	filterBy="#{item.serverThreadNr}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.serverThreadNr}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.serverThreadNr}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="0"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="serverThreadNr"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithomachineDT elithoTabView:elithomachineGrowl"
+	                    		onstart="saveElithoMachineScrollPos"
+	                  			oncomplete="resizeElithoMachineTable();setElithoMachineScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+	        <p:column headerText="Batch"
+	        	title="Batch Size"
+        		style="width:60px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('batchSize') ? 'cell-changed' : ''}"
+				sortBy="#{item.batchSize}"
+            	filterBy="#{item.batchSize}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.batchSize}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.batchSize}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="0"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="batchSize"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithomachineDT elithoTabView:elithomachineGrowl"
+	                    		onstart="saveElithoMachineScrollPos"
+	                  			oncomplete="resizeElithoMachineTable();setElithoMachineScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+	        <p:column headerText="Max Hrs"
+	        	title="Max Hours Catchup"
+        		style="width:60px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('maxHoursCatchup') ? 'cell-changed' : ''}"
+				sortBy="#{item.maxHoursCatchup}"
+            	filterBy="#{item.maxHoursCatchup}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.maxHoursCatchup}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.maxHoursCatchup}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="1"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:converter converterId="jakarta.faces.Float"/>
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="maxHoursCatchup"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithomachineDT elithoTabView:elithomachineGrowl"
+	                    		onstart="saveElithoMachineScrollPos"
+	                  			oncomplete="resizeElithoMachineTable();setElithoMachineScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+	        <p:column headerText="Mdl Size"
+	        	title="Model File Size Min"
+        		style="width:60px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('mdlFileSizeMin') ? 'cell-changed' : ''}"
+				sortBy="#{item.mdlFileSizeMin}"
+            	filterBy="#{item.mdlFileSizeMin}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.mdlFileSizeMin}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.mdlFileSizeMin}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="0"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="mdlFileSizeMin"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithomachineDT elithoTabView:elithomachineGrowl"
+	                    		onstart="saveElithoMachineScrollPos"
+	                  			oncomplete="resizeElithoMachineTable();setElithoMachineScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+            <p:column headerText="Mdl Path"
+            	title="Model Source Path"
+        		style="width:350px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('mdlSourcePath') ? 'cell-changed' : ''}"
+				sortBy="#{item.mdlSourcePath}"
+            	filterBy="#{item.mdlSourcePath}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.mdlSourcePath}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.mdlSourcePath}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="mdlSourcePath"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+            <p:column headerText="C. ID"
+            	title="Litho Cluster ID"
+        		style="width:60px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('lithoClusterId') ? 'cell-changed' : ''}"
+				sortBy="#{item.lithoClusterId}"
+            	filterBy="#{item.lithoClusterId}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.lithoClusterId}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.lithoClusterId}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoMachineBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="lithoClusterId"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoMachineBean.checkKeyUniqueness()}"
+	                       		process="@this"
+		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
+                        		onstart="saveElithojobScrollPos();"
+		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<ui:remove>
+			<p:column headerText="Created"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.createdDate}" rendered="#{item.isCreatedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Created By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdBy}"
+            	filterBy="#{item.createdBy}">
+                <h:outputText value="#{item.createdBy}"/>
+            </p:column>
+			<p:column headerText="Last Modified"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.lastModifiedDate}" rendered="#{item.isLastModifiedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Last Modified By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedBy}"
+            	filterBy="#{item.lastModifiedBy}">
+                <h:outputText value="#{item.lastModifiedBy}"/>
+            </p:column>
+            </ui:remove>
+			<p:column displayPriority="99"/>
+	        	
+		</p:dataTable>
+		
+	</h:form>
+	
+</ui:component>

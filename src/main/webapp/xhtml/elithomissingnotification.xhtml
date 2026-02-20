@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="jakarta.tags.core"
+	xmlns:cc="jakarta.faces.composite"
+	xmlns:f="jakarta.faces.core"
+	xmlns:faces="jakarta.faces"
+	xmlns:fn="jakarta.tags.functions"
+	xmlns:h="jakarta.faces.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pass="jakarta.faces.passthrough"
+	xmlns:ui="jakarta.faces.facelets">
+	
+	<h:form id="elithomissingnotificationForm" prependId="false">
+		
+		<p:growl id="elithomissingnotificationGrowl" showDetail="true" life="3000"/>
+		
+		<p:dataTable id="elithomissingnotificationDT"
+        	widgetVar="elithomissingnotificationDTW"
+        	var="item"
+        	value="#{eLithoMissingNotificationBean.items}"
+        	rowKey="#{item.getKey()}"
+			scrollable="true"
+			scrollHeight="800"
+			lazy="false"
+			sortMode="multiple"
+			filterMode="advanced"
+			virtualScroll="false"
+			tableStyle="width:overflow"
+			resizableColumns="true"
+			resizeMode="expand"
+			draggableColumns="true"
+			size="small"
+			editable="true"
+			editInitEvent="click"
+			editMode="cell"
+            selectionMode="multiple"
+            selection="#{eLithoMissingNotificationBean.selectedItems}"
+            selectionPageOnly="false"
+            disabledSelection="false"
+			stripedRows="true"
+			disabledTextSelection="false"
+			cache="true"
+        	showGridlines="true">
+        	
+        	<f:facet name="header">
+        		<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+		            margin-top:5px;margin-bottom:5px;">
+	            	<span style="margin-top:-5px;">
+		        		<p:commandButton value="Apply"
+			               	actionListener="#{eLithoMissingNotificationBean.apply}"
+			                update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+							oncomplete="resizeElithomissingnotificarionTable();"/>
+	                    <p:commandButton id="elithomissingnotificationNewCB"
+	                    	title="New"
+	                    	icon="pi pi-plus"
+		                    styleClass="ml-2 ui-button-success"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    actionListener="#{eLithoMissingNotificationBean.add()}"
+		                    update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+	                    <p:commandButton id="elithomissingnotificationCopyCB"
+	                    	title="Copy"
+	                    	icon="pi pi-copy"
+		                    styleClass="ml-2 ui-button-success"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoMissingNotificationBean.copyDisabled()}"
+		                    actionListener="#{eLithoMissingNotificationBean.copy()}"
+		                    update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+	                    <p:commandButton id="elithomissingnotificationDeleteCB"
+	                    	title="Delete"
+	                    	value="#{eLithoMissingNotificationBean.getDeleteLabel()}"
+		                	icon="pi pi-trash"
+		                	escape="false"
+		                    styleClass="ml-2 ui-button-danger"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{empty eLithoMissingNotificationBean.selectedItems}"
+		                    actionListener="#{eLithoMissingNotificationBean.delete()}"
+		                    update="@this elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+	                    <p:commandButton id="elithomissingnotificationSaveCB"
+	                    	title="Save"
+		                	icon="pi pi-save"
+		                    styleClass="ml-2 ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoMissingNotificationBean.saveDisabled()}"
+		                    actionListener="#{eLithoMissingNotificationBean.save()}"
+		                    update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+	                    <p:commandButton id="elithomissingnotificationDiscardCB"
+	                    	title="Discard"
+		                	icon="pi pi-undo"
+		                    styleClass="ml-2 ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{not eLithoMissingNotificationBean.anyItemChanged}"
+		                    actionListener="#{eLithoMissingNotificationBean.discard()}"
+		                    update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+		               	<p:commandButton icon="pi pi-sort-alt-slash"
+		               		title="Reset Table"
+		               		styleClass="ml-2 ui-button-secondary"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		               		action="#{eLithoMissingNotificationBean.resetTable}"
+		               		update="elithomissingnotificationDT"
+		                    oncomplete="resizeElithomissingnotificarionTable();"/>
+		                <p:tooltip for="@next" value="Column to expand"/>
+		                <p:commandButton icon="pi pi-angle-down"
+		                    styleClass="ml-2"
+		                    title="Expand All"
+		                    type="button"
+                 			onclick="expandAllRows('elithomissingnotificationDTW');"/>
+		                <p:commandButton icon="pi pi-angle-right"
+		                    styleClass="ml-2"
+		                    title="Collapse All"
+		                	type="button"
+                 			onclick="collapseAllRows('elithomissingnotificationDTW');"/>
+						<p:outputLabel value="#{eLithoMissingNotificationBean.numberOfChanges} row(s) changed"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
+		               		rendered="#{eLithoMissingNotificationBean.numberOfChanges > 0}"/>
+						<p:outputLabel value="#{eLithoMissingNotificationBean.numberOfDeletes} row(s) deleted"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
+		               		rendered="#{eLithoMissingNotificationBean.numberOfDeletes > 0}"/>
+					</span>
+				</div>
+        	</f:facet>
+        	
+        	<p:ajax event="rowSelect"
+        		update="elithomissingnotificationCopyCB elithomissingnotificationDeleteCB"/>
+            <p:ajax event="rowUnselect"
+            	update="elithomissingnotificationCopyCB elithomissingnotificationDeleteCB"/>
+            <p:ajax event="rowSelectCheckbox"
+            	update="elithomissingnotificationCopyCB elithomissingnotificationDeleteCB"/>
+            <p:ajax event="rowUnselectCheckbox"
+            	update="elithomissingnotificationCopyCB elithomissingnotificationDeleteCB"/>
+            <p:ajax event="toggleSelect"
+            	update="elithomissingnotificationCopyCB elithomissingnotificationDeleteCB"/>
+        	
+        	<p:column style="width:10px;" styleClass="#{item.toBeFilled() ? 'cell-to-be-filled' : ''}">
+                <p:rowToggler/>
+            </p:column>
+        	<p:column headerText="Recipe"
+        		title="Recipe Name"
+        		style="width:80px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('recipeName') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeName}"
+            	filterBy="#{item.recipeName}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.recipeName}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:inputText value="#{item.recipeName}"
+                        	style="width:100%"
+                        	maxlength="100"
+                        	immediate="true"
+                        	valueChangeListener="#{eLithoMissingNotificationBean.valueChanged}"
+                        	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+                        	<f:attribute name="item" value="#{item}"/>
+                        	<f:attribute name="attribute" value="recipeName"/>
+                        	<p:ajax event="blur"
+	                       		listener="#{eLithoMissingNotificationBean.checkKeyUniqueness()}"
+                        		process="@this"
+		                    	update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+                        		onstart="saveElithomissingnotificarionScrollPos();"
+		                    	oncomplete="resizeElithomissingnotificarionTable();
+		                    		setElithomissingnotificarionScrollPos();"/>
+                        </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Enabled"
+				title="Email Enabled"
+        		style="width:70px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('enableEmail') ? 'cell-changed' : ''}"
+				sortBy="#{item.enableEmail}"
+            	filterBy="#{item.enableEmail}">
+                <p:selectBooleanCheckbox value="#{item.enableEmail}"
+                    immediate="true"
+                	valueChangeListener="#{eLithoMissingNotificationBean.booleanValueChanged}">
+                    <f:attribute name="item" value="#{item}"/>
+                    <f:attribute name="attribute" value="enableEmail"/>
+                	<p:ajax process="@this"
+                    	update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+                      	onstart="saveElithoMissingNotificationScrollPos();"
+                    	oncomplete="resizeNotificationTable();setElithoMissingNotificationScrollPos();"/>
+                </p:selectBooleanCheckbox>
+			</p:column>
+			<p:column headerText="Email"
+				title="Email List"
+        		style="width:160px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('emails') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeDetection}"
+            	filterBy="#{item.recipeDetection}">
+	            <p:commandLink style="text-decoration:none;"
+                    update="elithoTabView:missnotifEmaillistUpdateDialogContent"
+                    process="@this"
+                    oncomplete="PF('missnotifEmaillistUpdateDialog').show();">
+               		<h:outputText id="missnotifEmaillistsOT"
+               			value="#{item.getListCompactList(item.emails, 'emails')}"
+                        escape="false"/>
+               		<f:setPropertyActionListener target="#{eLithoMissingNotificationBean.selectedItem}"
+               			value="#{item}"/>
+           		</p:commandLink>
+			</p:column>
+	        <p:column headerText="Min Count"
+	        	title="Missing Min Count"
+        		style="width:60px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('missingHourWindow') ? 'cell-changed' : ''}"
+				sortBy="#{item.missingHourWindow}"
+            	filterBy="#{item.missingHourWindow}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.missingHourWindow}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.missingHourWindow}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="1"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoMissingNotificationBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:converter converterId="jakarta.faces.Float"/>
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="missingHourWindow"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoMissingNotificationBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+	                    		onstart="saveElithoMissingNotificationScrollPos"
+	                  			oncomplete="resizeElithoMissingNotificationTable();
+	                  				setElithoMissingNotificationScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+	        <p:column headerText="Hours"
+	        	title="Missing Hour Window"
+        		style="width:60px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('missingHourWindow') ? 'cell-changed' : ''}"
+				sortBy="#{item.missingHourWindow}"
+            	filterBy="#{item.missingHourWindow}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.missingHourWindow}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.missingHourWindow}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="1"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoMissingNotificationBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:converter converterId="jakarta.faces.Float"/>
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="missingHourWindow"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoMissingNotificationBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithomissingnotificationDT elithoTabView:elithomissingnotificationGrowl"
+	                    		onstart="saveElithoMissingNotificationScrollPos"
+	                  			oncomplete="resizeElithoMissingNotificationTable();
+	                  				setElithoMissingNotificationScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+			<ui:remove>
+			<p:column headerText="Created"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.createdDate}" rendered="#{item.isCreatedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Created By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdBy}"
+            	filterBy="#{item.createdBy}">
+                <h:outputText value="#{item.createdBy}"/>
+            </p:column>
+			<p:column headerText="Last Modified"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.lastModifiedDate}" rendered="#{item.isLastModifiedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Last Modified By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedBy}"
+            	filterBy="#{item.lastModifiedBy}">
+                <h:outputText value="#{item.lastModifiedBy}"/>
+            </p:column>
+            </ui:remove>
+			<p:column displayPriority="99"/>
+			<p:rowExpansion>
+        		<h:outputText value="#{item.getListAsText(item.emails)}" escape="false"/>
+            </p:rowExpansion>
+	        	
+		</p:dataTable>
+		
+	</h:form>
+	
+	<h:form id="missnotifEmaillistUpdateForm" prependId="false">
+		<p:dialog id="missnotifEmaillistUpdateDialog"
+	        widgetVar="missnotifEmaillistUpdateDialog"
+	        header="Update Email List"
+	        modal="true"
+	        resizable="true"
+	        width="520"
+	        height="200"
+	        closable="true">
+		    <h:panelGroup id="missnotifEmaillistUpdateDialogContent" layout="block" style="padding:10px;">
+                <p:autoComplete id="missnotifEmaillistAC"
+                	style="margin-bottom:20px;"
+                	completeMethod="#{eLithoMissingNotificationBean.completeEmail}"
+                	value="#{eLithoMissingNotificationBean.emailsToAdd}"
+					multiple="true"
+					forceSelection="true"
+					dropdown="true">
+					<p:ajax event="itemSelect"
+                        listener="#{eLithoMissingNotificationBean.addSelectedDetectionToList}"
+                        process="@this"
+                        update="@thismissingnotificationEmaillistChipsmissingnotificationEmaillistOL"/>
+				</p:autoComplete>
+	            <p:chips id="missnotifEmaillistChips"
+	            	value="#{eLithoMissingNotificationBean.selectedItem.emails}"
+					styleClass="chips-input-dialog"
+					addOnBlur="true">
+					<p:ajax event="itemSelect"
+		                listener="#{eLithoMissingNotificationBean.validateLastEmailList}"
+		                process="@this"
+		                update="@thismissingnotificationEmaillistACmissingnotificationEmaillistsOT"/>
+	            </p:chips>
+		        <div style="margin-top:15px; text-align:right;">
+		        	<p:commandButton styleClass="mr-2"
+		        		value="Update"
+		        		actionListener="#{eLithoMissingNotificationBean.checkEmailListChanges()}"
+		        		update="elithoTabView:elithomissingnotificationDT"
+		        		oncomplete="PF('missnotifEmaillistUpdateDialog').hide();"/>
+		            <p:commandButton value="Close" type="button"
+		            	onclick="PF('missnotifEmaillistUpdateDialog').hide();"/>
+		        </div>
+		    </h:panelGroup>
+		    <p:ajax event="open" listener="#{eLithoMissingNotificationBean.resetEmailListChanges()}"/>
+		</p:dialog>
+	</h:form>
+	
+</ui:component>

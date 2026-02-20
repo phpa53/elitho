@@ -114,6 +114,8 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
         	.toList();
     }
 
+	//------- Detection
+
 	public void addSelectedDetectionToList(final SelectEvent<String> event) {
 
         final var selecteDetection = event.getObject();
@@ -131,8 +133,6 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
         }
 
     }
-
-	//------- Detection
 
 	public void validateLastDetection() {
 
@@ -188,6 +188,24 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
 
 	//------- Defect
 
+	public void addSelectedDefectToList(final SelectEvent<String> event) {
+
+        final var selecteDefect = event.getObject();
+
+        if (selecteDefect != null && this.selectedItem != null) {
+
+        	final var list = Optional.ofNullable(this.selectedItem.getRecipeDefects()).orElse(new ArrayList<>());
+
+        	this.defectLabel = getDefectValidationLabel(selecteDefect, list, false);
+        	if (this.defectLabel.isEmpty()) {
+				list.add(selecteDefect);
+			}
+	        this.defectsToAdd = new ArrayList<>();
+
+        }
+
+    }
+
 	public void validateLastDefect() {
 
     	final var list = Optional.ofNullable(this.selectedItem.getRecipeDefects()).orElse(new ArrayList<>());
@@ -241,6 +259,24 @@ public final class ELithoJobBean extends AbstractTableBean<ELithoJobDTO, ELithoJ
     }
 
 	//------- Notification
+
+	public void addSelectedNotificationToList(final SelectEvent<String> event) {
+
+        final var selecteNotification = event.getObject();
+
+        if (selecteNotification != null && this.selectedItem != null) {
+
+        	final var list = Optional.ofNullable(this.selectedItem.getRecipeNotifications()).orElse(new ArrayList<>());
+
+        	this.notificationLabel = getNotificationValidationLabel(selecteNotification, list, false);
+        	if (this.notificationLabel.isEmpty()) {
+				list.add(selecteNotification);
+			}
+	        this.notificationsToAdd = new ArrayList<>();
+
+        }
+
+    }
 
 	public void validateLastNotification() {
 

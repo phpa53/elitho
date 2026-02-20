@@ -1,5 +1,10 @@
 package com.st.elitho.jpa;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import com.st.elitho.dto.AbstractTableDTO;
 
 import jakarta.persistence.MappedSuperclass;
@@ -14,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @MappedSuperclass
 public sealed abstract class AbstractTable<T extends AbstractTableDTO, U extends AbstractTablePK>
-	permits ELithoJob {
+	permits ELithoJob, ELithoMachine, ELithoMissingNotification {
 
 	/*
 	@Column(name = "created")
@@ -29,5 +34,10 @@ public sealed abstract class AbstractTable<T extends AbstractTableDTO, U extends
 
 	public abstract T toDTO();
 	public abstract U getPK();
+
+	public static List<String> getStringAsList(final String value) {
+		return Optional.ofNullable(value).orElse("").isEmpty() ? new ArrayList<>()
+			: Arrays.asList(value.trim().split(";")).stream().map(String::trim).toList();
+	}
 
 }

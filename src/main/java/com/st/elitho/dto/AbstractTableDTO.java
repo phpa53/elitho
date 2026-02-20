@@ -1,9 +1,12 @@
 package com.st.elitho.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.st.elitho.jpa.AbstractTable;
 
@@ -19,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @SuperBuilder
 @Slf4j
 public sealed abstract class AbstractTableDTO<T extends AbstractTable<?, ?>, U, V>
-	permits ELithoJobDTO {
+	permits ELithoJobDTO, ELithoMachineDTO, ELithoMissingNotificationDTO {
 
 	public static final String VALUE_DEFAULT = "value";
 	private LocalDateTime createdDate;
@@ -48,6 +51,24 @@ public sealed abstract class AbstractTableDTO<T extends AbstractTable<?, ?>, U, 
 
 	}
 	*/
+
+	public static String getListAsString(final List<String> list) {
+		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream().collect(Collectors.joining(";"));
+	}
+
+	@SuppressWarnings("static-method")
+	public String getListAsText(final List<String> list) {
+		return Optional.ofNullable(list).orElse(new ArrayList<>()).stream()
+			.sorted()
+            .map(value -> String.format("%s<br/>", value))
+            .collect(Collectors.joining());
+	}
+
+	@SuppressWarnings("static-method")
+	public String getListCompactList(final List<String> values, final String label) {
+		final var list = Optional.ofNullable(values).orElse(new ArrayList<>());
+		return list.isEmpty() ? "" : String.format("%d %s%s", list.size(), label, list.size() == 1 ? "" : "s");
+	}
 
 	public void clearChangedAttributes() {
 		this.changedAttributes.clear();
