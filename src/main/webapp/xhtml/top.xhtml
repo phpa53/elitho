@@ -37,15 +37,16 @@
 	        		position="bottom"/>
 	        	<div>
 	        		<span>
-		        	<p:link id="fsmTopUsernameLink"
-		        		style="color:white;"
-		        		value="Logged in as: #{topBean.userName}" 
-		        		href="#{topBean.keycloakUrl}/../realms/deeplitho/account"/>
+			        	<p:link id="fsmTopUsernameLink"
+			        		style="color:white;"
+			        		value="Logged in as: #{topBean.userName}" 
+			        		href="#{topBean.keycloakUrl}/../realms/deeplitho/account"/>
 			        	<br/>
 			        	<h:outputText value="Version #{topBean.appVersion}"
 			        		style="color:white;font-size:12px;font-style:italic;"/>
 		        	</span>
 	        	</div>
+		        	<h:commandButton value="Sign out" styleClass="ml-1" action="#{topBean.logout}"/>
 	        </h:panelGroup>
 	    </p:outputPanel>
     </h:form>

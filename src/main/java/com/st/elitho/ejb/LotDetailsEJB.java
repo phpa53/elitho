@@ -56,7 +56,8 @@ public class LotDetailsEJB implements Serializable {
 			.toList();
 	}
 
-	public static List<Path> getImagePaths(final LotDTO lot, final String scope) throws LotException {
+	@SuppressWarnings("static-method")
+	public List<Path> getImagePaths(final LotDTO lot, final String scope) throws LotException {
 
 		final var imageDir = getImageDir(lot, scope);
 
@@ -94,7 +95,8 @@ public class LotDetailsEJB implements Serializable {
 
 	}
 
-	public static StreamedContent getWaferImage(final Path path) throws LotException {
+	@SuppressWarnings("static-method")
+	public StreamedContent getWaferImage(final Path path) throws LotException {
 
 		final var mime = FacesContext.getCurrentInstance().getExternalContext().getMimeType(path.getFileName().toString());
 

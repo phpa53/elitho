@@ -1,5 +1,6 @@
 package com.st.elitho.jsf;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import com.st.elitho.uti.AppContext;
@@ -9,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,5 +57,15 @@ public class TopBean implements Serializable {
 	    this.appEnv = AppProperties.APP_ENV;
 
 	}
+
+	@SuppressWarnings("static-method")
+	public void logout() throws IOException {
+        final var ctx = FacesContext.getCurrentInstance();
+        final var request =
+                (HttpServletRequest) ctx.getExternalContext().getRequest();
+
+        // Just redirect to servlet
+        ctx.getExternalContext().redirect(request.getContextPath() + "/app-logout");
+    }
 
 }

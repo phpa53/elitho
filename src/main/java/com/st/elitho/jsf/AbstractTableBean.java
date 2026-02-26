@@ -55,7 +55,7 @@ public abstract class AbstractTableBean<T extends AbstractTableDTO<?, ?, ?>, U e
 		this.items.clear();
 		this.items.addAll(ejb.findAll());
 
-		LoggerUtils.info(log,
+		LoggerWrapper.info(log,
 			this.items.isEmpty() ? "No data found" : String.format("Found %d rows", this.items.size()));
 
 	}
