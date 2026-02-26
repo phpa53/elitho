@@ -3,6 +3,8 @@ package com.st.elitho.jpa;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -105,6 +107,8 @@ public final class ELithoRecipeDefect
 					.minSize(sizes.get(index))
 					.minDensity(densities.get(index)).build()));
 			}
+
+			Collections.sort(list, Comparator.comparing(ELithoRecipeDefectClassDTO::getName));
 
 		} catch(final NumberFormatException e) {
 			LoggerWrapper.warn(log, String.format("Bad number format (%s)", e.getMessage()));

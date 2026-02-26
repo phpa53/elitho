@@ -68,6 +68,11 @@
 		    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}">
 			<ui:include src="elithomissingnotification.xhtml"/>
 		</p:tab>
+		<p:tab title="Defect"
+			titletip="Recipe Defect"
+		    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}">
+			<ui:include src="elithorecipedefect.xhtml"/>
+		</p:tab>
 	</p:tabView>
 	
 </ui:component>

@@ -19,6 +19,7 @@ function resizeTables() {
 	resizeLotWafers();
 	resizeElithoJobTable();
 	resizeElithoMissingNotificationTable();
+	resizeElithoRecipeDefectTable();
 }
 
 function resizeLotTable() {

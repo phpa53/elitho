@@ -50,7 +50,7 @@
 		        		<p:commandButton value="Apply"
 			               	actionListener="#{eLithoMachineBean.apply}"
 			                update="elithomachineDT elithoTabView:elithomachineGrowl"
-							oncomplete="resizeElithojobTable();"/>
+							oncomplete="resizeElithoMachineTable();"/>
 	                    <p:commandButton id="elithomachineNewCB"
 	                    	title="New"
 	                    	icon="pi pi-plus"
@@ -58,7 +58,7 @@
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		                    actionListener="#{eLithoMachineBean.add()}"
 		                    update="elithomachineDT elithoTabView:elithomachineGrowl"
-		                    oncomplete="resizeElithojobTable();"/>
+		                    oncomplete="resizeElithoMachineTable();"/>
 	                    <p:commandButton id="elithomachineCopyCB"
 	                    	title="Copy"
 	                    	icon="pi pi-copy"
@@ -67,7 +67,7 @@
 		                    disabled="#{eLithoMachineBean.copyDisabled()}"
 		                    actionListener="#{eLithoMachineBean.copy()}"
 		                    update="elithomachineDT elithoTabView:elithomachineGrowl"
-		                    oncomplete="resizeElithojobTable();"/>
+		                    oncomplete="resizeElithoMachineTable();"/>
 	                    <p:commandButton id="elithomachineDeleteCB"
 	                    	title="Delete"
 	                    	value="#{eLithoMachineBean.getDeleteLabel()}"
@@ -78,7 +78,7 @@
 		                    disabled="#{empty eLithoMachineBean.selectedItems}"
 		                    actionListener="#{eLithoMachineBean.delete()}"
 		                    update="@this elithomachineDT elithoTabView:elithomachineGrowl"
-		                    oncomplete="resizeElithojobTable();"/>
+		                    oncomplete="resizeElithoMachineTable();"/>
 	                    <p:commandButton id="elithomachineSaveCB"
 	                    	title="Save"
 		                	icon="pi pi-save"
@@ -87,7 +87,7 @@
 		                    disabled="#{eLithoMachineBean.saveDisabled()}"
 		                    actionListener="#{eLithoMachineBean.save()}"
 		                    update="elithomachineDT elithoTabView:elithomachineGrowl"
-		                    oncomplete="resizeElithojobTable();"/>
+		                    oncomplete="resizeElithoMachineTable();"/>
 	                    <p:commandButton id="elithomachineDiscardCB"
 	                    	title="Discard"
 		                	icon="pi pi-undo"
@@ -96,14 +96,14 @@
 		                    disabled="#{not eLithoMachineBean.anyItemChanged}"
 		                    actionListener="#{eLithoMachineBean.discard()}"
 		                    update="elithomachineDT elithoTabView:elithomachineGrowl"
-		                    oncomplete="resizeElithojobTable();"/>
+		                    oncomplete="resizeElithoMachineTable();"/>
 		               	<p:commandButton icon="pi pi-sort-alt-slash"
 		               		title="Reset Table"
 		               		styleClass="ml-2 ui-button-secondary"
 		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
 		               		action="#{eLithoMachineBean.resetTable}"
 		               		update="elithomachineDT"
-		                    oncomplete="resizeElithojobTable();"/>
+		                    oncomplete="resizeElithoMachineTable();"/>
 						<p:outputLabel value="#{eLithoMachineBean.numberOfChanges} row(s) changed"
 							style="font-weight:bold;color:orange;"
 							styleClass="ml-2"
@@ -147,7 +147,7 @@
                         		process="@this"
 		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
                         		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+		                    	oncomplete="resizeElithoMachineTable();setElithojobScrollPos();"/>
                         </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -165,7 +165,7 @@
                 	<p:ajax process="@this"
                     	update="elithomachineDT elithoTabView:elithomachineGrowl"
                       	onstart="saveElithoMachineScrollPos();"
-                    	oncomplete="resizeNotificationTable();setElithoMachineScrollPos();"/>
+                    	oncomplete="resizeElithoMachineTable();setElithoMachineScrollPos();"/>
                 </p:selectBooleanCheckbox>
 			</p:column>
 	        <p:column headerText="M. NR"
@@ -221,7 +221,7 @@
 	                       		process="@this"
 		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
                         		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+		                    	oncomplete="resizeElithoMachineTable();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -250,7 +250,7 @@
 	                       		process="@this"
 		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
                         		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+		                    	oncomplete="resizeElithoMachineTable();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -400,7 +400,7 @@
 	                       		process="@this"
 		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
                         		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+		                    	oncomplete="resizeElithoMachineTable();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>
@@ -429,7 +429,7 @@
 	                       		process="@this"
 		                    	update="elithomachineDT elithoTabView:elithomachineGrowl"
                         		onstart="saveElithojobScrollPos();"
-		                    	oncomplete="resizeElithojobTable();setElithojobScrollPos();"/>
+		                    	oncomplete="resizeElithoMachineTable();setElithojobScrollPos();"/>
                        </p:inputText>
                     </f:facet>
                 </p:cellEditor>

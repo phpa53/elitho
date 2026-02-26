@@ -361,7 +361,7 @@
         		styleClass="#{item.hasAttributeChanged('defectClass') ? 'cell-changed' : ''}"
 				sortBy="#{item.defectClass.name}"
             	filterBy="#{item.defectClass.name}">
-               		<h:outputText value="#{item.getListCompactList(item.defectClass, 'class')}" escape="false"/>
+               		<h:outputText value="#{item.getListCompactList(item.defectClasses, 'instance')}" escape="false"/>
 			</p:column>
 			<p:column headerText="Start"
 	        	title="Wafer Edge Ring Start"
@@ -395,7 +395,7 @@
             </p:column>
 			<p:column headerText="Scenario"
 				title="Wafer Edge Scenario"
-        		style="width:90px;text-align:center;color:#{item.getAttributeColor()};"
+        		style="width:200px;text-align:center;color:#{item.getAttributeColor()};"
         		styleClass="#{item.hasAttributeChanged('waferEdgeScenario') ? 'cell-changed' : ''}"
 				sortBy="#{item.waferEdgeScenario}"
             	filterBy="#{item.waferEdgeScenario}">
@@ -454,7 +454,10 @@
         		<p:dataTable id="elithodefectclassDT"
         			var="class"
 		        	value="#{item.defectClasses}"
-		        	rowKey="#{item.class.name}">
+		        	rowKey="#{item.class.name}"
+					editable="true"
+					editInitEvent="click"
+					editMode="cell">
 		        	<p:column headerText="Class Name" style="width:130px;text-align:left;">
 		        		<p:cellEditor>
 			                <f:facet name="output">
@@ -554,6 +557,7 @@
 			                </f:facet>
 			            </p:cellEditor>
 		        	</p:column>
+		        	<p:column displayPriority="99"/>
         	</p:dataTable>
             </p:rowExpansion>
 	        	
