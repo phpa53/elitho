@@ -138,6 +138,20 @@ body .ui-datatable .ui-paginator {
     padding: 4px;
 }
 
+.cell-changed {
+    border: 2px solid orange !important;
+    font-weight: bold;
+    color: orange;
+}
+.cell-to-be-filled {
+	background-color: red !important;
+}
+
+.ui-tooltip.tooltip-error,
+.ui-tooltip.tooltip-error .ui-tooltip-text {
+    background-color: tomato!important;
+    color: black!important;
+}
 
 #elithoTabView\:elithojobDT .ui-datatable-header {
 	padding: 0 !important;
@@ -190,20 +204,24 @@ body .ui-datatable .ui-paginator {
     margin-block-end: 0!important;
 }
 
-.cell-changed {
-    border: 2px solid orange !important;
-    font-weight: bold;
-    color: orange;
+#elithoTabView\:elithorecipedefectDT .ui-datatable-header {
+	padding: 0 !important;
 }
-.cell-to-be-filled {
-	background-color: red !important;
+#elithoTabView\:elithorecipedefectDT .ui-datatable-scrollable-header thead>tr>th {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    font-size: 16px;
+}
+#elithoTabView\:elithorecipedefectDT .ui-datatable-data>tr>td {
+    padding: 0 0 !important;
+    font-size: 16px;
+}
+#elithoTabView\:elithorecipedefectDT .ui-datatable-data>tr>td>span>p {
+    margin-block-start: 0!important;
+    margin-block-end: 0!important;
 }
 
-.ui-tooltip.tooltip-error,
-.ui-tooltip.tooltip-error .ui-tooltip-text {
-    background-color: tomato!important;
-    color: black!important;
-}
+
 
 
 

@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @SuperBuilder
 @Slf4j
 public sealed abstract class AbstractTableDTO<T extends AbstractTable<?, ?>, U, V>
-	permits ELithoJobDTO, ELithoMachineDTO, ELithoMissingNotificationDTO {
+	permits ELithoJobDTO, ELithoMachineDTO, ELithoMissingNotificationDTO, ELithoRecipeDefectDTO {
 
 	public static final String VALUE_DEFAULT = "value";
 	private LocalDateTime createdDate;

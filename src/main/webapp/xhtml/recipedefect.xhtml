@@ -1,0 +1,564 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="jakarta.tags.core"
+	xmlns:cc="jakarta.faces.composite"
+	xmlns:f="jakarta.faces.core"
+	xmlns:faces="jakarta.faces"
+	xmlns:fn="jakarta.tags.functions"
+	xmlns:h="jakarta.faces.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pass="jakarta.faces.passthrough"
+	xmlns:ui="jakarta.faces.facelets">
+	
+	<h:form id="elithorecipedefectForm" prependId="false">
+		
+		<p:growl id="elithorecipedefectGrowl" showDetail="true" life="3000"/>
+		
+		<p:dataTable id="elithorecipedefectDT"
+        	widgetVar="elithorecipedefectDTW"
+        	var="item"
+        	value="#{eLithoRecipeDefectBean.items}"
+        	rowKey="#{item.getKey()}"
+			scrollable="true"
+			scrollHeight="800"
+			lazy="false"
+			sortMode="multiple"
+			filterMode="advanced"
+			virtualScroll="false"
+			tableStyle="width:overflow"
+			resizableColumns="true"
+			resizeMode="expand"
+			draggableColumns="true"
+			size="small"
+			editable="true"
+			editInitEvent="click"
+			editMode="cell"
+            selectionMode="multiple"
+            selection="#{eLithoRecipeDefectBean.selectedItems}"
+            selectionPageOnly="false"
+            disabledSelection="false"
+			stripedRows="true"
+			disabledTextSelection="false"
+			cache="true"
+        	showGridlines="true">
+        	
+        	<f:facet name="header">
+        		<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+		            margin-top:5px;margin-bottom:5px;">
+	            	<span style="margin-top:-5px;">
+		        		<p:commandButton value="Apply"
+			               	actionListener="#{eLithoRecipeDefectBean.apply}"
+			                update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+							oncomplete="resizeElithoRecipeDefectTable();"/>
+	                    <p:commandButton id="elithorecipedefectNewCB"
+	                    	title="New"
+	                    	icon="pi pi-plus"
+		                    styleClass="ml-2 ui-button-success"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    actionListener="#{eLithoRecipeDefectBean.add()}"
+		                    update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+		                    oncomplete="resizeElithoRecipeDefectTable();"/>
+	                    <p:commandButton id="elithorecipedefectCopyCB"
+	                    	title="Copy"
+	                    	icon="pi pi-copy"
+		                    styleClass="ml-2 ui-button-success"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoRecipeDefectBean.copyDisabled()}"
+		                    actionListener="#{eLithoRecipeDefectBean.copy()}"
+		                    update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+		                    oncomplete="resizeElithoRecipeDefectTable();"/>
+	                    <p:commandButton id="elithorecipedefectDeleteCB"
+	                    	title="Delete"
+	                    	value="#{eLithoRecipeDefectBean.getDeleteLabel()}"
+		                	icon="pi pi-trash"
+		                	escape="false"
+		                    styleClass="ml-2 ui-button-danger"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{empty eLithoRecipeDefectBean.selectedItems}"
+		                    actionListener="#{eLithoRecipeDefectBean.delete()}"
+		                    update="@this elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+		                    oncomplete="resizeElithoRecipeDefectTable();"/>
+	                    <p:commandButton id="elithorecipedefectSaveCB"
+	                    	title="Save"
+		                	icon="pi pi-save"
+		                    styleClass="ml-2 ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoRecipeDefectBean.saveDisabled()}"
+		                    actionListener="#{eLithoRecipeDefectBean.save()}"
+		                    update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+		                    oncomplete="resizeElithoRecipeDefectTable();"/>
+	                    <p:commandButton id="elithorecipedefectDiscardCB"
+	                    	title="Discard"
+		                	icon="pi pi-undo"
+		                    styleClass="ml-2 ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{not eLithoRecipeDefectBean.anyItemChanged}"
+		                    actionListener="#{eLithoRecipeDefectBean.discard()}"
+		                    update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+		                    oncomplete="resizeElithoRecipeDefectTable();"/>
+		               	<p:commandButton icon="pi pi-sort-alt-slash"
+		               		title="Reset Table"
+		               		styleClass="ml-2 ui-button-secondary"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		               		action="#{eLithoRecipeDefectBean.resetTable}"
+		               		update="elithorecipedefectDT"
+		                    oncomplete="resizeElithoRecipeDefectTable();"/>
+		                <p:tooltip for="@next" value="Column to expand"/>
+		                <p:commandButton icon="pi pi-angle-down"
+		                    styleClass="ml-2"
+		                    title="Expand All"
+		                    type="button"
+                 			onclick="expandAllRows('elithorecipedefectDTW');"/>
+		                <p:commandButton icon="pi pi-angle-right"
+		                    styleClass="ml-2"
+		                    title="Collapse All"
+		                	type="button"
+                 			onclick="collapseAllRows('elithorecipedefectDTW');"/>
+						<p:outputLabel value="#{eLithoRecipeDefectBean.numberOfChanges} row(s) changed"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
+		               		rendered="#{eLithoRecipeDefectBean.numberOfChanges > 0}"/>
+						<p:outputLabel value="#{eLithoRecipeDefectBean.numberOfDeletes} row(s) deleted"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
+		               		rendered="#{eLithoRecipeDefectBean.numberOfDeletes > 0}"/>
+					</span>
+				</div>
+        	</f:facet>
+        	
+        	<p:ajax event="rowSelect"
+        		update="elithorecipedefectCopyCB elithorecipedefectDeleteCB"/>
+            <p:ajax event="rowUnselect"
+            	update="elithorecipedefectCopyCB elithorecipedefectDeleteCB"/>
+            <p:ajax event="rowSelectCheckbox"
+            	update="elithorecipedefectCopyCB elithorecipedefectDeleteCB"/>
+            <p:ajax event="rowUnselectCheckbox"
+            	update="elithorecipedefectCopyCB elithorecipedefectDeleteCB"/>
+            <p:ajax event="toggleSelect"
+            	update="elithorecipedefectCopyCB elithorecipedefectDeleteCB"/>
+        	
+        	<p:column style="width:10px;" styleClass="#{item.toBeFilled() ? 'cell-to-be-filled' : ''}">
+                <p:rowToggler/>
+            </p:column>
+        	<p:column headerText="Recipe"
+        		title="Recipe Name"
+        		style="width:80px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('recipeName') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeName}"
+            	filterBy="#{item.recipeName}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.recipeName}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:inputText value="#{item.recipeName}"
+                        	style="width:100%"
+                        	maxlength="100"
+                        	immediate="true"
+                        	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+                        	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+                        	<f:attribute name="item" value="#{item}"/>
+                        	<f:attribute name="attribute" value="recipeName"/>
+                        	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+                        		process="@this"
+		                    	update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+                        		onstart="saveElithoRecipeDefectScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDefectTable();
+		                    		setElithoRecipeDefectScrollPos();"/>
+                        </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Techno"
+				title="Twinscan Technology"
+        		style="width:80px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('tsTechnology') ? 'cell-changed' : ''}"
+				sortBy="#{item.tsTechnology}"
+            	filterBy="#{item.tsTechnology}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.tsTechnology}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.tsTechnology}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="tsTechnology"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+	                       		process="@this"
+                        		update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+                        		onstart="saveElithoRecipeDefectScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDefectTable();
+		                    		setElithoRecipeDefectScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Maskset"
+				title="Twinscan Maskset"
+        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('tsMaskset') ? 'cell-changed' : ''}"
+				sortBy="#{item.tsMaskset}"
+            	filterBy="#{item.tsMaskset}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.tsMaskset}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.tsMaskset}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="tsMaskset"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+	                       		process="@this"
+                        		update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+                        		onstart="saveElithoRecipeDefectScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDefectTable();
+		                    		setElithoRecipeDefectScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Layer"
+				title="Twinscan Layer"
+        		style="width:120px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('tsLayer') ? 'cell-changed' : ''}"
+				sortBy="#{item.tsLayer}"
+            	filterBy="#{item.tsLayer}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.tsLayer}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.tsLayer}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="tsLayer"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+	                       		process="@this"
+                        		update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+                        		onstart="saveElithoRecipeDefectScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDefectTable();
+		                    		setElithoRecipeDefectScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+	        <p:column headerText="Noise"
+	        	title="Noise Factor"
+        		style="width:70px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('noiseFactor') ? 'cell-changed' : ''}"
+				sortBy="#{item.noiseFactor}"
+            	filterBy="#{item.noiseFactor}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.noiseFactor}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.noiseFactor}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="1"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:converter converterId="jakarta.faces.Float"/>
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="noiseFactor"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+	                    		onstart="saveElithoRecipeDefectScrollPos"
+	                  			oncomplete="resizeElithoRecipeDefectTable();
+	                  				setElithoRecipeDefectScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+			<p:column headerText="Pixels"
+	        	title="Defect Cluster Min Pixel"
+        		style="width:70px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('defectClusterMinPixels') ? 'cell-changed' : ''}"
+				sortBy="#{item.defectClusterMinPixels}"
+            	filterBy="#{item.defectClusterMinPixels}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.defectClusterMinPixels}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.defectClusterMinPixels}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="0"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="defectClusterMinPixels"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+	                    		onstart="saveElithoRecipeDefectScrollPos"
+	                  			oncomplete="resizeElithoRecipeDefectTable();setElithoRecipeDefectScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+	        <p:column headerText="Prox"
+	        	title="Defect Cluster Pixel Proximity"
+        		style="width:70px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('defectClusterPixelProximity') ? 'cell-changed' : ''}"
+				sortBy="#{item.defectClusterPixelProximity}"
+            	filterBy="#{item.defectClusterPixelProximity}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.defectClusterPixelProximity}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.defectClusterPixelProximity}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="1"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:converter converterId="jakarta.faces.Float"/>
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="defectClusterPixelProximity"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+	                    		onstart="saveElithoRecipeDefectScrollPos"
+	                  			oncomplete="resizeElithoRecipeDefectTable();
+	                  				setElithoRecipeDefectScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+			<p:column headerText="Classes"
+				title="Defect Classes"
+        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('defectClass') ? 'cell-changed' : ''}"
+				sortBy="#{item.defectClass.name}"
+            	filterBy="#{item.defectClass.name}">
+               		<h:outputText value="#{item.getListCompactList(item.defectClass, 'class')}" escape="false"/>
+			</p:column>
+			<p:column headerText="Start"
+	        	title="Wafer Edge Ring Start"
+        		style="width:70px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('waferEdgeRingStart') ? 'cell-changed' : ''}"
+				sortBy="#{item.waferEdgeRingStart}"
+            	filterBy="#{item.waferEdgeRingStart}">
+				<p:cellEditor>
+	                <f:facet name="output">
+	            		<h:outputText value="#{item.waferEdgeRingStart}"/>
+	                </f:facet>
+	                <f:facet name="input">
+	                    <p:inputNumber value="#{item.waferEdgeRingStart}"
+	                    	style="width:100%"
+	                    	immediate="true"
+	                    	decimalPlaces="0"
+	                    	size="5"
+	                    	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+	                    	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                    	<f:attribute name="item" value="#{item}"/>
+	                    	<f:attribute name="attribute" value="waferEdgeRingStart"/>
+	                    	<p:ajax event="blur"
+	                    		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+	                    		process="@this"
+	                  			update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+	                    		onstart="saveElithoRecipeDefectScrollPos"
+	                  			oncomplete="resizeElithoRecipeDefectTable();setElithoRecipeDefectScrollPos();"/>
+	                    </p:inputNumber>
+	                </f:facet>
+	            </p:cellEditor>
+            </p:column>
+			<p:column headerText="Scenario"
+				title="Wafer Edge Scenario"
+        		style="width:90px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('waferEdgeScenario') ? 'cell-changed' : ''}"
+				sortBy="#{item.waferEdgeScenario}"
+            	filterBy="#{item.waferEdgeScenario}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.waferEdgeScenario}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.waferEdgeScenario}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoRecipeDefectBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="waferEdgeScenario"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDefectBean.checkKeyUniqueness()}"
+	                       		process="@this"
+                        		update="elithorecipedefectDT elithoTabView:elithorecipedefectGrowl"
+                        		onstart="saveElithoRecipeDefectScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDefectTable();
+		                    		setElithoRecipeDefectScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<ui:remove>
+			<p:column headerText="Created"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.createdDate}" rendered="#{item.isCreatedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Created By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdBy}"
+            	filterBy="#{item.createdBy}">
+                <h:outputText value="#{item.createdBy}"/>
+            </p:column>
+			<p:column headerText="Last Modified"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.lastModifiedDate}" rendered="#{item.isLastModifiedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Last Modified By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedBy}"
+            	filterBy="#{item.lastModifiedBy}">
+                <h:outputText value="#{item.lastModifiedBy}"/>
+            </p:column>
+            </ui:remove>
+			<p:column displayPriority="99"/>
+			<p:rowExpansion>
+        		<p:dataTable id="elithodefectclassDT"
+        			var="class"
+		        	value="#{item.defectClasses}"
+		        	rowKey="#{item.class.name}">
+		        	<p:column headerText="Class Name" style="width:130px;text-align:left;">
+		        		<p:cellEditor>
+			                <f:facet name="output">
+			            		<h:outputText value="#{class.name}"/>
+			                </f:facet>
+			                <f:facet name="input">
+			                	<p:inputText value="#{class.name}"
+			                    	style="width:100%"
+			                    	immediate="true"
+			                    	valueChangeListener="#{eLithoRecipeDefectBean.defectClassValueChanged}"
+			                    	onkeypress=
+			                    		"if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+			                    	<f:attribute name="class" value="#{class}"/>
+			                    	<f:attribute name="attribute" value="name"/>
+			                    	<p:ajax event="blur"
+			                    		process="@this"
+			                    		update="elithodefectclassDT elithoTabView:elithorecipedefectGrowl"
+			                    		onstart="saveElithoRecipeDefectScrollPos();"
+			                  			oncomplete="resizeElithoRecipeDefectTable();
+			                  				setElithoRecipeDefectScrollPos();"/>
+			                   </p:inputText>
+			                </f:facet>
+			            </p:cellEditor>
+		        	</p:column>
+		        	<p:column headerText="Min Height" style="width:90px;text-align:center;">
+		        		<p:cellEditor>
+			                <f:facet name="output">
+			            		<h:outputText value="#{class.minHeight}"/>
+			                </f:facet>
+			                <f:facet name="input">
+			                	<p:inputNumber value="#{class.minHeight}"
+			                    	style="width:100%"
+			                    	immediate="true"
+	                    			decimalPlaces="0"
+			                    	valueChangeListener="#{eLithoRecipeDefectBean.defectClassValueChanged}"
+			                    	onkeypress=
+			                    		"if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+			                    	<f:attribute name="class" value="#{class}"/>
+			                    	<f:attribute name="attribute" value="minHeight"/>
+			                    	<p:ajax event="blur"
+			                    		process="@this"
+			                    		update="elithodefectclassDT elithoTabView:elithorecipedefectGrowl"
+			                    		onstart="saveElithoRecipeDefectScrollPos();"
+			                  			oncomplete="resizeElithoRecipeDefectTable();
+			                  				setElithoRecipeDefectScrollPos();"/>
+			                   </p:inputNumber>
+			                </f:facet>
+			            </p:cellEditor>
+		        	</p:column>
+		        	<p:column headerText="Min Size" style="width:90px;text-align:center;">
+		        		<p:cellEditor>
+			                <f:facet name="output">
+			            		<h:outputText value="#{class.minSize}"/>
+			                </f:facet>
+			                <f:facet name="input">
+			                	<p:inputNumber value="#{class.minSize}"
+			                    	style="width:100%"
+			                    	immediate="true"
+	                    			decimalPlaces="0"
+			                    	valueChangeListener="#{eLithoRecipeDefectBean.defectClassValueChanged}"
+			                    	onkeypress=
+			                    		"if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+			                    	<f:attribute name="class" value="#{class}"/>
+			                    	<f:attribute name="attribute" value="minHeight"/>
+			                    	<p:ajax event="blur"
+			                    		process="@this"
+			                    		update="elithodefectclassDT elithoTabView:elithorecipedefectGrowl"
+			                    		onstart="saveElithoRecipeDefectScrollPos();"
+			                  			oncomplete="resizeElithoRecipeDefectTable();
+			                  				setElithoRecipeDefectScrollPos();"/>
+			                   </p:inputNumber>
+			                </f:facet>
+			            </p:cellEditor>
+		        	</p:column>
+		        	<p:column headerText="Min Density" style="width:90px;text-align:center;">
+		        		<p:cellEditor>
+			                <f:facet name="output">
+			            		<h:outputText value="#{class.minDensity}"/>
+			                </f:facet>
+			                <f:facet name="input">
+			                	<p:inputNumber value="#{class.minDensity}"
+			                    	style="width:100%"
+			                    	immediate="true"
+	                    			decimalPlaces="0"
+			                    	valueChangeListener="#{eLithoRecipeDefectBean.defectClassValueChanged}"
+			                    	onkeypress=
+			                    		"if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+			                    	<f:attribute name="class" value="#{class}"/>
+			                    	<f:attribute name="attribute" value="minHeight"/>
+			                    	<p:ajax event="blur"
+			                    		process="@this"
+			                    		update="elithodefectclassDT elithoTabView:elithorecipedefectGrowl"
+			                    		onstart="saveElithoRecipeDefectScrollPos();"
+			                  			oncomplete="resizeElithoRecipeDefectTable();
+			                  				setElithoRecipeDefectScrollPos();"/>
+			                   </p:inputNumber>
+			                </f:facet>
+			            </p:cellEditor>
+		        	</p:column>
+        	</p:dataTable>
+            </p:rowExpansion>
+	        	
+		</p:dataTable>
+		
+	</h:form>
+	
+</ui:component>

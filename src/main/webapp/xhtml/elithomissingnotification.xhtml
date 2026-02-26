@@ -194,11 +194,6 @@
         		styleClass="#{item.hasAttributeChanged('emails') ? 'cell-changed' : ''}"
 				sortBy="#{item.emails}"
             	filterBy="#{item.emails}">
-            	<p:tooltip for="@next"
-                      styleClass="#{item.getEmailListTooltipStyle(item.emails)}"
-                      value="#{item.getEmailListTooltip(item.emails)}"
-                      rendered="false"
-                      escape="false" />
 	            <p:commandLink style="color:#{item.getEmailListColor(item.emails)};text-decoration:none;"
                     update="elithoTabView:missingnotificationEmailsUpdateDialogContent"
                     process="@this"

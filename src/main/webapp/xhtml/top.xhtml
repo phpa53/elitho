@@ -54,13 +54,17 @@
 		<p:tab title="Lots">
 			<ui:include src="lot.xhtml"/>
 		</p:tab>
-		<p:tab title="Job">
+		<p:tab title="Job"
+			rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}">
 			<ui:include src="elithojob.xhtml"/>
 		</p:tab>
-		<p:tab title="Machine">
+		<p:tab title="Machine"
+			rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}">
 			<ui:include src="elithomachine.xhtml"/>
 		</p:tab>
-		<p:tab title="Missing" titletip="Missing Notification">
+		<p:tab title="Missing"
+			titletip="Missing Notification"
+		    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}">
 			<ui:include src="elithomissingnotification.xhtml"/>
 		</p:tab>
 	</p:tabView>

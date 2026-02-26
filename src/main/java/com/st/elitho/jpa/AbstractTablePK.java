@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public sealed abstract class AbstractTablePK permits ELithoJobPK, ELithoMachinePK,
-	ELithoMissingNotificationPK { // NOPMD
+	ELithoMissingNotificationPK, ELithoRecipeDefectPK { // NOPMD
 	// No abstract method
 }

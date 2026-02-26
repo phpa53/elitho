@@ -116,6 +116,32 @@ function resizeElithoMissingNotificationTable() {
 	}
 }
 
+var elithoRecipeDefectScrollTop;
+var elithoRecipeDefectScrollLeft;
+function saveElithoRecipeDefectScrollPos() {
+	elithoRecipeDefectScrollTop =
+		$("#elithoTabView\\:elithoRecipeDefectDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoRecipeDefectScrollLeft =
+		$("#elithoTabView\\:elithoRecipeDefectDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+}
+function setElithoRecipeDefectScrollPos() {
+	$("#elithoTabView\\:elithoRecipeDefectDT > .ui-datatable-scrollable-body")
+		.scrollTop(elithoRecipeDefectScrollTop);
+	$("#elithoTabView\\:elithoRecipeDefectDT > .ui-datatable-scrollable-body")
+		.scrollLeft(elithoRecipeDefectScrollLeft);
+}
+function resizeElithoRecipeDefectTable() {
+	var height = $(this).height() - 260;
+	var tableBody = $("#elithoTabView\\:elithorecipedefectDT").find(".ui-datatable-scrollable-body");
+	if (tableBody !== null && tableBody !== undefined) {
+		tableBody.height(height);
+	}
+}
+
+
+
+
+
 function expandAllRows(widgetVar) {
     var dt = PF(widgetVar);
     if (!dt) {
