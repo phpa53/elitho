@@ -81,7 +81,7 @@ public final class ELithoMissingNotificationBean
 	}
 
 	public void resetTable() {
-		super.resetTable("elithoTabView:elithojobForm:elithojobDT");
+		super.resetTable("elithoTabView:elithomissingnotificationForm:elithomissingnotificationDT");
 	}
 
 	public List<String> completeEmail(final String pattern) {

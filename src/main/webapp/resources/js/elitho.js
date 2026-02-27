@@ -3,11 +3,6 @@ var elithojobExpanded;
 $(document).ready(function() {
 	elithojobExpanded = false;
 	resizeTables();
-	resizeLotWafers();
-	resizeElithoJobTable();
-	resizeElithoMachineTable();
-	resizeElithoMissingNotificationTable();
-	
 });
 
 $(window).resize(function() {
@@ -18,8 +13,11 @@ function resizeTables() {
 	resizeLotTable();
 	resizeLotWafers();
 	resizeElithoJobTable();
+	resizeElithoMachineTable();
 	resizeElithoMissingNotificationTable();
 	resizeElithoRecipeDefectTable();
+	resizeElithoRecipeDetectionTable();
+	resizeElithoRecipeExportTable();
 }
 
 function resizeLotTable() {
@@ -138,6 +136,53 @@ function resizeElithoRecipeDefectTable() {
 		tableBody.height(height);
 	}
 }
+
+var elithoRecipeDetectionScrollTop;
+var elithoRecipeDetectionScrollLeft;
+function saveElithoRecipeDetectionScrollPos() {
+	elithoRecipeDetectionScrollTop =
+		$("#elithoTabView\\:elithoRecipeDetectionDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoRecipeDetectionScrollLeft =
+		$("#elithoTabView\\:elithoRecipeDetectionDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+}
+function setElithoRecipeDetectionScrollPos() {
+	$("#elithoTabView\\:elithoRecipeDetectionDT > .ui-datatable-scrollable-body")
+		.scrollTop(elithoRecipeDetectionScrollTop);
+	$("#elithoTabView\\:elithoRecipeDetectionDT > .ui-datatable-scrollable-body")
+		.scrollLeft(elithoRecipeDetectionScrollLeft);
+}
+function resizeElithoRecipeDetectionTable() {
+	var height = $(this).height() - 260;
+	var tableBody = $("#elithoTabView\\:elithorecipedetectionDT").find(".ui-datatable-scrollable-body");
+	if (tableBody !== null && tableBody !== undefined) {
+		tableBody.height(height);
+	}
+}
+
+var elithoRecipeExportScrollTop;
+var elithoRecipeExportScrollLeft;
+function saveElithoRecipeExportScrollPos() {
+	elithoRecipeExportScrollTop =
+		$("#elithoTabView\\:elithoRecipeExportDT > .ui-datatable-scrollable-body").scrollTop(); // NOPMD global
+	elithoRecipeExportScrollLeft =
+		$("#elithoTabView\\:elithoRecipeExportDT > .ui-datatable-scrollable-body").scrollLeft(); // NOPMD global
+}
+function setElithoRecipeExportScrollPos() {
+	$("#elithoTabView\\:elithoRecipeExportDT > .ui-datatable-scrollable-body")
+		.scrollTop(elithoRecipeExportScrollTop);
+	$("#elithoTabView\\:elithoRecipeExportDT > .ui-datatable-scrollable-body")
+		.scrollLeft(elithoRecipeExportScrollLeft);
+}
+function resizeElithoRecipeExportTable() {
+	var height = $(this).height() - 260;
+	var tableBody = $("#elithoTabView\\:elithorecipeexportDT").find(".ui-datatable-scrollable-body");
+	if (tableBody !== null && tableBody !== undefined) {
+		tableBody.height(height);
+	}
+}
+
+
+
 
 
 

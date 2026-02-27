@@ -47,11 +47,11 @@ public final class ELithoRecipeDefect
 	@Column(name = "twinscanlayer")
 	private String twinscanLayer;
 	@Column(name = "noisefactor")
-	private Float noiseFactor;
+	private Double noiseFactor;
 	@Column(name = "defectclusterminpixels")
 	private Integer defectClusterMinPixels;
 	@Column(name = "defectclusterpixelproximity")
-	private Float defectClusterPixelProximity;
+	private Double defectClusterPixelProximity;
 	@Column(name = "defectclasses")
 	private String defectClasses;
 	@Column(name = "defectclassminheight")
@@ -61,7 +61,7 @@ public final class ELithoRecipeDefect
 	@Column(name = "defectclassmindensity")
 	private String defectClassMinDensity;
 	@Column(name = "waferedgeringstart")
-	private Integer waferEdgeRingStart;
+	private Double waferEdgeRingStart;
 	@Column(name = "waferedgescenario")
 	private String waferEdgeScenario;
 
@@ -72,9 +72,11 @@ public final class ELithoRecipeDefect
 			.tsTechnology(this.twinscanTechnology)
 			.tsMaskset(this.twinscanMaskset)
 			.tsLayer(this.twinscanLayer)
-			.noiseFactor(Optional.ofNullable(this.noiseFactor).orElse(0.0f))
+			.noiseFactor(Optional.ofNullable(this.noiseFactor).orElse(0.0).floatValue())
+			.defectClusterMinPixels(this.defectClusterMinPixels)
+			.defectClusterPixelProximity(Optional.ofNullable(this.defectClusterPixelProximity).orElse(0.0).floatValue())
 			.defectClasses(getDefectClasses())
-			.waferEdgeRingStart(Optional.ofNullable(this.waferEdgeRingStart).orElse(0))
+			.waferEdgeRingStart(Optional.ofNullable(this.waferEdgeRingStart).orElse(0.0).floatValue())
 			.waferEdgeScenario(Optional.ofNullable(this.waferEdgeScenario).orElse(""))
 		/*
 		.createdDate(Optional.ofNullable(getCreated()).orElse(LocalDateTime.MIN))

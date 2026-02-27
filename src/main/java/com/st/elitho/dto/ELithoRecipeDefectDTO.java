@@ -1,6 +1,8 @@
 package com.st.elitho.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +32,11 @@ public final class ELithoRecipeDefectDTO
 	private String tsTechnology;
 	private String tsMaskset;
 	private String tsLayer;
-	private Float noiseFactor;
-	private Integer defectClusterMinPixels;
-	private Float defectClusterPixelProximity;
+	private float noiseFactor;
+	private int defectClusterMinPixels;
+	private float defectClusterPixelProximity;
 	private List<ELithoRecipeDefectClassDTO> defectClasses;
-	private Integer waferEdgeRingStart;
+	private float waferEdgeRingStart;
 	private String waferEdgeScenario;
 
 	@Override
@@ -44,9 +46,10 @@ public final class ELithoRecipeDefectDTO
 			.twinscanTechnology(this.tsTechnology)
 			.twinscanMaskset(this.tsMaskset)
 			.twinscanLayer(this.tsLayer)
-			.noiseFactor(this.noiseFactor)
+			.noiseFactor(BigDecimal.valueOf(this.noiseFactor).setScale(1, RoundingMode.HALF_UP).doubleValue())
 			.defectClusterMinPixels(this.defectClusterMinPixels)
-			.defectClusterPixelProximity(this.defectClusterPixelProximity)
+			.defectClusterPixelProximity(
+				BigDecimal.valueOf(this.defectClusterPixelProximity).setScale(1, RoundingMode.HALF_UP).doubleValue())
 			.defectClasses(String.join(ELithoRecipeDefect.LIST_SEP, this.defectClasses.stream()
 				.map(ELithoRecipeDefectClassDTO::getName).toList()))
 			.defectClassMinHeight(String.join(ELithoRecipeDefect.LIST_SEP, this.defectClasses.stream()
@@ -55,7 +58,8 @@ public final class ELithoRecipeDefectDTO
 				.map(dto -> Integer.toString(dto.getMinSize())).toList()))
 			.defectClassMinDensity(String.join(ELithoRecipeDefect.LIST_SEP, this.defectClasses.stream()
 				.map(dto -> Integer.toString(dto.getMinDensity())).toList()))
-			.waferEdgeRingStart(this.waferEdgeRingStart)
+			.waferEdgeRingStart(
+				BigDecimal.valueOf(this.waferEdgeRingStart).setScale(1, RoundingMode.HALF_UP).doubleValue())
 			.waferEdgeScenario(this.waferEdgeScenario)
 			.build();
 	}

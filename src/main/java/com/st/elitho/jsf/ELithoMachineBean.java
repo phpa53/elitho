@@ -27,7 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Slf4j
-public final class ELithoMachineBean extends AbstractTableBean<ELithoMachineDTO, ELithoMachineEJB> implements Serializable {
+public final class ELithoMachineBean extends AbstractTableBean<ELithoMachineDTO, ELithoMachineEJB>
+	implements Serializable {
 
 	private static final long serialVersionUID = -9146193013252097911L;
 	private List<ELithoMachineDTO> selectedItems;
@@ -82,7 +83,7 @@ public final class ELithoMachineBean extends AbstractTableBean<ELithoMachineDTO,
 	}
 
 	public void resetTable() {
-		super.resetTable("elithoTabView:elithojobForm:elithojobDT");
+		super.resetTable("elithoTabView:elithomachineForm:elithomachineDT");
 	}
 
 	public List<String> completeDetection(final String str) {

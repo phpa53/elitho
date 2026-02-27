@@ -7,7 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import com.st.elitho.dto.ELithoMissingNotificationDTO;
+import com.st.elitho.dto.AbstractTableDTO;
+import com.st.elitho.dto.ELithoRecipeDefectClassDTO;
 import com.st.elitho.dto.ELithoRecipeDefectDTO;
 import com.st.elitho.ejb.ELithoRecipeDefectEJB;
 
@@ -32,7 +33,7 @@ public final class ELithoRecipeDefectBean
 
 	private static final long serialVersionUID = 7872755669645300443L;
 	private List<ELithoRecipeDefectDTO> selectedItems;
-	private ELithoMissingNotificationDTO selectedItem;
+	private ELithoRecipeDefectDTO selectedItem;
 	@EJB
 	private transient ELithoRecipeDefectEJB eLithoRecipeDefectEJB;
 
@@ -70,7 +71,25 @@ public final class ELithoRecipeDefectBean
 	}
 
 	public void resetTable() {
-		super.resetTable("elithoTabView:elithojobForm:elithojobDT");
+		super.resetTable("elithoTabView:elithorecipedefectForm:elithorecipedefectDT");
+	}
+
+	@SuppressWarnings("static-method")
+	public void addDefectClass(final ELithoRecipeDefectDTO item) {
+
+	    if (item.getDefectClasses() == null) {
+	        item.setDefectClasses(new ArrayList<>());
+	    }
+
+	    final ELithoRecipeDefectClassDTO newClass = ELithoRecipeDefectClassDTO.builder()
+	        .name(AbstractTableDTO.VALUE_DEFAULT)
+	        .minHeight(0)
+	        .minSize(0)
+	        .minDensity(0)
+	        .build();
+
+	    item.getDefectClasses().add(newClass);
+
 	}
 
 }

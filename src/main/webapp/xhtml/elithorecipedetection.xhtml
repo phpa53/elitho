@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="jakarta.tags.core"
+	xmlns:cc="jakarta.faces.composite"
+	xmlns:f="jakarta.faces.core"
+	xmlns:faces="jakarta.faces"
+	xmlns:fn="jakarta.tags.functions"
+	xmlns:h="jakarta.faces.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pass="jakarta.faces.passthrough"
+	xmlns:ui="jakarta.faces.facelets">
+	
+	<h:form id="elithorecipedetectionForm" prependId="false">
+		
+		<p:growl id="elithorecipedetectionGrowl" showDetail="true" life="3000"/>
+		
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+	        <p:commandButton value="Yes"
+				type="button"
+				styleClass="ui-confirmdialog-yes ui-button-danger"
+				icon="pi pi-check"/>
+	        <p:commandButton value="No"
+				type="button"
+				styleClass="ui-confirmdialog-no ui-button-secondary"
+				icon="pi pi-times"/>
+		</p:confirmDialog>
+		
+		<p:dataTable id="elithorecipedetectionDT"
+        	widgetVar="elithorecipedetectionDTW"
+        	var="item"
+        	value="#{eLithoRecipeDetectionBean.items}"
+        	rowKey="#{item.getKey()}"
+			scrollable="true"
+			scrollHeight="800"
+			lazy="false"
+			sortMode="multiple"
+			filterMode="advanced"
+			virtualScroll="false"
+			tableStyle="width:overflow"
+			resizableColumns="true"
+			resizeMode="expand"
+			draggableColumns="true"
+			size="small"
+			editable="true"
+			editInitEvent="click"
+			editMode="cell"
+            selectionMode="multiple"
+            selection="#{eLithoRecipeDetectionBean.selectedItems}"
+            selectionPageOnly="false"
+            disabledSelection="false"
+			stripedRows="true"
+			disabledTextSelection="false"
+			cache="true"
+        	showGridlines="true">
+        	
+        	<f:facet name="header">
+        		<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+		            margin-top:5px;margin-bottom:5px;">
+	            	<span style="margin-top:-5px;">
+		        		<p:commandButton value="Apply"
+			               	actionListener="#{eLithoRecipeDetectionBean.apply}"
+			                update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+							oncomplete="resizeElithoRecipeDetectionTable();"/>
+	                    <p:commandButton id="elithorecipedetectionNewCB"
+	                    	title="New"
+	                    	icon="pi pi-plus"
+		                    styleClass="ml-2 ui-button-success"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    actionListener="#{eLithoRecipeDetectionBean.add()}"
+		                    update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+		                    oncomplete="resizeElithoRecipeDetectionTable();"/>
+	                    <p:commandButton id="elithorecipedetectionCopyCB"
+	                    	title="Copy"
+	                    	icon="pi pi-copy"
+		                    styleClass="ml-2 ui-button-success"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoRecipeDetectionBean.copyDisabled()}"
+		                    actionListener="#{eLithoRecipeDetectionBean.copy()}"
+		                    update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+		                    oncomplete="resizeElithoRecipeDetectionTable();"/>
+	                    <p:commandButton id="elithorecipedetectionDeleteCB"
+	                    	title="Delete"
+	                    	value="#{eLithoRecipeDetectionBean.getDeleteLabel()}"
+		                	icon="pi pi-trash"
+		                	escape="false"
+		                    styleClass="ml-2 ui-button-danger"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{empty eLithoRecipeDetectionBean.selectedItems}"
+		                    actionListener="#{eLithoRecipeDetectionBean.delete()}"
+		                    update="@this elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+		                    oncomplete="resizeElithoRecipeDetectionTable();">
+		                    <p:confirm header="Confirmation"
+				            	message="Are you sure you want to delete this item?"
+				            	icon="pi pi-exclamation-triangle"/>
+		                </p:commandButton>
+	                    <p:commandButton id="elithorecipedetectionSaveCB"
+	                    	title="Save"
+		                	icon="pi pi-save"
+		                    styleClass="ml-2 ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{eLithoRecipeDetectionBean.saveDisabled()}"
+		                    actionListener="#{eLithoRecipeDetectionBean.save()}"
+		                    update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+		                    oncomplete="resizeElithoRecipeDetectionTable();"/>
+	                    <p:commandButton id="elithorecipedetectionDiscardCB"
+	                    	title="Discard"
+		                	icon="pi pi-undo"
+		                    styleClass="ml-2 ui-button-info"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		                    disabled="#{not eLithoRecipeDetectionBean.anyItemChanged}"
+		                    actionListener="#{eLithoRecipeDetectionBean.discard()}"
+		                    update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+		                    oncomplete="resizeElithoRecipeDetectionTable();"/>
+		               	<p:commandButton icon="pi pi-sort-alt-slash"
+		               		title="Reset Table"
+		               		styleClass="ml-2 ui-button-secondary"
+		                    rendered="#{facesContext.externalContext.isUserInRole('elitho-write')}"
+		               		action="#{eLithoRecipeDetectionBean.resetTable}"
+		               		update="elithorecipedetectionDT"
+		                    oncomplete="resizeElithoRecipeDetectionTable();"/>
+		                <p:tooltip for="@next" value="Column to expand"/>
+		                <p:commandButton icon="pi pi-angle-down"
+		                    styleClass="ml-2"
+		                    title="Expand All"
+		                    type="button"
+                 			onclick="expandAllRows('elithorecipedetectionDTW');"/>
+		                <p:commandButton icon="pi pi-angle-right"
+		                    styleClass="ml-2"
+		                    title="Collapse All"
+		                	type="button"
+                 			onclick="collapseAllRows('elithorecipedetectionDTW');"/>
+						<p:outputLabel value="#{eLithoRecipeDetectionBean.numberOfChanges} row(s) changed"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
+		               		rendered="#{eLithoRecipeDetectionBean.numberOfChanges > 0}"/>
+						<p:outputLabel value="#{eLithoRecipeDetectionBean.numberOfDeletes} row(s) deleted"
+							style="font-weight:bold;color:orange;"
+							styleClass="ml-2"
+		               		rendered="#{eLithoRecipeDetectionBean.numberOfDeletes > 0}"/>
+					</span>
+				</div>
+        	</f:facet>
+        	
+        	<p:ajax event="rowSelect" update="elithorecipedetectionCopyCB elithorecipedetectionDeleteCB"/>
+            <p:ajax event="rowUnselect" update="elithorecipedetectionCopyCB elithorecipedetectionDeleteCB"/>
+            <p:ajax event="rowSelectCheckbox" update="elithorecipedetectionCopyCB elithorecipedetectionDeleteCB"/>
+            <p:ajax event="rowUnselectCheckbox" update="elithorecipedetectionCopyCB elithorecipedetectionDeleteCB"/>
+            <p:ajax event="toggleSelect" update="elithorecipedetectionCopyCB elithorecipedetectionDeleteCB"/>
+        	
+        	<p:column style="width:10px;" styleClass="#{item.toBeFilled() ? 'cell-to-be-filled' : ''}"/>
+        	<p:column headerText="Recipe"
+        		title="Recipe Name"
+        		style="width:80px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('recipeName') ? 'cell-changed' : ''}"
+				sortBy="#{item.recipeName}"
+            	filterBy="#{item.recipeName}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.recipeName}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:inputText value="#{item.recipeName}"
+                        	style="width:100%"
+                        	maxlength="100"
+                        	immediate="true"
+                        	valueChangeListener="#{eLithoRecipeDetectionBean.valueChanged}"
+                        	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+                        	<f:attribute name="item" value="#{item}"/>
+                        	<f:attribute name="attribute" value="recipeName"/>
+                        	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDetectionBean.checkKeyUniqueness()}"
+                        		process="@this"
+		                    	update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+                        		onstart="saveElithoRecipeDetectionScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDetectionTable();setElithoRecipeDetectionScrollPos();"/>
+                        </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Techno"
+				title="Twinscan Technology"
+        		style="width:80px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('tsTechnology') ? 'cell-changed' : ''}"
+				sortBy="#{item.tsTechnology}"
+            	filterBy="#{item.tsTechnology}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.tsTechnology}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.tsTechnology}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoRecipeDetectionBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="tsTechnology"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDetectionBean.checkKeyUniqueness()}"
+	                       		process="@this"
+                        		update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+                        		onstart="saveElithoRecipeDetectionScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDetectionTable();setElithoRecipeDetectionScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Maskset"
+				title="Twinscan Maskset"
+        		style="width:100px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('tsMaskset') ? 'cell-changed' : ''}"
+				sortBy="#{item.tsMaskset}"
+            	filterBy="#{item.tsMaskset}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.tsMaskset}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.tsMaskset}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoRecipeDetectionBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="tsMaskset"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDetectionBean.checkKeyUniqueness()}"
+	                       		process="@this"
+                        		update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+                        		onstart="saveElithoRecipeDetectionScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDetectionTable();setElithoRecipeDetectionScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Layer"
+				title="Twinscan Layer"
+        		style="width:120px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('tsLayer') ? 'cell-changed' : ''}"
+				sortBy="#{item.tsLayer}"
+            	filterBy="#{item.tsLayer}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.tsLayer}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.tsLayer}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoRecipeDetectionBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="tsLayer"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDetectionBean.checkKeyUniqueness()}"
+	                       		process="@this"
+                        		update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+                        		onstart="saveElithoRecipeDetectionScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDetectionTable();setElithoRecipeDetectionScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<p:column headerText="Scenario"
+				title="Wafer Edge Scenario"
+        		style="width:200px;text-align:center;color:#{item.getAttributeColor()};"
+        		styleClass="#{item.hasAttributeChanged('scenario') ? 'cell-changed' : ''}"
+				sortBy="#{item.scenario}"
+            	filterBy="#{item.scenario}">
+            	<p:cellEditor>
+                    <f:facet name="output">
+                		<h:outputText value="#{item.scenario}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                    	<p:inputText value="#{item.scenario}"
+	                       	style="width:100%"
+	                       	maxlength="100"
+	                       	immediate="true"
+	                       	valueChangeListener="#{eLithoRecipeDetectionBean.valueChanged}"
+	                       	onkeypress="if (event.keyCode == 13) {e.preventDefault();this.onblur();return false;}">
+	                       	<f:attribute name="item" value="#{item}"/>
+	                       	<f:attribute name="attribute" value="scenario"/>
+	                       	<p:ajax event="blur"
+	                       		listener="#{eLithoRecipeDetectionBean.checkKeyUniqueness()}"
+	                       		process="@this"
+                        		update="elithorecipedetectionDT elithoTabView:elithorecipedetectionGrowl"
+                        		onstart="saveElithoRecipeDetectionScrollPos();"
+		                    	oncomplete="resizeElithoRecipeDetectionTable();setElithoRecipeDetectionScrollPos();"/>
+                       </p:inputText>
+                    </f:facet>
+                </p:cellEditor>
+			</p:column>
+			<ui:remove>
+			<p:column headerText="Created"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.createdDate}" rendered="#{item.isCreatedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Created By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.createdBy}"
+            	filterBy="#{item.createdBy}">
+                <h:outputText value="#{item.createdBy}"/>
+            </p:column>
+			<p:column headerText="Last Modified"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedDate}"
+            	filterBy="#{item.createdDate}">
+                <h:outputText value="#{item.lastModifiedDate}" rendered="#{item.isLastModifiedDateValid()}"/>
+            </p:column>
+			<p:column headerText="Last Modified By"
+        		style="width:130px;text-align:center;"
+				sortBy="#{item.lastModifiedBy}"
+            	filterBy="#{item.lastModifiedBy}">
+                <h:outputText value="#{item.lastModifiedBy}"/>
+            </p:column>
+            </ui:remove>
+			<p:column displayPriority="99"/>
+	        	
+		</p:dataTable>
+		
+	</h:form>
+	
+</ui:component>

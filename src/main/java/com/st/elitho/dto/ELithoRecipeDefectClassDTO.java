@@ -23,6 +23,4 @@ public final class ELithoRecipeDefectClassDTO implements Serializable {
 	private int minSize;
 	private int minDensity;
 
-
-
 }

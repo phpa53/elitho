@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @MappedSuperclass
 public sealed abstract class AbstractTable<T extends AbstractTableDTO, U extends AbstractTablePK>
-	permits ELithoJob, ELithoMachine, ELithoMissingNotification, ELithoRecipeDefect {
+	permits ELithoJob, ELithoMachine, ELithoMissingNotification, ELithoRecipeDefect, ELithoRecipeDetection {
 
 	/*
 	@Column(name = "created")
